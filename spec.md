@@ -1,0 +1,61 @@
+# Legerdemain
+
+- WORLD
+    - top down
+    - tiled world in the style of Merlin's Revenge 2
+- SPELLS
+    MECHANICS:
+      - spells are combinations of letters
+      - some sequenced, some simultaneous
+      - e.g.
+          `a + s + d + f`
+          `asdf`
+          `c + h + io`
+          `eb, ci, dh`
+      - spells consume energy
+          - vigor?
+          - verve?
+          - brio?
+      - mistyped spells result in corrupted version the spell it's closest too (using leveinstein distance)
+    TYPES:
+      - confusion
+      - fear
+      - controlled
+      - soul drain
+      - light
+      - spirit summon
+      - shield
+      - invisible
+      - meditation
+      - flowers
+
+- ART
+    - dithered 2d images
+    - walking frames of witch/villagers
+    - swinging/casting frames
+    - terrain
+
+- STORY ?
+    - forest?
+    - dark tower?
+    - angry villagers/woodfolk?
+    - motivation?
+    - protagonist?
+
+TODO
+  - game canvas
+    - init map (incl seeding "rooms")
+  - event loop
+      - protagonist walking
+      - spell casting
+          - spell effects
+            - enemy
+            - environment
+          - corrupted effects
+      - enemy animations/AI
+        - enemy walking
+        - enemy attacking
+  - create art assets
+      - finalize art style
+  - design game progression / story
+      - progressively find spells?
