@@ -4,20 +4,20 @@
     - top down
     - tiled world in the style of Merlin's Revenge 2
 - SPELLS
-    MECHANICS:
+    - MECHANICS:
       - spells are combinations of letters
       - some sequenced, some simultaneous
       - e.g.
-          `a + s + d + f`
-          `asdf`
-          `c + h + io`
-          `eb, ci, dh`
+          - `a + s + d + f`
+          - `asdf`
+          - `c + h + io`
+          - `eb, ci, dh`
       - spells consume energy
           - vigor?
           - verve?
           - brio?
       - mistyped spells result in corrupted version the spell it's closest too (using leveinstein distance)
-    TYPES:
+    - TYPES:
       - confusion
       - fear
       - controlled
@@ -42,7 +42,7 @@
     - motivation?
     - protagonist?
 
-TODO
+- TODO
   - game canvas
     - init map (incl seeding "rooms")
   - event loop
