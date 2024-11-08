@@ -1,0 +1,14 @@
+/* https://css-tricks.com/css-sprites/ */
+.dot-red {
+  clip-path: inset(0 50% 50% 0);
+}
+
+.dot-yellow {
+  clip-path: inset(0 50% 50% 0);
+}
+
+.player {
+  width: 40px;
+  height: 40px;
+  background-color: red;
+}
