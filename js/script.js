@@ -1,52 +1,52 @@
 const playerEl = document.getElementById("player");
 const enemies = Array.from(document.querySelectorAll(".enemy"));
 
-const player = {
-  x: 500,
-  y: 50,
-  spell: '',
-  left() {
-    this.x -= 10;
-    playerEl.setAttribute("cx", this.x);
-  },
-  right() {
-    this.x += 10;
-    playerEl.setAttribute("cx", this.x);
-  },
-  down() {
-    this.y += 10;
-    playerEl.setAttribute("cy", this.y);
-  },
-  up() {
-    this.y -= 10;
-    playerEl.setAttribute("cy", this.y);
-  },
-};
+const stubEntity = (x, y) => ({x, y, dx: 0, dy: 0})
+const state = {
+  player: stubEntity(500, 50),
+  enemies: [],
+  keysPressed: new Set(),
+  spell: [],
+  actionQueue: [],
+}
 
-function handleKeyDown(event) {
+requestAnimationFrame(loop.bind(null, performance.now()));
+
+function loop(t1, t2) {
+  drawState()
+  requestAnimationFrame(loop.bind(null, t2));
+}
+
+function isAlpha(keyCode) {
+  return keyCode >= 97 && keyCode <= 122
+}
+
+function isNum(keyCode) {
+  return keyCode >= 48 && keyCode <= 57
+}
+
+function isSpacebar(keyCode) {
+  return keyCode === 32
+}
+
+function onKeyDown(event) {
+  const { key, keyCode, repeat } = event
+  if (repeat) return null
+  state.keysPressed.add(keyCode)
+
+  if (isAlpha(keyCode)) {
+    state.player.keysPressed.add(keyCode)
+  }
+}
+
+function onKeyDown(event) {
   const { key, keyCode, repeat } = event
   if (repeat) return null
 
-  if (keyCode >= 97 && keyCode <= 122 ) {
-    player.spell += key
-  }
-
-
-  switch (key) {
-    case "ArrowLeft":
-      player.left();
-      break;
-    case "ArrowRight":
-      player.right();
-      break;
-
-    case "ArrowDown":
-      player.down();
-      break;
-
-    case "ArrowUp":
-      player.up();
-      break;
+  if (isNum(keyCode) || isAlpha(keyCode)) {
+    state.player.keysPressed.add(keyCode)
+  } else if (isSpacebar(keyCode)) {
+    // spacebar
   }
 }
 
@@ -66,4 +66,6 @@ function handleKeyDown(event) {
   //});
 //}, 1000);
 
-document.body.addEventListener("keydown", handleKeyDown);
+
+document.body.addEventListener("keydown", onKeyDown);
+document.body.addEventListener("keyup", onKeyUp);

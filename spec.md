@@ -50,6 +50,19 @@
     - walking frames of witch/villagers
     - swinging/casting frames
     - terrain
+    - ELEMENTS
+        - forest
+            - grass
+            - trees
+            - rocks
+        - villagers
+            - walking
+            - attacking
+            - different spelled states
+        - spirits
+        - cabins
+        - castle
+            - stone
 
 - STORY ?
     - forest?
@@ -58,22 +71,28 @@
     - motivation?
     - protagonist?
 
-- STORY BOARD
+- STORY BOARD 1
   - ACT 1 (school)
     - leave grandma/mother to go to wizard school
     - short journey to school w/ minor non-human encounters
     - school is extended tutorial
-  - ACT 2 (journey)
+  - ACT 2 (tragedy)
     - journey home
     - much more perilous w/ many acrimonious human encounters
     - arrive home to find grandma killed for being a witch
   - ACT 3 (revenge)
     - fight large crowd of villagers attacking you
     - destroy villages
-  - ACT 4
-    - ? grief
-    - ? confront local evil sorcerer in tower
-    - what's a satisfying conclusion
+  - ACT 4 (family)
+    - journey to aunt's malevolent tower
+    - take over mantle of evil sorcerer
+    - what's a satisfying conclusion?
+- STORY BOARD 2
+    - ACT 1
+        - travel to the evil tower to study witchcraft
+        - encounter non-human enemies
+        - essentially an extended tutorial
+        -
 
 - TODO
   - game canvas
