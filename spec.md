@@ -1,7 +1,8 @@
 # Legerdemain
 - TITLES?
     - ledgerdemain
-    - aesthete
+    - Iniquitous
+
 
 - WORLD
     - top down
@@ -15,22 +16,34 @@
           - `asdf`
           - `c + h + io`
           - `eb, ci, dh`
+
       - spells consume energy
           - vigor?
           - verve?
           - brio?
       - mistyped spells result in corrupted version the spell it's closest too (using leveinstein distance)
+      - spells could have grammar?
+          - subject + predicate + adverb + object + terminal (spacebar)
+          - action + modifier + enter ?
+          - rock + move + quickly = ?
+          - maybe adverbs are too complicated?
+          -
     - TYPES:
-      - confusion
-      - fear
-      - controlled
-      - soul drain
-      - light
-      - spirit summon
-      - shield
-      - invisible
-      - meditation
-      - flowers
+      - ACTIONS
+        - weather
+        - puppet
+        - energy drain
+        - light
+        - spirit summon
+        - shield
+        - meditation
+        - flowers
+      - INTENT
+        - evil
+        - neutral (default)
+        - good
+      - light + person + evil -> sets them on fire
+      - light + person + good -> sets them on fire
 
 - ART
     - dithered 2d images
@@ -44,6 +57,23 @@
     - angry villagers/woodfolk?
     - motivation?
     - protagonist?
+
+- STORY BOARD
+  - ACT 1 (school)
+    - leave grandma/mother to go to wizard school
+    - short journey to school w/ minor non-human encounters
+    - school is extended tutorial
+  - ACT 2 (journey)
+    - journey home
+    - much more perilous w/ many acrimonious human encounters
+    - arrive home to find grandma killed for being a witch
+  - ACT 3 (revenge)
+    - fight large crowd of villagers attacking you
+    - destroy villages
+  - ACT 4
+    - ? grief
+    - ? confront local evil sorcerer in tower
+    - what's a satisfying conclusion
 
 - TODO
   - game canvas
