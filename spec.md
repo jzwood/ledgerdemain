@@ -27,17 +27,29 @@
           - action + modifier + enter ?
           - rock + move + quickly = ?
           - maybe adverbs are too complicated?
-          -
+          - who + action
+          - power required to effect multiple enemies at once
+            - 1 entity = 1 mu
+            - 2 entity = 3 mu
+            - 3 entity = 6 mu
+            - 4 entity = 10 mu
+            - all entity = 15 mu
     - TYPES:
       - ACTIONS
-        - weather
+        - confusion/fear
         - puppet
+            - defense
+            - attack
         - energy drain
-        - light
+            - 1 entity = 4 mu
+            - 2 entity = 3 mu
+            - 3 entity = 2 mu
+            - 4 entity = 1 mu
         - spirit summon
-        - shield
-        - meditation
-        - flowers
+        - shield (self 1 mu)
+        - meditation (mu generation)
+        - flowers (increases mu efficiency)
+        - light
       - INTENT
         - evil
         - neutral (default)

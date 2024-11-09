@@ -17,37 +17,32 @@ function loop(t1, t2) {
   requestAnimationFrame(loop.bind(null, t2));
 }
 
-function isAlpha(keyCode) {
-  return keyCode >= 97 && keyCode <= 122
-}
-
-function isNum(keyCode) {
-  return keyCode >= 48 && keyCode <= 57
-}
-
-function isSpacebar(keyCode) {
-  return keyCode === 32
-}
-
-function onKeyDown(event) {
-  const { key, keyCode, repeat } = event
-  if (repeat) return null
-  state.keysPressed.add(keyCode)
-
-  if (isAlpha(keyCode)) {
-    state.player.keysPressed.add(keyCode)
-  }
-}
-
 function onKeyDown(event) {
   const { key, keyCode, repeat } = event
   if (repeat) return null
 
-  if (isNum(keyCode) || isAlpha(keyCode)) {
-    state.player.keysPressed.add(keyCode)
-  } else if (isSpacebar(keyCode)) {
-    // spacebar
+  if (/^\w$/.test(key)) {
+    state.keysPressed.add(key)
   }
+}
+
+function onKeyUp(event) {
+  const { key, keyCode } = event
+
+  if (state.keysPressed.has(key)) {
+    endSpellSegment()
+  }
+
+  state.keysPressed.delete(key)
+}
+
+function endSpellSegment() {
+  console.log(state.keysPressed)
+  //state.keysPressed.
+}
+
+function drawState() {
+
 }
 
 //setInterval(() => {
