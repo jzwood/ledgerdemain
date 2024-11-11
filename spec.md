@@ -36,20 +36,26 @@
             - all entity = 15 mu
     - TYPES:
       - ACTIONS
-        - confusion/fear
-        - puppet
-            - defense
-            - attack
-        - energy drain
-            - 1 entity = 4 mu
-            - 2 entity = 3 mu
-            - 3 entity = 2 mu
-            - 4 entity = 1 mu
-        - spirit summon
-        - shield (self 1 mu)
-        - meditation (mu generation)
-        - flowers (increases mu efficiency)
-        - light
+        - EVIL
+          - confusion/fear
+          - puppet
+              - defense
+              - attack
+          - energy drain
+              - 1 entity = 4 mu
+              - 2 entity = 3 mu
+              - 3 entity = 2 mu
+              - 4 entity = 1 mu
+          - spirit summon
+        - NEUTRAL
+          - compass
+          - light
+          - shield (self 1 mu)
+          - meditation (mu generation)
+        - GOOD
+          - healing
+          - detect evil
+          - flowers (increases mu efficiency)
       - INTENT
         - evil
         - neutral (default)
@@ -105,6 +111,26 @@
         - encounter non-human enemies
         - essentially an extended tutorial
         -
+- STORY BOARD 3
+  - title: Crone
+  - you are red riding hood and a witch
+  - you are on your way to grandmas
+  - enemies are monsters from the wood
+  - it's kind of a reverse tower defense where you're walking through the woods on a path and monsters are jumping out at you and shooting errors etc.
+      - this removes the awkward requirement to also manage movement in addition to spell slinging
+  - boss is wolf
+  - secret boss is evil woodsman
+- STORY BOARD 4
+  - you are a witch
+  - your grandchildren play in the dark woods
+  - night has fallen but they have not returned
+  - it is not safe in the woods at night
+  - find them
+    - you journey through the dark wood. fending off monsters and picking up spells for your spellbook.
+    - if you are overwhelmed (aka die) a hooded figure brings you back to your last savepoint
+      - figure is spirit of your late husband, a sorcerer, but player won't find that out till later
+    - grunts > minibosses > boss
+    - in the end you find grandchildren safely in the woodcutter's cabin (their uncle)
 
 - TODO
   - game canvas

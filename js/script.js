@@ -1,6 +1,10 @@
 const playerEl = document.getElementById("player");
 const enemies = Array.from(document.querySelectorAll(".enemy"));
 
+// fix impossible fingering: https://c1.staticflickr.com/9/8095/8485721150_5763b36301_b.jpg
+const abc = "qazwsxedcrfvtgbyhnujmikolp"
+const cmp = (a, b) => abc.indexOf(a) - abc.indexOf(b)
+
 const stubEntity = (x, y) => ({x, y, dx: 0, dy: 0})
 const state = {
   player: stubEntity(500, 50),
@@ -37,8 +41,10 @@ function onKeyUp(event) {
 }
 
 function endSpellSegment() {
-  console.log(state.keysPressed)
-  //state.keysPressed.
+  const keys = Array.from(state.keysPressed).sort(cmp).join('')
+  state.spell.push(keys)
+  state.keysPressed.clear()
+  console.log(keys, state.spell)
 }
 
 function drawState() {
