@@ -36,26 +36,29 @@
             - all entity = 15 mu
     - TYPES:
       - ACTIONS
-        - EVIL
+        - ATTACK
           - confusion/fear
           - puppet
               - defense
               - attack
+          - gust (blow enemies away)
           - energy drain
               - 1 entity = 4 mu
               - 2 entity = 3 mu
               - 3 entity = 2 mu
               - 4 entity = 1 mu
           - spirit summon
-        - NEUTRAL
+        - UTILITY
           - compass
           - light
           - shield (self 1 mu)
-          - meditation (mu generation)
-        - GOOD
-          - healing
           - detect evil
-          - flowers (increases mu efficiency)
+          - stop time (aka pause to consult spellbook)
+          - save flowers (create savepoint)
+          - mu flowers (grow mu that you can collect later)
+          - health flowers (grows health that you can harvest later)
+          - amplify (briefly increase mu efficiency; i.e. decreases mu requirement for spells)
+          - perception (relabels enemies. so if you dispatch 1-4 mals 5-8 will be relabled 1-3)
       - INTENT
         - evil
         - neutral (default)
@@ -131,6 +134,10 @@
       - figure is spirit of your late husband, a sorcerer, but player won't find that out till later
     - grunts > minibosses > boss
     - in the end you find grandchildren safely in the woodcutter's cabin (their uncle)
+
+- WHAT CRITICS ARE SAYING
+  - senselessly punishing
+  - unique art style
 
 - TODO
   - game canvas
