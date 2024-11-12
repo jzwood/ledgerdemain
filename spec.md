@@ -113,7 +113,6 @@
         - travel to the evil tower to study witchcraft
         - encounter non-human enemies
         - essentially an extended tutorial
-        -
 - STORY BOARD 3
   - title: Crone
   - you are red riding hood and a witch
