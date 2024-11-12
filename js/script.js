@@ -102,9 +102,9 @@ function nextState(delta) {
   state.enemies.forEach((enemy) => {
     const dx = state.player.x - enemy.x
     const dy = state.player.y - enemy.y
-    const t3 = t2 / Math.sqrt(dx * dx + dy * dy)
-    enemy.x += dx * t3
-    enemy.y += dy * t3
+    const t2 = (0.5 * t) / Math.sqrt(dx * dx + dy * dy)
+    enemy.x += dx * t2
+    enemy.y += dy * t2
   });
 }
 
