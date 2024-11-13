@@ -2,6 +2,12 @@
 const ABC = "qazwsxedcrfvtgbyhnujmikolp";
 const cmp = (a, b) => ABC.indexOf(a) - ABC.indexOf(b);
 
+const LEFT = ["a", "j"];
+const RIGHT = ["d", "l"];
+const UP = ["w", "i"];
+const DOWN = ["s", "k"];
+const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
+
 const state = {
   player: undefined,
   enemies: [],
@@ -13,10 +19,19 @@ const state = {
 function init() {
   const playerEl = document.getElementById("player");
   const enemyEls = Array.from(document.querySelectorAll(".enemy"));
-  state.player = {el: playerEl, x: 500, y: 50, dx: 0, dy: 0}
-  state.enemies = enemyEls.map((enemy) =>
-    ({el: enemy, x: Math.random() * 700, y: Math.random() * 500})
-  );
+  state.player = {
+    el: playerEl,
+    x: 500,
+    y: 50,
+    dx: 0,
+    dy: 0,
+    ghosts: [0, 0, 0, 0],
+  };
+  state.enemies = enemyEls.map((enemy) => ({
+    el: enemy,
+    x: Math.random() * 700,
+    y: Math.random() * 500,
+  }));
   requestAnimationFrame(loop.bind(null, performance.now()));
 }
 
@@ -43,7 +58,7 @@ function onKeyDown(event) {
 function onKeyUp(event) {
   const { key, keyCode } = event;
 
-  if (state.keysPressed.has(key)) {
+  if (state.keysPressed.has(key) && !MOVE.includes(key)) {
     endSpellSegment();
   }
 
@@ -58,15 +73,9 @@ function endSpellSegment() {
   const keys = Array.from(state.keysPressed).sort(cmp).join("");
   state.spell.push(keys);
   state.keysPressed.clear();
-  //console.log(keys, state.spell);
+  console.log(keys, state.keysPressed);
 }
 
-const LEFT = "aj";
-const RIGHT = "dl";
-const UP = "wi";
-const DOWN = "sk";
-const HORIZ = LEFT + RIGHT;
-const VERT = UP + DOWN;
 function handleMovementStart(key) {
   if (LEFT.includes(key)) {
     state.player.dx = -1;
@@ -80,18 +89,24 @@ function handleMovementStart(key) {
 }
 
 function handleMovementStop(key) {
-  // TODO make this smarter so that if you lift up right but you're already pressing left you start moving left
-  if (HORIZ.includes(key)) {
-    state.player.dx = 0;
-  } else if (VERT.includes(key)) {
-    state.player.dy = 0;
+  console.log(state.keysPressed, "2");
+  const hasKey = (key) => state.keysPressed.has(key);
+  if (LEFT.includes(key)) {
+    state.player.dx = RIGHT.some(hasKey) ? 1 : 0;
+  } else if (RIGHT.includes(key)) {
+    state.player.dx = LEFT.some(hasKey) ? -1 : 0;
+  } else if (UP.includes(key)) {
+    state.player.dy = DOWN.some(hasKey) ? 1 : 0;
+  } else if (DOWN.includes(key)) {
+    state.player.dy = UP.some(hasKey) ? -1 : 0;
   }
 }
 
-const PX_PER_SECOND = 200;
+const PX_PER_SECOND = 100;
 const SECONDS_PER_MS = 1 / 1000;
 const FACTOR = PX_PER_SECOND * SECONDS_PER_MS;
-const BUFFER = 50
+const BUFFER = 50;
+const EPSILON = 1
 function nextState(delta) {
   const { dx, dy } = state.player;
   const t = FACTOR * delta;
@@ -100,11 +115,16 @@ function nextState(delta) {
 
   const t2 = 0.5 * t;
   state.enemies.forEach((enemy) => {
-    const dx = state.player.x - enemy.x
-    const dy = state.player.y - enemy.y
-    const t2 = (0.5 * t) / Math.sqrt(dx * dx + dy * dy)
-    enemy.x += dx * t2
-    enemy.y += dy * t2
+    const dx = state.player.x - enemy.x;
+    const dy = state.player.y - enemy.y;
+    const t2 = (0.5 * t) / Math.sqrt(dx * dx + dy * dy);
+    // TODO have the enemies chase oscillating ghost targets so they don't clump
+    if (Math.abs(dx) > EPSILON) {
+      enemy.x += dx * t2;
+    }
+    if (Math.abs(dy) > EPSILON){
+      enemy.y += dy * t2;
+    }
   });
 }
 
