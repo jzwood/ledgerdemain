@@ -68,6 +68,7 @@
 
 - ART
     - dithered 2d images
+        - https://css-tricks.com/grainy-gradients/
     - walking frames of witch/villagers
     - swinging/casting frames
     - terrain

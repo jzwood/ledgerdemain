@@ -11,6 +11,7 @@ const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
 const state = {
   player: undefined,
   enemies: [],
+  movementKeys: new Set(),
   keysPressed: new Set(),
   spell: [],
   actionQueue: [],
@@ -41,39 +42,42 @@ function loop(t1, t2) {
   requestAnimationFrame(loop.bind(null, t2));
 }
 
-function isAlpha(char) {
-  return /^\w$/.test(char);
+function isAlphaNum(char) {
+  return /^[a-z0-9]$/i.test(char);
 }
 
 function onKeyDown(event) {
   const { key, keyCode, repeat } = event;
   if (repeat) return null;
 
-  if (isAlpha(key)) {
+  if (isAlphaNum(key)) {
     handleMovementStart(key);
     state.keysPressed.add(key);
+  }
+
+  if (MOVE.includes(key)) {
+    state.movementKeys.add(key);
   }
 }
 
 function onKeyUp(event) {
   const { key, keyCode } = event;
 
-  if (state.keysPressed.has(key) && !MOVE.includes(key)) {
+  if (state.keysPressed.has(key)) {
     endSpellSegment();
+    state.keysPressed.clear();
   }
 
-  if (isAlpha(key)) {
+  if (MOVE.includes(key)) {
     handleMovementStop(key);
+    state.movementKeys.delete(key);
   }
-
-  state.keysPressed.delete(key);
 }
 
 function endSpellSegment() {
   const keys = Array.from(state.keysPressed).sort(cmp).join("");
   state.spell.push(keys);
-  state.keysPressed.clear();
-  console.log(keys, state.keysPressed);
+  console.log(keys)
 }
 
 function handleMovementStart(key) {
@@ -89,8 +93,7 @@ function handleMovementStart(key) {
 }
 
 function handleMovementStop(key) {
-  console.log(state.keysPressed, "2");
-  const hasKey = (key) => state.keysPressed.has(key);
+  const hasKey = (key) => state.movementKeys.has(key);
   if (LEFT.includes(key)) {
     state.player.dx = RIGHT.some(hasKey) ? 1 : 0;
   } else if (RIGHT.includes(key)) {
@@ -106,14 +109,21 @@ const PX_PER_SECOND = 100;
 const SECONDS_PER_MS = 1 / 1000;
 const FACTOR = PX_PER_SECOND * SECONDS_PER_MS;
 const BUFFER = 50;
-const EPSILON = 1
+const EPSILON = 1;
 function nextState(delta) {
-  const { dx, dy } = state.player;
+  nextPlayer(delta)
+  nextEnemies(delta)
+}
+
+function nextPlayer(delta) {
   const t = FACTOR * delta;
+  const { dx, dy } = state.player;
   state.player.x += dx * t;
   state.player.y += dy * t;
+}
 
-  const t2 = 0.5 * t;
+function nextEnemies(delta) {
+  const t = 0.5 * FACTOR * delta;
   state.enemies.forEach((enemy) => {
     const dx = state.player.x - enemy.x;
     const dy = state.player.y - enemy.y;
@@ -122,7 +132,7 @@ function nextState(delta) {
     if (Math.abs(dx) > EPSILON) {
       enemy.x += dx * t2;
     }
-    if (Math.abs(dy) > EPSILON){
+    if (Math.abs(dy) > EPSILON) {
       enemy.y += dy * t2;
     }
   });
