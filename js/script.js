@@ -105,7 +105,7 @@ function handleMovementStop(key) {
   }
 }
 
-const PX_PER_SECOND = 100;
+const PX_PER_SECOND = 30;
 const SECONDS_PER_MS = 1 / 1000;
 const FACTOR = PX_PER_SECOND * SECONDS_PER_MS;
 const BUFFER = 50;
@@ -123,11 +123,11 @@ function nextPlayer(delta) {
 }
 
 function nextEnemies(delta) {
-  const t = 0.5 * FACTOR * delta;
+  const t = FACTOR * delta;
   state.enemies.forEach((enemy) => {
     const dx = state.player.x - enemy.x;
     const dy = state.player.y - enemy.y;
-    const t2 = (0.5 * t) / Math.sqrt(dx * dx + dy * dy);
+    const t2 = (0.75 * t) / Math.sqrt(dx * dx + dy * dy);
     // TODO have the enemies chase oscillating ghost targets so they don't clump
     if (Math.abs(dx) > EPSILON) {
       enemy.x += dx * t2;
@@ -139,8 +139,8 @@ function nextEnemies(delta) {
 }
 
 function drawState() {
-  state.player.el.setAttribute("cx", state.player.x);
-  state.player.el.setAttribute("cy", state.player.y);
+  state.player.el.setAttribute("x", state.player.x);
+  state.player.el.setAttribute("y", state.player.y);
   state.enemies.forEach((enemy) => {
     enemy.el.setAttribute("cx", enemy.x);
     enemy.el.setAttribute("cy", enemy.y);
