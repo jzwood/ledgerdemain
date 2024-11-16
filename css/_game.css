@@ -1,6 +1,6 @@
 /* https://css-tricks.com/css-sprites/ */
 .player {
-  fill: blue;
+  fill: darkmagenta;
 }
 
 .bat {
@@ -13,10 +13,6 @@
 
 .tree {
   fill: #33654A;
-}
-
-.ground {
-  fill: #644432;
 }
 
 .rock {

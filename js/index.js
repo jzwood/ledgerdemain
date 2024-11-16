@@ -9,7 +9,13 @@ const DOWN = ["s", "k"];
 const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
 
 const state = {
-  player: undefined,
+  player: {
+    el: null,
+    x: 0,
+    y: 0,
+    dx: 0,
+    dy: 0,
+  },
   enemies: [],
   movementKeys: new Set(),
   keysPressed: new Set(),
@@ -17,25 +23,75 @@ const state = {
   actionQueue: [],
 };
 
-function init() {
-  const playerEl = document.querySelector(".player");
-  const enemyEls = Array.from(document.querySelectorAll(".bat"));
-  console.log(playerEl, enemyEls)
-  state.player = {
-    el: playerEl,
-    x: 5,
-    y: 5,
-    dx: 0,
-    dy: 0,
-    ghosts: [0, 0, 0, 0],
-  };
-  state.enemies = enemyEls.map((enemy) => ({
-    el: enemy,
-    x: Math.random() * 7,
-    y: Math.random() * 5,
-  }));
+function main() {
+  fetch("/data/forest.txt")
+    .then((res) => res.text())
+    .then((res) => {
+      const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
+      loadMap(0, 6, forest);
+    });
   requestAnimationFrame(loop.bind(null, performance.now()));
 }
+
+function loadMap(x, y, forest) {
+  const zone = document.getElementById("map");
+  zone.replaceChildren();
+  const WIDTH = 18;
+  const HEIGHT = 9;
+  for (let w = 0; w < WIDTH; w++) {
+    for (let h = 0; h < HEIGHT; h++) {
+      const tile = forest[y * HEIGHT + h][x * WIDTH + w];
+      const el = tileToEl(tile, 2 * w, 2 * h);
+      if (tile === "|") {
+        zone.appendChild(el);
+      } else {
+        prependChild(zone, el);
+      }
+    }
+  }
+}
+
+function prependChild(parent, child) {
+  if (parent.firstChild) {
+    parent.insertBefore(child, parent.firstChild);
+  } else {
+    parent.appendChild(child);
+  }
+}
+
+function tileToEl(tile, x, y) {
+  const type = ({
+    ",": "",
+    "|": "tree",
+    "@": "rock",
+    "~": "water",
+    "W": "player",
+  })[tile];
+
+  const ns = "http://www.w3.org/2000/svg";
+  const el = document.createElementNS(ns, "use");
+  el.setAttribute("x", x);
+  el.setAttribute("y", y);
+  el.setAttribute("class", type);
+  el.setAttribute("href", "#" + type);
+  return el;
+}
+
+//const playerEl = document.querySelector(".player");
+//const enemyEls = Array.from(document.querySelectorAll(".bat"));
+//state.player = {
+//el: playerEl,
+//x: 5,
+//y: 5,
+//dx: 0,
+//dy: 0,
+//ghosts: [0, 0, 0, 0],
+//};
+//state.enemies = enemyEls.map((enemy) => ({
+//el: enemy,
+//x: Math.random() * 7,
+//y: Math.random() * 5,
+//}));
 
 function loop(t1, t2) {
   nextState(t2 - t1);
@@ -78,7 +134,7 @@ function onKeyUp(event) {
 function endSpellSegment() {
   const keys = Array.from(state.keysPressed).sort(cmp).join("");
   state.spell.push(keys);
-  console.log(keys)
+  console.log(keys);
 }
 
 function handleMovementStart(key) {
@@ -112,8 +168,8 @@ const FACTOR = PX_PER_SECOND * SECONDS_PER_MS;
 const BUFFER = 50;
 const EPSILON = 1;
 function nextState(delta) {
-  nextPlayer(delta)
-  nextEnemies(delta)
+  nextPlayer(delta);
+  nextEnemies(delta);
 }
 
 function nextPlayer(delta) {
@@ -140,14 +196,14 @@ function nextEnemies(delta) {
 }
 
 function drawState() {
-  state.player.el.setAttribute("x", state.player.x);
-  state.player.el.setAttribute("y", state.player.y);
+  state.player.el?.setAttribute("x", state.player.x);
+  state.player.el?.setAttribute("y", state.player.y);
   state.enemies.forEach((enemy) => {
     enemy.el.setAttribute("x", enemy.x);
     enemy.el.setAttribute("y", enemy.y);
   });
 }
 
-init();
+main();
 document.body.addEventListener("keydown", onKeyDown);
 document.body.addEventListener("keyup", onKeyUp);
