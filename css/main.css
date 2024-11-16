@@ -1,3 +1,2 @@
-@import "sprites.css";
-@import "scene.css";
-@import "general.css";
+@import "_general.css";
+@import "_game.css";

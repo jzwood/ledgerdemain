@@ -1,0 +1,28 @@
+/* https://css-tricks.com/css-sprites/ */
+.player {
+  fill: blue;
+}
+
+.bat {
+  fill: black;
+}
+
+.fireball {
+  fill: #FF0000;
+}
+
+.tree {
+  fill: #33654A;
+}
+
+.ground {
+  fill: #644432;
+}
+
+.rock {
+  fill: #CCC;
+}
+
+.water {
+  fill: #005377;
+}

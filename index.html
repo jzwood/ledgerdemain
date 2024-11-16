@@ -11,19 +11,43 @@
     <svg
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
-      viewBox="0 0 1000 618"
-      style="width: 100%; height: auto; background-color: black"
+      viewBox="0 0 36 18"
+      style="width: 100%; height: auto; background-color: #8d8374"
     >
-    <defs>
-      <rect id="water" width="1" height="1" shape-rendering="geometricPrecision" />
-      <polygon id="tree" points="0,1 0.5,0 1,1" shape-rendering="geometricPrecision" />
-    </defs>
-      <image id="player" href="assets/front-v1.png" height="100" />
-      <circle class="enemy" cx="600" cy="500" r="20" fill="blue" />
-      <circle class="enemy" cx="90" cy="400" r="20" fill="blue" />
-      <circle class="enemy" cx="700" cy="300" r="20" fill="blue" />
-      <circle class="enemy" cx="120" cy="200" r="20" fill="blue" />
+      <defs>
+        <rect
+          id="water"
+          width="1"
+          height="1"
+          shape-rendering="geometricPrecision"
+        />
+        <polygon
+          id="tree"
+          points="0,1 0.5,0 1,1"
+          shape-rendering="geometricPrecision"
+        />
+        <polygon
+          id="player"
+          points="0,1 0.5,0 1,1"
+          shape-rendering="geometricPrecision"
+        />
+        <polygon
+          id="bat"
+          points="0,0 1,0 1,1 0.75,0.25 0.5,1 0.25,0.25 0,1"
+          shape-rendering="geometricPrecision"
+        />
+        <circle
+          id="fireball"
+          cx="0.5"
+          cy="0.5"
+          r="0.5"
+          shape-rendering="geometricPrecision"
+        />
+      </defs>
+      <use class="player" href="#player" x="6" y="3" />
+      <use class="bat" href="#bat" x="2" y="3" />
+      <use class="bat" href="#bat" x="3" y="2" />
     </svg>
-    <script defer src="js/script.js" type="module"></script>
+    <script defer src="js/index.js" type="module"></script>
   </body>
 </html>

@@ -134,6 +134,8 @@
       - figure is spirit of your late husband, a sorcerer, but player won't find that out till later
     - grunts > minibosses > boss
     - in the end you find grandchildren safely in the woodcutter's cabin (their uncle)
+- STORY BOARD 4
+    - The Master’s Tools Will Never Dismantle the Master’s House. Unless that tool is a fireball.
 
 - WHAT CRITICS ARE SAYING
   - senselessly punishing

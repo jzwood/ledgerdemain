@@ -18,20 +18,21 @@ const state = {
 };
 
 function init() {
-  const playerEl = document.getElementById("player");
-  const enemyEls = Array.from(document.querySelectorAll(".enemy"));
+  const playerEl = document.querySelector(".player");
+  const enemyEls = Array.from(document.querySelectorAll(".bat"));
+  console.log(playerEl, enemyEls)
   state.player = {
     el: playerEl,
-    x: 500,
-    y: 50,
+    x: 5,
+    y: 5,
     dx: 0,
     dy: 0,
     ghosts: [0, 0, 0, 0],
   };
   state.enemies = enemyEls.map((enemy) => ({
     el: enemy,
-    x: Math.random() * 700,
-    y: Math.random() * 500,
+    x: Math.random() * 7,
+    y: Math.random() * 5,
   }));
   requestAnimationFrame(loop.bind(null, performance.now()));
 }
@@ -105,7 +106,7 @@ function handleMovementStop(key) {
   }
 }
 
-const PX_PER_SECOND = 30;
+const PX_PER_SECOND = 3;
 const SECONDS_PER_MS = 1 / 1000;
 const FACTOR = PX_PER_SECOND * SECONDS_PER_MS;
 const BUFFER = 50;
@@ -142,8 +143,8 @@ function drawState() {
   state.player.el.setAttribute("x", state.player.x);
   state.player.el.setAttribute("y", state.player.y);
   state.enemies.forEach((enemy) => {
-    enemy.el.setAttribute("cx", enemy.x);
-    enemy.el.setAttribute("cy", enemy.y);
+    enemy.el.setAttribute("x", enemy.x);
+    enemy.el.setAttribute("y", enemy.y);
   });
 }
 
