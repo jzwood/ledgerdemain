@@ -31,6 +31,8 @@ function main() {
       loadMap(0, 6, forest);
     });
   requestAnimationFrame(loop.bind(null, performance.now()));
+  document.body.addEventListener("keydown", onKeyDown);
+  document.body.addEventListener("keyup", onKeyUp);
 }
 
 function loadMap(x, y, forest) {
@@ -45,6 +47,11 @@ function loadMap(x, y, forest) {
       if (tile === "|") {
         zone.appendChild(el);
       } else {
+        if (tile === 'W') {
+          state.player.el = el
+          state.player.x = w
+          state.player.y = h
+        }
         prependChild(zone, el);
       }
     }
@@ -205,5 +212,3 @@ function drawState() {
 }
 
 main();
-document.body.addEventListener("keydown", onKeyDown);
-document.body.addEventListener("keyup", onKeyUp);
