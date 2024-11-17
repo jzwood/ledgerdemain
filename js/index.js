@@ -16,6 +16,11 @@ const state = {
     dx: 0,
     dy: 0,
   },
+  forest: {
+    dx: 0,
+    dy: 0,
+    data: [],
+  },
   enemies: [],
   movementKeys: new Set(),
   keysPressed: new Set(),
@@ -28,6 +33,7 @@ function main() {
     .then((res) => res.text())
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
+      state.forest.data = forest;
       loadMap(0, 6, forest);
     });
   requestAnimationFrame(loop.bind(null, performance.now()));
@@ -36,13 +42,17 @@ function main() {
 }
 
 function loadMap(x, y, forest) {
-  const zone = document.getElementById("map");
-  zone.replaceChildren();
   const WIDTH = 18;
   const HEIGHT = 9;
+  const dx = x * WIDTH;
+  const dy = y * HEIGHT;
+  state.forest.dx = dx;
+  state.forest.dy = dy;
+  const zone = document.getElementById("map");
+  zone.replaceChildren();
   for (let w = 0; w < WIDTH; w++) {
     for (let h = 0; h < HEIGHT; h++) {
-      const tile = forest[y * HEIGHT + h][x * WIDTH + w];
+      const tile = forest[dy + h][dx + w];
       const el = tileToEl(tile, 2 * w, 2 * h);
       if (el == null) {
         continue;
@@ -180,15 +190,23 @@ function nextState(delta) {
   nextEnemies(delta);
 }
 
+function posToTile(x, y) {
+  const fy = state.forest.dy + Math.round(y * 0.5);
+  const fx = state.forest.dx + Math.round(x * 0.5);
+  return state.forest.data[fy]?.[fx];
+}
+
 function nextPlayer(delta) {
-  console.log(
-    Math.round(state.player.x * 0.5),
-    Math.round(state.player.y * 0.5),
-  );
   const t = FACTOR * delta;
   const { dx, dy } = state.player;
-  state.player.x += dx * t;
-  state.player.y += dy * t;
+  const x = state.player.x + dx * t;
+  const y = state.player.y + dy * t;
+
+  const tile = posToTile(x, y);
+  console.log(tile);
+
+  state.player.x = x;
+  state.player.y = y;
 }
 
 function nextEnemies(delta) {
