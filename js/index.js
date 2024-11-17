@@ -44,14 +44,14 @@ function loadMap(x, y, forest) {
     for (let h = 0; h < HEIGHT; h++) {
       const tile = forest[y * HEIGHT + h][x * WIDTH + w];
       const el = tileToEl(tile, 2 * w, 2 * h);
-      if (tile === "|") {
+      if (el == null) {
+        continue;
+      } else if (tile === "W") {
         zone.appendChild(el);
+        state.player.el = el;
+        state.player.x = w;
+        state.player.y = h;
       } else {
-        if (tile === 'W') {
-          state.player.el = el
-          state.player.x = w
-          state.player.y = h
-        }
         prependChild(zone, el);
       }
     }
@@ -68,12 +68,13 @@ function prependChild(parent, child) {
 
 function tileToEl(tile, x, y) {
   const type = ({
-    ",": "",
     "|": "tree",
     "@": "rock",
     "~": "water",
     "W": "player",
   })[tile];
+
+  if (type == null) return undefined;
 
   const ns = "http://www.w3.org/2000/svg";
   const el = document.createElementNS(ns, "use");
@@ -180,6 +181,10 @@ function nextState(delta) {
 }
 
 function nextPlayer(delta) {
+  console.log(
+    Math.round(state.player.x * 0.5),
+    Math.round(state.player.y * 0.5),
+  );
   const t = FACTOR * delta;
   const { dx, dy } = state.player;
   state.player.x += dx * t;
