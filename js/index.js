@@ -19,7 +19,7 @@ const state = {
   forest: {
     dx: 0,
     dy: 0,
-    data: [],
+    data: []
   },
   enemies: [],
   movementKeys: new Set(),
@@ -44,10 +44,10 @@ function main() {
 function loadMap(x, y, forest) {
   const WIDTH = 18;
   const HEIGHT = 9;
-  const dx = x * WIDTH;
-  const dy = y * HEIGHT;
-  state.forest.dx = dx;
-  state.forest.dy = dy;
+  const dx = x * WIDTH
+  const dy = y * HEIGHT
+  state.forest.dx = dx
+  state.forest.dy = dy
   const zone = document.getElementById("map");
   zone.replaceChildren();
   for (let w = 0; w < WIDTH; w++) {
@@ -191,9 +191,9 @@ function nextState(delta) {
 }
 
 function posToTile(x, y) {
-  const fy = state.forest.dy + Math.round(y * 0.5);
-  const fx = state.forest.dx + Math.round(x * 0.5);
-  return state.forest.data[fy]?.[fx];
+  const fy = state.forest.dy + Math.round(y * 0.5)
+  const fx = state.forest.dx + Math.round(x * 0.5)
+  return state.forest.data[fy]?.[fx]
 }
 
 function nextPlayer(delta) {
@@ -202,11 +202,10 @@ function nextPlayer(delta) {
   const x = state.player.x + dx * t;
   const y = state.player.y + dy * t;
 
-  const tile = posToTile(x, y);
-  console.log(tile);
-
-  state.player.x = x;
-  state.player.y = y;
+  if (posToTile(x, y) === ',' && posToTile(x - 1, y) === ',') {
+    state.player.x = x
+    state.player.y = y
+  }
 }
 
 function nextEnemies(delta) {
