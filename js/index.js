@@ -34,14 +34,14 @@ function main() {
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
       state.forest.data = forest;
-      loadMap(0, 6, forest);
+      loadMap([0, 6], [7, 7], forest);
     });
   requestAnimationFrame(loop.bind(null, performance.now()));
   document.body.addEventListener("keydown", onKeyDown);
   document.body.addEventListener("keyup", onKeyUp);
 }
 
-function loadMap(x, y, forest) {
+function loadMap([x, y], [px, py], forest) {
   const WIDTH = 18;
   const HEIGHT = 9;
   const dx = x * WIDTH
@@ -50,18 +50,18 @@ function loadMap(x, y, forest) {
   state.forest.dy = dy
   const zone = document.getElementById("map");
   zone.replaceChildren();
+
+  const player = tileToEl('W', 2 * px, 2 * py)
+  zone.appendChild(player);
+  state.player.el = player;
+  state.player.x = px;
+  state.player.y = py;
+
   for (let w = 0; w < WIDTH; w++) {
     for (let h = 0; h < HEIGHT; h++) {
       const tile = forest[dy + h][dx + w];
       const el = tileToEl(tile, 2 * w, 2 * h);
-      if (el == null) {
-        continue;
-      } else if (tile === "W") {
-        zone.appendChild(el);
-        state.player.el = el;
-        state.player.x = w;
-        state.player.y = h;
-      } else {
+      if (el != null) {
         prependChild(zone, el);
       }
     }
@@ -169,6 +169,7 @@ function handleMovementStart(key) {
 
 function handleMovementStop(key) {
   const hasKey = (key) => state.movementKeys.has(key);
+  console.log(state.movementKeys)
   if (LEFT.includes(key)) {
     state.player.dx = RIGHT.some(hasKey) ? 1 : 0;
   } else if (RIGHT.includes(key)) {
@@ -196,13 +197,24 @@ function posToTile(x, y) {
   return state.forest.data[fy]?.[fx]
 }
 
+const EMPTY = '_'
+function isWalkable(x, y) {
+  const fy = state.forest.dy + Math.round(y * 0.5)
+  const row = state.forest.data[fy]
+
+  const fxl = state.forest.dx + Math.round(x * 0.5)
+  const fxr = state.forest.dx + Math.round((x - 1) * 0.5)
+
+  return /\w/.test(row?.[fxl] ?? '') && /\w/.test(row?.[fxr] ?? '')
+}
+
 function nextPlayer(delta) {
   const t = FACTOR * delta;
   const { dx, dy } = state.player;
   const x = state.player.x + dx * t;
   const y = state.player.y + dy * t;
 
-  if (posToTile(x, y) === ',' && posToTile(x - 1, y) === ',') {
+  if (isWalkable(x, y)) {
     state.player.x = x
     state.player.y = y
   }
