@@ -19,6 +19,9 @@ const SPELLS = {
     x1: undefined,
     y2: undefined,
   },
+  "nil": {
+    name: "nullify",
+  },
 };
 
 const state = {
@@ -161,8 +164,9 @@ function onSpell() {
 function cast() {
   const spell = state.spell.join("-");
   const data = SPELLS[spell];
+  const spellLog = document.getElementById("spell-slot");
+  spellLog.textContent = spell
   const enemy = nearestEnemy();
-  console.log(enemy, data, spell);
   if (data && enemy) {
     const x2 = enemy.x;
     const y2 = enemy.y;

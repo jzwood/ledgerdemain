@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+deno fmt index.html && \
+deno fmt js && \
+deno fmt css

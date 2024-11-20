@@ -8,17 +8,23 @@
 }
 
 .fireball {
-  fill: #FF0000;
+  fill: #ff0000;
 }
 
 .tree {
-  fill: #33654A;
+  fill: #33654a;
 }
 
 .rock {
-  fill: #CCC;
+  fill: #ccc;
 }
 
 .water {
   fill: #005377;
+}
+
+#spell-slot {
+  color: ivory;
+  font-size: 2rem;
+  text-align: center;
 }
