@@ -1,5 +1,6 @@
 // fix impossible fingering: https://c1.staticflickr.com/9/8095/8485721150_5763b36301_b.jpg
 const ABC = "qazwsxedcrfvtgbyhnujmikolp";
+const NS = "http://www.w3.org/2000/svg";
 const cmp = (a, b) => ABC.indexOf(a) - ABC.indexOf(b);
 const intcmp = (a, b) => b - a;
 
@@ -99,30 +100,16 @@ function tileToEl(tile, x, y) {
 
   if (type == null) return undefined;
 
-  const ns = "http://www.w3.org/2000/svg";
-  const el = document.createElementNS(ns, "use");
+  const el = document.createElementNS(NS, "use");
   el.setAttribute("x", x);
   el.setAttribute("y", y);
   el.setAttribute("class", type);
   el.setAttribute("href", "#" + type);
+  if (type === "bat") {
+    state.enemies.push({ name: type, x, y, el });
+  }
   return el;
 }
-
-//const playerEl = document.querySelector(".player");
-//const enemyEls = Array.from(document.querySelectorAll(".bat"));
-//state.player = {
-//el: playerEl,
-//x: 5,
-//y: 5,
-//dx: 0,
-//dy: 0,
-//ghosts: [0, 0, 0, 0],
-//};
-//state.enemies = enemyEls.map((enemy) => ({
-//el: enemy,
-//x: Math.random() * 7,
-//y: Math.random() * 5,
-//}));
 
 function loop(t1, t2) {
   nextState(t2 - t1);
@@ -175,19 +162,22 @@ function cast() {
   const spell = state.spell.join("-");
   const data = SPELLS[spell];
   const enemy = nearestEnemy();
-  if (data && nearestEnemy) {
+  console.log(enemy, data, spell);
+  if (data && enemy) {
+    const x2 = enemy.x;
+    const y2 = enemy.y;
     const x1 = state.player.x;
     const y1 = state.player.y;
-    const x2 = nearestEnemy.x;
-    const y2 = nearestEnemy.y;
-    state.spells.push({ ...data, x1, y1, x2, y2 });
-    const el = document.createElementNS(ns, "use");
-    el.setAttribute("x", x);
-    el.setAttribute("y", y);
+    const el = document.createElementNS(NS, "use");
+    const zone = document.getElementById("map");
+    el.setAttribute("x", x1);
+    el.setAttribute("y", y1);
     el.setAttribute("class", data.name);
     el.setAttribute("href", "#" + data.name);
+    zone.appendChild(el);
+    state.spells.push({ ...data, x1, y1, x2, y2, el });
+    state.spell = [];
   }
-  console.log(spell);
 }
 
 function nearestEnemy() {
