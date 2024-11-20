@@ -155,32 +155,40 @@ function onSpell() {
   if (!keys.every((key) => MOVE.includes(key))) {
     const spell = keys.sort(cmp).join("");
     state.spell.push(spell);
-    cast();
+    cast(spell);
   }
 
   state.keysPressed.clear();
 }
 
-function cast() {
+function cast(lastSpell) {
   const spell = state.spell.join("-");
-  const data = SPELLS[spell];
   const spellLog = document.getElementById("spell-slot");
-  spellLog.textContent = spell
-  const enemy = nearestEnemy();
-  if (data && enemy) {
-    const x2 = enemy.x;
-    const y2 = enemy.y;
-    const x1 = state.player.x;
-    const y1 = state.player.y;
-    const el = document.createElementNS(NS, "use");
-    const zone = document.getElementById("map");
-    el.setAttribute("x", x1);
-    el.setAttribute("y", y1);
-    el.setAttribute("class", data.name);
-    el.setAttribute("href", "#" + data.name);
-    zone.appendChild(el);
-    state.spells.push({ ...data, x1, y1, x2, y2, el });
+  spellLog.textContent = spell;
+  spellLog.style.visibility = "visible";
+
+  const data = SPELLS[lastSpell];
+
+  if (data?.name === "fireball") {
+    const enemy = nearestEnemy();
+    if (enemy) {
+      const x2 = enemy.x;
+      const y2 = enemy.y;
+      const x1 = state.player.x;
+      const y1 = state.player.y;
+      const el = document.createElementNS(NS, "use");
+      const zone = document.getElementById("map");
+      el.setAttribute("x", x1);
+      el.setAttribute("y", y1);
+      el.setAttribute("class", data.name);
+      el.setAttribute("href", "#" + data.name);
+      zone.appendChild(el);
+      state.spells.push({ ...data, x1, y1, x2, y2, el });
+      state.spell = [];
+    }
+  } else if (data?.name === "nullify") {
     state.spell = [];
+    spellLog.style.visibility = "hidden";
   }
 }
 
