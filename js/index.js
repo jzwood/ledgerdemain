@@ -1,12 +1,24 @@
 // fix impossible fingering: https://c1.staticflickr.com/9/8095/8485721150_5763b36301_b.jpg
 const ABC = "qazwsxedcrfvtgbyhnujmikolp";
 const cmp = (a, b) => ABC.indexOf(a) - ABC.indexOf(b);
+const intcmp = (a, b) => b - a;
 
 const LEFT = ["a", "j"];
 const RIGHT = ["d", "l"];
 const UP = ["w", "i"];
 const DOWN = ["s", "k"];
 const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
+
+const SPELLS = {
+  "sgni": {
+    name: "fireball",
+    damage: 1,
+    x0: undefined,
+    y0: undefined,
+    x1: undefined,
+    y2: undefined,
+  },
+};
 
 const state = {
   player: {
@@ -19,13 +31,13 @@ const state = {
   forest: {
     dx: 0,
     dy: 0,
-    data: []
+    data: [],
   },
   enemies: [],
   movementKeys: new Set(),
   keysPressed: new Set(),
   spell: [],
-  actionQueue: [],
+  spells: [],
 };
 
 function main() {
@@ -44,14 +56,14 @@ function main() {
 function loadMap([x, y], [px, py], forest) {
   const WIDTH = 18;
   const HEIGHT = 9;
-  const dx = x * WIDTH
-  const dy = y * HEIGHT
-  state.forest.dx = dx
-  state.forest.dy = dy
+  const dx = x * WIDTH;
+  const dy = y * HEIGHT;
+  state.forest.dx = dx;
+  state.forest.dy = dy;
   const zone = document.getElementById("map");
   zone.replaceChildren();
 
-  const player = tileToEl('W', 2 * px, 2 * py)
+  const player = tileToEl("W", 2 * px, 2 * py);
   zone.appendChild(player);
   state.player.el = player;
   state.player.x = px;
@@ -82,6 +94,7 @@ function tileToEl(tile, x, y) {
     "@": "rock",
     "~": "water",
     "W": "player",
+    "B": "bat",
   })[tile];
 
   if (type == null) return undefined;
@@ -139,20 +152,50 @@ function onKeyUp(event) {
   const { key, keyCode } = event;
 
   if (state.keysPressed.has(key)) {
-    endSpellSegment();
-    state.keysPressed.clear();
+    onSpell();
   }
 
   if (MOVE.includes(key)) {
     handleMovementStop(key);
-    state.movementKeys.delete(key);
   }
 }
 
-function endSpellSegment() {
-  const keys = Array.from(state.keysPressed).sort(cmp).join("");
-  state.spell.push(keys);
-  console.log(keys);
+function onSpell() {
+  const keys = Array.from(state.keysPressed);
+  if (!keys.every((key) => MOVE.includes(key))) {
+    const spell = keys.sort(cmp).join("");
+    state.spell.push(spell);
+    cast();
+  }
+
+  state.keysPressed.clear();
+}
+
+function cast() {
+  const spell = state.spell.join("-");
+  const data = SPELLS[spell];
+  const enemy = nearestEnemy();
+  if (data && nearestEnemy) {
+    const x1 = state.player.x;
+    const y1 = state.player.y;
+    const x2 = nearestEnemy.x;
+    const y2 = nearestEnemy.y;
+    state.spells.push({ ...data, x1, y1, x2, y2 });
+    const el = document.createElementNS(ns, "use");
+    el.setAttribute("x", x);
+    el.setAttribute("y", y);
+    el.setAttribute("class", data.name);
+    el.setAttribute("href", "#" + data.name);
+  }
+  console.log(spell);
+}
+
+function nearestEnemy() {
+  const { x, y } = state.player;
+  return state.enemies.map((enemy) => ({
+    ...enemy,
+    distance: dist(x, enemy.x, y, enemy.y),
+  })).sort((a, b) => b.distance - a.distance).at(0);
 }
 
 function handleMovementStart(key) {
@@ -169,7 +212,6 @@ function handleMovementStart(key) {
 
 function handleMovementStop(key) {
   const hasKey = (key) => state.movementKeys.has(key);
-  console.log(state.movementKeys)
   if (LEFT.includes(key)) {
     state.player.dx = RIGHT.some(hasKey) ? 1 : 0;
   } else if (RIGHT.includes(key)) {
@@ -179,6 +221,7 @@ function handleMovementStop(key) {
   } else if (DOWN.includes(key)) {
     state.player.dy = UP.some(hasKey) ? -1 : 0;
   }
+  state.movementKeys.delete(key);
 }
 
 const PX_PER_SECOND = 3;
@@ -192,20 +235,20 @@ function nextState(delta) {
 }
 
 function posToTile(x, y) {
-  const fy = state.forest.dy + Math.round(y * 0.5)
-  const fx = state.forest.dx + Math.round(x * 0.5)
-  return state.forest.data[fy]?.[fx]
+  const fy = state.forest.dy + Math.round(y * 0.5);
+  const fx = state.forest.dx + Math.round(x * 0.5);
+  return state.forest.data[fy]?.[fx];
 }
 
-const EMPTY = '_'
+const EMPTY = "_";
 function isWalkable(x, y) {
-  const fy = state.forest.dy + Math.round(y * 0.5)
-  const row = state.forest.data[fy]
+  const fy = state.forest.dy + Math.round(y * 0.5);
+  const row = state.forest.data[fy];
 
-  const fxl = state.forest.dx + Math.round(x * 0.5)
-  const fxr = state.forest.dx + Math.round((x - 1) * 0.5)
+  const fxl = state.forest.dx + Math.round(x * 0.5);
+  const fxr = state.forest.dx + Math.round((x - 1) * 0.5);
 
-  return /\w/.test(row?.[fxl] ?? '') && /\w/.test(row?.[fxr] ?? '')
+  return /\w/.test(row?.[fxl] ?? "") && /\w/.test(row?.[fxr] ?? "");
 }
 
 function nextPlayer(delta) {
@@ -215,8 +258,8 @@ function nextPlayer(delta) {
   const y = state.player.y + dy * t;
 
   if (isWalkable(x, y)) {
-    state.player.x = x
-    state.player.y = y
+    state.player.x = x;
+    state.player.y = y;
   }
 }
 
@@ -234,6 +277,10 @@ function nextEnemies(delta) {
       enemy.y += dy * t2;
     }
   });
+}
+
+function dist(x1, y1, x2, y2) {
+  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
 
 function drawState() {
