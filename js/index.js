@@ -240,7 +240,7 @@ const SECONDS_PER_MS = 1 / 1000;
 const FACTOR = PX_PER_SECOND * SECONDS_PER_MS;
 const BUFFER = 50;
 const EPSILON = 1;
-const HITBOX = 1.5;
+const HITBOX = 2;
 function nextState(delta) {
   nextPlayer(delta);
   nextSpells(delta);
@@ -323,11 +323,11 @@ function drawState() {
         spells.splice(ei, 1);
         spell.el.remove();
       }
-      if (enemy.health <= 0) {
-        enemies.splice(ei, 1);
-        enemy.el.remove();
-      }
     });
+    if (enemy.health <= 0) {
+      enemies.splice(ei, 1);
+      enemy.el.remove();
+    }
   });
   state.spells.forEach((spell, index, spells) => {
     if (spell.purge) {

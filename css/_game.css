@@ -23,7 +23,7 @@
   fill: #005377;
 }
 
-div:has(#spell-slot) {
+#spell-slot {
   color: ivory;
   font-size: 2rem;
   text-align: center;
