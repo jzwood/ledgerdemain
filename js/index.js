@@ -3,6 +3,7 @@ const ABC = "qazwsxedcrfvtgbyhnujmikolp";
 const NS = "http://www.w3.org/2000/svg";
 const cmp = (a, b) => ABC.indexOf(a) - ABC.indexOf(b);
 const intcmp = (a, b) => b - a;
+const dist = (dx, dy) => Math.sqrt((dx * dx) + (dy * dy));
 
 const LEFT = ["a", "j"];
 const RIGHT = ["d", "l"];
@@ -14,10 +15,11 @@ const SPELLS = {
   "sgni": {
     name: "fireball",
     damage: 1,
-    x0: undefined,
-    y0: undefined,
-    x1: undefined,
-    y2: undefined,
+    x: undefined,
+    y: undefined,
+    tx: undefined,
+    ty: undefined,
+    purge: false,
   },
   "nil": {
     name: "nullify",
@@ -172,18 +174,18 @@ function cast(lastSpell) {
   if (data?.name === "fireball") {
     const enemy = nearestEnemy();
     if (enemy) {
-      const x2 = enemy.x;
-      const y2 = enemy.y;
-      const x1 = state.player.x;
-      const y1 = state.player.y;
+      const tx = enemy.x;
+      const ty = enemy.y;
+      const x = state.player.x;
+      const y = state.player.y;
       const el = document.createElementNS(NS, "use");
       const zone = document.getElementById("map");
-      el.setAttribute("x", x1);
-      el.setAttribute("y", y1);
+      el.setAttribute("x", x);
+      el.setAttribute("y", y);
       el.setAttribute("class", data.name);
       el.setAttribute("href", "#" + data.name);
       zone.appendChild(el);
-      state.spells.push({ ...data, x1, y1, x2, y2, el });
+      state.spells.push({ ...data, el, x, y, tx, ty });
       state.spell = [];
     }
   } else if (data?.name === "nullify") {
@@ -196,7 +198,7 @@ function nearestEnemy() {
   const { x, y } = state.player;
   return state.enemies.map((enemy) => ({
     ...enemy,
-    distance: dist(x, enemy.x, y, enemy.y),
+    distance: dist(enemy.x - x, enemy.y - y),
   })).sort((a, b) => b.distance - a.distance).at(0);
 }
 
@@ -233,6 +235,7 @@ const BUFFER = 50;
 const EPSILON = 1;
 function nextState(delta) {
   nextPlayer(delta);
+  nextSpells(delta);
   nextEnemies(delta);
 }
 
@@ -265,12 +268,30 @@ function nextPlayer(delta) {
   }
 }
 
+function nextSpells(delta) {
+  state.spells.forEach((spell) => {
+    const dx = spell.tx - spell.x;
+    const dy = spell.ty - spell.y;
+    const distance = dist(dx, dy);
+    const t = (FACTOR * delta) / distance;
+    if (Math.abs(dx) > EPSILON) {
+      spell.x += dx * t;
+    }
+    if (Math.abs(dy) > EPSILON) {
+      spell.y += dy * t;
+    }
+    if (distance < EPSILON + EPSILON) {
+      spell.purge = true;
+    }
+  });
+}
+
 function nextEnemies(delta) {
   const t = FACTOR * delta;
   state.enemies.forEach((enemy) => {
     const dx = state.player.x - enemy.x;
     const dy = state.player.y - enemy.y;
-    const t2 = (0.75 * t) / Math.sqrt(dx * dx + dy * dy);
+    const t2 = (0.75 * t) / dist(dx, dy);
     // TODO have the enemies chase oscillating ghost targets so they don't clump
     if (Math.abs(dx) > EPSILON) {
       enemy.x += dx * t2;
@@ -281,16 +302,21 @@ function nextEnemies(delta) {
   });
 }
 
-function dist(x1, y1, x2, y2) {
-  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-}
-
 function drawState() {
   state.player.el?.setAttribute("x", state.player.x);
   state.player.el?.setAttribute("y", state.player.y);
   state.enemies.forEach((enemy) => {
     enemy.el.setAttribute("x", enemy.x);
     enemy.el.setAttribute("y", enemy.y);
+  });
+  state.spells.forEach((spell, index, spells) => {
+    if (spell.purge) {
+      spells.splice(index, 1);
+      spell.el.remove();
+    } else {
+      spell.el.setAttribute("x", spell.x);
+      spell.el.setAttribute("y", spell.y);
+    }
   });
 }
 
