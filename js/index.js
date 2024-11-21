@@ -4,12 +4,15 @@ const NS = "http://www.w3.org/2000/svg";
 const cmp = (a, b) => ABC.indexOf(a) - ABC.indexOf(b);
 const intcmp = (a, b) => b - a;
 const dist = (dx, dy) => Math.sqrt((dx * dx) + (dy * dy));
+const taxicab = (dx, dy) => Math.abs(dx) + Math.abs(dy);
 
 const LEFT = ["a", "j"];
 const RIGHT = ["d", "l"];
 const UP = ["w", "i"];
 const DOWN = ["s", "k"];
 const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
+
+const MAX_MANA = 4;
 
 const SPELLS = {
   "sgni": {
@@ -24,6 +27,9 @@ const SPELLS = {
   "nil": {
     name: "nullify",
   },
+  "an": {
+    name: "very",
+  },
 };
 
 const state = {
@@ -33,6 +39,7 @@ const state = {
     y: 0,
     dx: 0,
     dy: 0,
+    mana: 2,
   },
   forest: {
     dx: 0,
@@ -111,7 +118,7 @@ function tileToEl(tile, x, y) {
   el.setAttribute("class", type);
   el.setAttribute("href", "#" + type);
   if (type === "bat") {
-    state.enemies.push({ name: type, x, y, el });
+    state.enemies.push({ name: type, el, x, y, health: 2 });
   }
   return el;
 }
@@ -233,6 +240,7 @@ const SECONDS_PER_MS = 1 / 1000;
 const FACTOR = PX_PER_SECOND * SECONDS_PER_MS;
 const BUFFER = 50;
 const EPSILON = 1;
+const HITBOX = 1.5;
 function nextState(delta) {
   nextPlayer(delta);
   nextSpells(delta);
@@ -305,9 +313,21 @@ function nextEnemies(delta) {
 function drawState() {
   state.player.el?.setAttribute("x", state.player.x);
   state.player.el?.setAttribute("y", state.player.y);
-  state.enemies.forEach((enemy) => {
+  state.enemies.forEach((enemy, ei, enemies) => {
     enemy.el.setAttribute("x", enemy.x);
     enemy.el.setAttribute("y", enemy.y);
+    state.spells.forEach((spell, si, spells) => {
+      const dist = taxicab(spell.x - enemy.x, spell.y - enemy.y);
+      if (dist <= HITBOX) {
+        enemy.health -= spell.damage;
+        spells.splice(ei, 1);
+        spell.el.remove();
+      }
+      if (enemy.health <= 0) {
+        enemies.splice(ei, 1);
+        enemy.el.remove();
+      }
+    });
   });
   state.spells.forEach((spell, index, spells) => {
     if (spell.purge) {
