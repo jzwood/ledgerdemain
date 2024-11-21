@@ -17,6 +17,7 @@ const MAX_MANA = 4;
 const SPELLS = {
   "sgni": {
     name: "fireball",
+    mnemonic: "ignis",
     damage: 1,
     x: undefined,
     y: undefined,
@@ -24,11 +25,17 @@ const SPELLS = {
     ty: undefined,
     purge: false,
   },
-  "nil": {
-    name: "nullify",
+  "bil": {
+    mnemonic: "bibl",
+    name: "book",
   },
-  "an": {
-    name: "very",
+  "aru": {
+    mnemonic: "aura",
+    name: "wind",
+  },
+  "agu": {
+    name: "increase",
+    mnemonic: "aug",
   },
 };
 
@@ -50,6 +57,7 @@ const state = {
   movementKeys: new Set(),
   keysPressed: new Set(),
   spell: [],
+  displayedSpell: null,
   spells: [],
 };
 
@@ -61,6 +69,7 @@ function main() {
       state.forest.data = forest;
       loadMap([0, 6], [7, 7], forest);
     });
+  state.displayedSpell = document.getElementById("spell-slot");
   requestAnimationFrame(loop.bind(null, performance.now()));
   document.body.addEventListener("keydown", onKeyDown);
   document.body.addEventListener("keyup", onKeyUp);
@@ -171,11 +180,6 @@ function onSpell() {
 }
 
 function cast(lastSpell) {
-  const spell = state.spell.join("-");
-  const spellLog = document.getElementById("spell-slot");
-  spellLog.textContent = spell;
-  spellLog.style.visibility = "visible";
-
   const data = SPELLS[lastSpell];
 
   if (data?.name === "fireball") {
@@ -193,11 +197,10 @@ function cast(lastSpell) {
       el.setAttribute("href", "#" + data.name);
       zone.appendChild(el);
       state.spells.push({ ...data, el, x, y, tx, ty });
-      state.spell = [];
     }
+    state.spell = [];
   } else if (data?.name === "nullify") {
     state.spell = [];
-    spellLog.style.visibility = "hidden";
   }
 }
 
@@ -338,6 +341,9 @@ function drawState() {
       spell.el.setAttribute("y", spell.y);
     }
   });
+  if (state.displayedSpell) {
+    state.displayedSpell.textContent = state.spell.join("-");
+  }
 }
 
 main();

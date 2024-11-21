@@ -65,6 +65,18 @@
         - good
       - light + person + evil -> sets them on fire
       - light + person + good -> sets them on fire
+    - SPELLS 2
+        - gust
+        - mana drain
+        - spirit summon
+        - compass
+        - light
+        - shield
+        - stop time (aka pause to consult spellbook)
+        - save flowers (create savepoint)
+        - mu flowers (grow mana that you can collect later)
+        - amplify (briefly increase mu efficiency; i.e. decreases mu requirement for spells)
+        - perception (relabels enemies. so if you dispatch 1-4 mals 5-8 will be relabled 1-3)
 
 - ART
     - dithered 2d images
@@ -142,17 +154,17 @@
   - unique art style
 
 - TODO
-  - game canvas
+  - game map
     - init map (incl seeding "rooms")
   - event loop
-      - protagonist walking
+X     - protagonist walking
       - spell casting
           - spell effects
             - enemy
             - environment
           - corrupted effects
-      - enemy animations/AI
-        - enemy walking
+X     - enemy animations/AI
+X       - enemy walking
         - enemy attacking
   - create art assets
       - finalize art style
