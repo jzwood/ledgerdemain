@@ -66,6 +66,9 @@
       - light + person + evil -> sets them on fire
       - light + person + good -> sets them on fire
     - SPELLS 2
+        - fireball
+        - large-fireball
+        - many-fireballs
         - gust
         - mana drain
         - spirit summon
@@ -76,8 +79,6 @@
         - save flowers (create savepoint)
         - mu flowers (grow mana that you can collect later)
         - amplify (briefly increase mu efficiency; i.e. decreases mu requirement for spells)
-        - perception (relabels enemies. so if you dispatch 1-4 mals 5-8 will be relabled 1-3)
-
 - ART
     - dithered 2d images
         - https://css-tricks.com/grainy-gradients/
@@ -158,11 +159,11 @@
     - init map (incl seeding "rooms")
   - event loop
 X     - protagonist walking
-      - spell casting
+!     - spell casting
           - spell effects
             - enemy
             - environment
-          - corrupted effects
+?         - corrupted effects
 X     - enemy animations/AI
 X       - enemy walking
         - enemy attacking
@@ -170,3 +171,7 @@ X       - enemy walking
       - finalize art style
   - design game progression / story
       - progressively find spells?
+
+TASKS
+  - full screen support
+  - fix display spell dom reflow
