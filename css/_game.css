@@ -1,26 +1,44 @@
 /* https://css-tricks.com/css-sprites/ */
 .player {
-  fill: darkmagenta;
+  background-color: darkmagenta;
+  height: var(--one);
+  width: var(--one);
 }
 
 .bat {
-  fill: black;
+  background-color: black;
+  height: var(--one);
+  width: var(--one);
 }
 
 .fireball {
-  fill: #ff0000;
+  background-color: #ff0000;
+  height: var(--one);
+  width: var(--one);
 }
 
 .tree {
-  fill: #33654a;
+  background-color: #33654a;
+  height: var(--two);
+  width: var(--two);
 }
 
 .rock {
-  fill: #ccc;
+  background-color: #ccc;
+  height: var(--two);
+  width: var(--two);
+  border-radius: 8px;
 }
 
 .water {
-  fill: #005377;
+  background-color: #005377;
+  height: var(--two);
+  width: var(--two);
+}
+
+#map {
+  width: 100%;
+  height: 100%;
 }
 
 #spell-slot {

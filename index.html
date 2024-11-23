@@ -6,86 +6,12 @@
     <link rel="stylesheet" href="css/main.css" />
   </head>
   <body
-    style="background-color: #121212; height: 100vh; display: flex; flex-direction: column; justify-content: center"
+    style="background-color: #121212; height: 100vh; display: flex; flex-didivion: column; justify-content: center"
   >
     <div id="spell-slot" class="eagle-lake-regular">Ledgerdemain</div>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      version="1.1"
-      viewBox="0 0 36 18"
-      style="width: 100%; height: auto; background-color: #808080"
-    >
-      <defs>
-        <rect
-          id="water"
-          width="2"
-          height="2"
-          shape-rendering="geometricPrecision"
-        />
-        <g id="rock">
-          <rect
-            width="2"
-            height="2"
-            fill="#999"
-            shape-rendering="geometricPrecision"
-          />
-          <rect
-            width="2"
-            height="2"
-            rx="0.5"
-            shape-rendering="geometricPrecision"
-          />
-        </g>
-        <g id="tree">
-          <rect
-            width="2"
-            height="2"
-            fill="green"
-            shape-rendering="geometricPrecision"
-          />
-          <polygon
-            points="0,1 0.5,0 1,1"
-            shape-rendering="geometricPrecision"
-          />
-          <polygon
-            points="1,1 1.5,0 2,1"
-            shape-rendering="geometricPrecision"
-          />
-          <polygon
-            points="0,2 0.5,1 1,2"
-            shape-rendering="geometricPrecision"
-          />
-          <polygon
-            points="1,2 1.5,1 2,2"
-            shape-rendering="geometricPrecision"
-          />
-        </g>
-        <polygon
-          id="player"
-          points="0,1 0.5,0 1,1"
-          shape-rendering="geometricPrecision"
-        />
-        <polygon
-          id="bat"
-          points="0,0 1,0 1,1 0.75,0.25 0.5,1 0.25,0.25 0,1"
-          shape-rendering="geometricPrecision"
-        />
-        <circle
-          id="fireball"
-          cx="0.5"
-          cy="0.5"
-          r="0.5"
-          shape-rendering="geometricPrecision"
-        />
-      </defs>
-      <g id="map"></g>
-      <rect
-        width="36"
-        height="18"
-        fill="rgba(0,0,0,0.25)"
-        shape-rendering="geometricPrecision"
-      />
-    </svg>
+    <div style="width: 100%; aspect-ratio: 2; background-color: #808080">
+      <div id="map" class="relative"></div>
+    </div>
     <script defer src="js/index.js" type="module"></script>
   </body>
 </html>

@@ -4,16 +4,25 @@
   <meta charset="UTF-8">
   <title></title>
   <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100vh;
+    }
+
     .wrapper {
-      transform: perspective(1000px) rotateX(45deg);
+      width: 100%;
+      transform: perspective(1000px) rotateX(45deg) scale(0.85);
       transform-style: preserve-3d;
+      background-color: rgba(100, 0,200,0.75);
     }
     .box {
       transform: rotateX(90deg);
       width: 100px;
       height: 100px;
       background-color: red;
-      margin: 10px;
+      clip-path: polygon(0% 20%, 60% 20%, 60% 0%, 100% 50%, 60% 100%, 60% 80%, 0% 80%);
     }
   </style>
 </head>

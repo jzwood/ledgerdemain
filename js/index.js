@@ -1,6 +1,5 @@
 // fix impossible fingering: https://c1.staticflickr.com/9/8095/8485721150_5763b36301_b.jpg
 const ABC = "qazwsxedcrfvtgbyhnujmikolp";
-const NS = "http://www.w3.org/2000/svg";
 const cmp = (a, b) => ABC.indexOf(a) - ABC.indexOf(b);
 const intcmp = (a, b) => b - a;
 const dist = (dx, dy) => Math.sqrt((dx * dx) + (dy * dy));
@@ -11,6 +10,7 @@ const RIGHT = ["d", "l"];
 const UP = ["w", "i"];
 const DOWN = ["s", "k"];
 const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
+const UNIT = 25/9
 
 const MAX_MANA = 4;
 
@@ -121,11 +121,7 @@ function tileToEl(tile, x, y) {
 
   if (type == null) return undefined;
 
-  const el = document.createElementNS(NS, "use");
-  el.setAttribute("x", x);
-  el.setAttribute("y", y);
-  el.setAttribute("class", type);
-  el.setAttribute("href", "#" + type);
+  const el = createEl({"class": `absolute ${type}`, href: "#" + type, style: `left: ${x * UNIT}%; top: ${y * UNIT}%`})
   if (type === "bat") {
     state.enemies.push({ name: type, el, x, y, health: 2 });
   }
@@ -189,12 +185,9 @@ function cast(lastSpell) {
       const ty = enemy.y;
       const x = state.player.x;
       const y = state.player.y;
-      const el = document.createElementNS(NS, "use");
       const zone = document.getElementById("map");
-      el.setAttribute("x", x);
-      el.setAttribute("y", y);
-      el.setAttribute("class", data.name);
-      el.setAttribute("href", "#" + data.name);
+
+      const el = createEl({"class": data.name, href: "#" + data.name, style: `left: ${x * UNIT}%; top: ${y * UNIT}%` })
       zone.appendChild(el);
       state.spells.push({ ...data, el, x, y, tx, ty });
     }
@@ -314,11 +307,13 @@ function nextEnemies(delta) {
 }
 
 function drawState() {
-  state.player.el?.setAttribute("x", state.player.x);
-  state.player.el?.setAttribute("y", state.player.y);
+  if (state.player.el) {
+    state.player.el.style.left = (state.player.x * UNIT) + "%"
+    state.player.el.style.top = (state.player.y * UNIT) + "%"
+  }
   state.enemies.forEach((enemy, ei, enemies) => {
-    enemy.el.setAttribute("x", enemy.x);
-    enemy.el.setAttribute("y", enemy.y);
+    enemy.el.style.left = (enemy.x * UNIT) + '%'
+    enemy.el.style.top = (enemy.y * UNIT) + '%'
     state.spells.forEach((spell, si, spells) => {
       const dist = taxicab(spell.x - enemy.x, spell.y - enemy.y);
       if (dist <= HITBOX) {
@@ -337,13 +332,21 @@ function drawState() {
       spells.splice(index, 1);
       spell.el.remove();
     } else {
-      spell.el.setAttribute("x", spell.x);
-      spell.el.setAttribute("y", spell.y);
+      spell.el.style.left = (spell.x * UNIT) + 'px'
+      spell.el.style.top = (spell.y * UNIT) + 'px'
     }
   });
   if (state.displayedSpell) {
     state.displayedSpell.textContent = state.spell.join("-");
   }
+}
+
+function createEl(attrs) {
+  const el = document.createElement("div");
+  Object.entries(attrs).forEach(([key, val]) => {
+    el.setAttribute(key, val);
+  })
+  return el
 }
 
 main();

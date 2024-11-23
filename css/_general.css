@@ -1,3 +1,8 @@
+:root {
+  --one: 2.777%;
+  --two: 5.555%;
+}
+
 html, body {
   margin: 0;
   padding: 0;
