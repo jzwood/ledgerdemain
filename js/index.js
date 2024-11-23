@@ -10,7 +10,7 @@ const RIGHT = ["d", "l"];
 const UP = ["w", "i"];
 const DOWN = ["s", "k"];
 const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
-const UNIT = 25/9
+const UNIT = 25 / 9;
 
 const MAX_MANA = 4;
 
@@ -121,7 +121,11 @@ function tileToEl(tile, x, y) {
 
   if (type == null) return undefined;
 
-  const el = createEl({"class": `absolute ${type}`, href: "#" + type, style: `left: ${x * UNIT}%; top: ${y * UNIT}%`})
+  const el = createEl({
+    "class": `absolute ${type}`,
+    href: "#" + type,
+    style: `left: ${x * UNIT}%; top: ${y * UNIT}%`,
+  });
   if (type === "bat") {
     state.enemies.push({ name: type, el, x, y, health: 2 });
   }
@@ -187,7 +191,11 @@ function cast(lastSpell) {
       const y = state.player.y;
       const zone = document.getElementById("map");
 
-      const el = createEl({"class": data.name, href: "#" + data.name, style: `left: ${x * UNIT}%; top: ${y * UNIT}%` })
+      const el = createEl({
+        "class": `absolute ${data.name}`,
+        href: "#" + data.name,
+        style: `left: ${x * UNIT}%; top: ${y * UNIT}%`,
+      });
       zone.appendChild(el);
       state.spells.push({ ...data, el, x, y, tx, ty });
     }
@@ -308,12 +316,12 @@ function nextEnemies(delta) {
 
 function drawState() {
   if (state.player.el) {
-    state.player.el.style.left = (state.player.x * UNIT) + "%"
-    state.player.el.style.top = (state.player.y * UNIT) + "%"
+    state.player.el.style.left = (state.player.x * UNIT) + "%";
+    state.player.el.style.top = (state.player.y * UNIT) + "%";
   }
   state.enemies.forEach((enemy, ei, enemies) => {
-    enemy.el.style.left = (enemy.x * UNIT) + '%'
-    enemy.el.style.top = (enemy.y * UNIT) + '%'
+    enemy.el.style.left = (enemy.x * UNIT) + "%";
+    enemy.el.style.top = (enemy.y * UNIT) + "%";
     state.spells.forEach((spell, si, spells) => {
       const dist = taxicab(spell.x - enemy.x, spell.y - enemy.y);
       if (dist <= HITBOX) {
@@ -332,8 +340,8 @@ function drawState() {
       spells.splice(index, 1);
       spell.el.remove();
     } else {
-      spell.el.style.left = (spell.x * UNIT) + 'px'
-      spell.el.style.top = (spell.y * UNIT) + 'px'
+      spell.el.style.left = (spell.x * UNIT) + "%";
+      spell.el.style.top = (spell.y * UNIT) + "%";
     }
   });
   if (state.displayedSpell) {
@@ -345,8 +353,8 @@ function createEl(attrs) {
   const el = document.createElement("div");
   Object.entries(attrs).forEach(([key, val]) => {
     el.setAttribute(key, val);
-  })
-  return el
+  });
+  return el;
 }
 
 main();
