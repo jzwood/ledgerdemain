@@ -9,7 +9,7 @@ html, body {
   src: url(/font/Barriecito-Regular.ttf) format("truetype");
 }
 
-.spell-font {
+body {
   font-family: "Barriecito", system-ui;
   font-weight: 400;
   font-style: normal;

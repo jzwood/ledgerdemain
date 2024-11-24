@@ -23,8 +23,18 @@
   fill: #005377;
 }
 
-#spell-slot {
+#spell-progress, #latest-spell {
   color: ivory;
   font-size: 2rem;
   text-align: center;
+  position: absolute;
+  top: 4px;
+}
+
+#spell-progress {
+  left: 1rem;
+}
+
+#latest-spell {
+  right: 1rem;
 }

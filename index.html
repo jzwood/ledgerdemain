@@ -9,7 +9,8 @@
   <body
     style="background-color: #121212; height: 100vh; display: flex; flex-direction: column; justify-content: center"
   >
-    <div id="spell-slot" class="spell-font">Ledgerdemain</div>
+    <div id="spell-progress"></div>
+    <div id="latest-spell"></div>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
@@ -62,17 +63,17 @@
           />
         </g>
         <g id="player">
-        <polygon
-          points="0,1 0.5,0 1,1"
-          shape-rendering="geometricPrecision"
-        />
-        <circle
-          cx="0.5"
-          cy="0.5"
-          r="0.165"
-          fill="white"
-          shape-rendering="geometricPrecision"
-        />
+          <polygon
+            points="0,1 0.5,0 1,1"
+            shape-rendering="geometricPrecision"
+          />
+          <circle
+            cx="0.5"
+            cy="0.5"
+            r="0.165"
+            fill="white"
+            shape-rendering="geometricPrecision"
+          />
         </g>
         <polygon
           id="bat"

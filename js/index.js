@@ -37,6 +37,11 @@ const SPELLS = {
     name: "increase",
     mnemonic: "aug",
   },
+  "sup": {
+    name: "septapus",
+    mnemonic: "pus",
+    full: "setp-sup"
+  }
 };
 
 const state = {
@@ -57,7 +62,11 @@ const state = {
   movementKeys: new Set(),
   keysPressed: new Set(),
   spell: [],
-  displayedSpell: null,
+  log: {
+    progressEl: null,
+    latestEl: null,
+    latest: "",
+  },
   spells: [],
 };
 
@@ -69,7 +78,8 @@ function main() {
       state.forest.data = forest;
       loadMap([0, 6], [7, 7], forest);
     });
-  state.displayedSpell = document.getElementById("spell-slot");
+  state.log.progressEl = document.getElementById("spell-progress");
+  state.log.latestEl = document.getElementById("latest-spell");
   requestAnimationFrame(loop.bind(null, performance.now()));
   document.body.addEventListener("keydown", onKeyDown);
   document.body.addEventListener("keyup", onKeyUp);
@@ -181,6 +191,10 @@ function onSpell() {
 
 function cast(lastSpell) {
   const data = SPELLS[lastSpell];
+
+  if (data) {
+    state.log.latest = state.spell.join("-");
+  }
 
   if (data?.name === "fireball") {
     const enemy = nearestEnemy();
@@ -341,8 +355,11 @@ function drawState() {
       spell.el.setAttribute("y", spell.y);
     }
   });
-  if (state.displayedSpell) {
-    state.displayedSpell.textContent = state.spell.join("-");
+  if (state.log.progressEl) {
+    state.log.progressEl.textContent = state.spell.join("-");
+  }
+  if (state.log.latestEl) {
+    state.log.latestEl.textContent = state.log.latest;
   }
 }
 

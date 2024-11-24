@@ -175,3 +175,31 @@ X       - enemy walking
 TASKS
   - full screen support
   - fix display spell dom reflow
+  - dialogue system for cutscenes
+
+
+NEXT STEPS
+- implement all spells, i.e. come up with inputs, names, and animate effects
+  - fireball
+  - large-fireball
+  - many-fireballs
+  - gust
+  - mana drain
+  - spirit summon
+  - compass
+  - light
+  - shield
+  - stop time (aka pause to consult spellbook)
+  - save flowers (create savepoint)
+  - mu flowers (grow mana that you can collect later)
+  - amplify (briefly increase mu efficiency; i.e. decreases mu requirement for spells)
+- come up with 4 new enemies
+    - bat
+    - archer
+    - ghost
+    - human mob member
+    - evil wizard
+- animation frames
+    - hands raised while casting for witch
+    - fire animation
+    - bat wings
