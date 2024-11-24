@@ -10,7 +10,8 @@ const RIGHT = ["d", "l"];
 const UP = ["w", "i"];
 const DOWN = ["s", "k"];
 const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
-const UNIT = 25 / 9;
+const YUNIT = 25 / 9 * 2 * 2;
+const XUNIT = 25 / 9 * 2;
 
 const MAX_MANA = 4;
 
@@ -85,7 +86,7 @@ function loadMap([x, y], [px, py], forest) {
   const zone = document.getElementById("map");
   zone.replaceChildren();
 
-  const player = tileToEl("W", 2 * px, 2 * py);
+  const player = tileToEl("W", px, py);
   zone.appendChild(player);
   state.player.el = player;
   state.player.x = px;
@@ -94,7 +95,7 @@ function loadMap([x, y], [px, py], forest) {
   for (let w = 0; w < WIDTH; w++) {
     for (let h = 0; h < HEIGHT; h++) {
       const tile = forest[dy + h][dx + w];
-      const el = tileToEl(tile, 2 * w, 2 * h);
+      const el = tileToEl(tile, w, h);
       if (el != null) {
         prependChild(zone, el);
       }
@@ -122,9 +123,9 @@ function tileToEl(tile, x, y) {
   if (type == null) return undefined;
 
   const el = createEl({
-    "class": `absolute ${type}`,
+    "class": type,
     href: "#" + type,
-    style: `left: ${x * UNIT}%; top: ${y * UNIT}%`,
+    style: `left: ${x * XUNIT}%; top: ${y * YUNIT}%`,
   });
   if (type === "bat") {
     state.enemies.push({ name: type, el, x, y, health: 2 });
@@ -192,9 +193,9 @@ function cast(lastSpell) {
       const zone = document.getElementById("map");
 
       const el = createEl({
-        "class": `absolute ${data.name}`,
+        "class": data.name,
         href: "#" + data.name,
-        style: `left: ${x * UNIT}%; top: ${y * UNIT}%`,
+        style: `left: ${x * XUNIT}%; top: ${y * YUNIT}%`,
       });
       zone.appendChild(el);
       state.spells.push({ ...data, el, x, y, tx, ty });
@@ -316,12 +317,12 @@ function nextEnemies(delta) {
 
 function drawState() {
   if (state.player.el) {
-    state.player.el.style.left = (state.player.x * UNIT) + "%";
-    state.player.el.style.top = (state.player.y * UNIT) + "%";
+    state.player.el.style.left = (state.player.x * XUNIT) + "%";
+    state.player.el.style.top = (state.player.y * YUNIT) + "%";
   }
   state.enemies.forEach((enemy, ei, enemies) => {
-    enemy.el.style.left = (enemy.x * UNIT) + "%";
-    enemy.el.style.top = (enemy.y * UNIT) + "%";
+    enemy.el.style.left = (enemy.x * XUNIT) + "%";
+    enemy.el.style.top = (enemy.y * YUNIT) + "%";
     state.spells.forEach((spell, si, spells) => {
       const dist = taxicab(spell.x - enemy.x, spell.y - enemy.y);
       if (dist <= HITBOX) {
@@ -340,8 +341,8 @@ function drawState() {
       spells.splice(index, 1);
       spell.el.remove();
     } else {
-      spell.el.style.left = (spell.x * UNIT) + "%";
-      spell.el.style.top = (spell.y * UNIT) + "%";
+      spell.el.style.left = (spell.x * XUNIT) + "%";
+      spell.el.style.top = (spell.y * YUNIT) + "%";
     }
   });
   if (state.displayedSpell) {

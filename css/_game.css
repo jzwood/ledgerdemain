@@ -18,9 +18,13 @@
 }
 
 .tree {
-  background-color: #33654a;
+  /*background-color: #33654a;*/
+  background-color: rgba(51, 101, 74, 0.8);
   height: var(--two);
   width: var(--two);
+  transform: rotateX(-90deg);
+  border: 1px solid black;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
 .rock {
@@ -36,13 +40,24 @@
   width: var(--two);
 }
 
+.player, .bat, .fireball, .tree, .rock, .water {
+  position: absolute;
+  transform-origin: bottom;
+}
+
 #map {
   width: 100%;
   height: 100%;
+  transform: perspective(1000px) rotateX(45deg);
+  transform-style: preserve-3d;
+  background-color: #808080;
 }
 
 #spell-slot {
   color: ivory;
   font-size: 2rem;
   text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
