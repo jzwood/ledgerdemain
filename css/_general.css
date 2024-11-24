@@ -5,12 +5,12 @@ html, body {
 }
 
 @font-face {
-  font-family: "Eagle Lake";
-  src: url(/font/EagleLake-Regular.ttf) format("truetype");
+  font-family: "Barriecito";
+  src: url(/font/Barriecito-Regular.ttf) format("truetype");
 }
 
-.eagle-lake-regular {
-  font-family: "Eagle Lake", serif;
+.spell-font {
+  font-family: "Barriecito", system-ui;
   font-weight: 400;
   font-style: normal;
 }
