@@ -23,6 +23,10 @@
   fill: #005377;
 }
 
+.wind {
+  fill: rgba(0, 0, 0, 0.1);
+}
+
 #spell-progress, #latest-spell {
   color: ivory;
   font-size: 2rem;

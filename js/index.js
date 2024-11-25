@@ -20,6 +20,7 @@ const DOWN = ["s", "k"];
 const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
 
 const MAX_MANA = 4;
+const MAP_HYPOT = 40;
 
 const SPELLS = {
   "sgni": {
@@ -39,6 +40,10 @@ const SPELLS = {
   "wdni": {
     mnemonic: "wind",
     name: "wind",
+    x: undefined,
+    y: undefined,
+    r: 1,
+    drPerMs: 1,
   },
   "serup": {
     name: "super",
@@ -203,22 +208,37 @@ function cast(lastSpell) {
     return null;
   }
 
-  if (data.name === "fireball") {
+  const { name } = data
+
+  if (name === "fireball") {
     const enemy = nearestEnemy();
     if (enemy) {
       const tx = enemy.x;
       const ty = enemy.y;
       const x = state.player.x;
       const y = state.player.y;
-      const [vx, vy] = normalize(tx - x, ty - y, 40);
+      const [vx, vy] = normalize(tx - x, ty - y, MAP_HYPOT);
       const el = document.createElementNS(NS, "use");
       el.setAttribute("x", x);
       el.setAttribute("y", y);
-      el.setAttribute("class", data.name);
-      el.setAttribute("href", "#" + data.name);
+      el.setAttribute("class", name);
+      el.setAttribute("href", "#" + name);
       state.zoneEl.appendChild(el);
       state.spells.push({ ...data, el, x, y, tx: tx + vx, ty: ty + vy });
     }
+  } else if (name === "wind") {
+    const href = '#' + name
+    const x = state.player.x;
+    const y = state.player.y;
+    let wind = document.querySelector(href);
+    wind = wind.cloneNode(true);
+    clone.setAttribute('r', wind.r);
+    el.setAttribute("cx", x);
+    el.setAttribute("cy", y);
+    el.setAttribute("class", name);
+    el.setAttribute("href", href);
+    state.zoneEl.appendChild(el);
+    state.spells.push({ ...data, el, x, y });
   }
 
   if (data) {
@@ -303,18 +323,22 @@ function nextPlayer(delta) {
 
 function nextSpells(delta) {
   state.spells.forEach((spell) => {
-    const dx = spell.tx - spell.x;
-    const dy = spell.ty - spell.y;
-    const distance = dist(dx, dy);
-    const t = (FACTOR * delta) / distance;
-    if (Math.abs(dx) > EPSILON) {
-      spell.x += dx * t;
-    }
-    if (Math.abs(dy) > EPSILON) {
-      spell.y += dy * t;
-    }
-    if (distance < EPSILON + EPSILON) {
-      spell.purge = true;
+    if (spell.name === "fireball") {
+      const dx = spell.tx - spell.x;
+      const dy = spell.ty - spell.y;
+      const distance = dist(dx, dy);
+      const t = (FACTOR * delta) / distance;
+      if (Math.abs(dx) > EPSILON) {
+        spell.x += dx * t;
+      }
+      if (Math.abs(dy) > EPSILON) {
+        spell.y += dy * t;
+      }
+      if (distance < EPSILON + EPSILON) {
+        spell.purge = true;
+      }
+    } else if (spell.name === "wind") {
+      spell.r = spell.r + delta * spell.drPerMs;
     }
   });
 }
@@ -357,9 +381,11 @@ function drawState() {
     if (spell.purge) {
       spells.splice(index, 1);
       spell.el.remove();
-    } else {
+    } else if (spell.name === "fireball") {
       spell.el.setAttribute("x", spell.x);
       spell.el.setAttribute("y", spell.y);
+    } else if (spell.name === "wind") {
+      spell.el.setAttribute("r", spell.r);
     }
   });
   if (state.log.progressEl) {
