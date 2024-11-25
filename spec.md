@@ -180,7 +180,7 @@ TASKS
 
 NEXT STEPS
 - implement all spells, i.e. come up with inputs, names, and animate effects
-  - fireball
+X - fireball
   - large-fireball
   - many-fireballs
   - gust

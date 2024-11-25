@@ -29,18 +29,18 @@ const SPELLS = {
     mnemonic: "bibl",
     name: "book",
   },
-  "aru": {
-    mnemonic: "aura",
+  "wdni": {
+    mnemonic: "wind",
     name: "wind",
   },
-  "agu": {
-    name: "increase",
-    mnemonic: "aug",
+  "serup": {
+    name: "super",
+    mnemonic: "super",
   },
   "sup": {
     name: "septapus",
     mnemonic: "pus",
-    full: "setp-sup"
+    prefix: "setp-"
   }
 };
 
@@ -335,7 +335,7 @@ function drawState() {
     enemy.el.setAttribute("y", enemy.y);
     state.spells.forEach((spell, si, spells) => {
       const dist = taxicab(spell.x - enemy.x, spell.y - enemy.y);
-      if (dist <= HITBOX) {
+      if (dist <= EPSILON) {
         enemy.health -= spell.damage;
         spells.splice(ei, 1);
         spell.el.remove();
