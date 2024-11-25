@@ -43,7 +43,7 @@ const SPELLS = {
     x: undefined,
     y: undefined,
     r: 1,
-    drPerMs: 1,
+    drPerMs: 6 / 1000,
   },
   "serup": {
     name: "super",
@@ -230,15 +230,15 @@ function cast(lastSpell) {
     const href = '#' + name
     const x = state.player.x;
     const y = state.player.y;
-    let wind = document.querySelector(href);
-    wind = wind.cloneNode(true);
-    clone.setAttribute('r', wind.r);
+    const wind = document.querySelector(href);
+    const el = wind.cloneNode(true);
+    el.setAttribute('r', wind.r);
     el.setAttribute("cx", x);
     el.setAttribute("cy", y);
     el.setAttribute("class", name);
     el.setAttribute("href", href);
     state.zoneEl.appendChild(el);
-    state.spells.push({ ...data, el, x, y });
+    state.spells.push({ ...data, el });
   }
 
   if (data) {
