@@ -4,6 +4,13 @@ const NS = "http://www.w3.org/2000/svg";
 const cmp = (a, b) => ABC.indexOf(a) - ABC.indexOf(b);
 const intcmp = (a, b) => b - a;
 const dist = (dx, dy) => Math.sqrt((dx * dx) + (dy * dy));
+const scale = (f, dx, dy) => {
+  return [f * dx, f * dy];
+};
+const normalize = (dx, dy, f = 1) => {
+  const d = Math.max(dist(dx, dy), 0.001);
+  return scale(f / d, dx, dy);
+};
 const taxicab = (dx, dy) => Math.abs(dx) + Math.abs(dy);
 
 const LEFT = ["a", "j"];
@@ -40,8 +47,8 @@ const SPELLS = {
   "sup": {
     name: "septapus",
     mnemonic: "pus",
-    prefix: "setp-"
-  }
+    prefix: "setp-",
+  },
 };
 
 const state = {
@@ -71,6 +78,7 @@ const state = {
 };
 
 function main() {
+  state.zoneEl = document.getElementById("map");
   fetch("/data/forest.txt")
     .then((res) => res.text())
     .then((res) => {
@@ -92,11 +100,10 @@ function loadMap([x, y], [px, py], forest) {
   const dy = y * HEIGHT;
   state.forest.dx = dx;
   state.forest.dy = dy;
-  const zone = document.getElementById("map");
-  zone.replaceChildren();
+  state.zoneEl.replaceChildren();
 
   const player = tileToEl("W", 2 * px, 2 * py);
-  zone.appendChild(player);
+  state.zoneEl.appendChild(player);
   state.player.el = player;
   state.player.x = px;
   state.player.y = py;
@@ -106,7 +113,7 @@ function loadMap([x, y], [px, py], forest) {
       const tile = forest[dy + h][dx + w];
       const el = tileToEl(tile, 2 * w, 2 * h);
       if (el != null) {
-        prependChild(zone, el);
+        prependChild(state.zoneEl, el);
       }
     }
   }
@@ -192,28 +199,30 @@ function onSpell() {
 function cast(lastSpell) {
   const data = SPELLS[lastSpell];
 
-  if (data) {
-    state.log.latest = state.spell.join("-");
+  if (!data) {
+    return null;
   }
 
-  if (data?.name === "fireball") {
+  if (data.name === "fireball") {
     const enemy = nearestEnemy();
     if (enemy) {
       const tx = enemy.x;
       const ty = enemy.y;
       const x = state.player.x;
       const y = state.player.y;
+      const [vx, vy] = normalize(tx - x, ty - y, 40);
       const el = document.createElementNS(NS, "use");
-      const zone = document.getElementById("map");
       el.setAttribute("x", x);
       el.setAttribute("y", y);
       el.setAttribute("class", data.name);
       el.setAttribute("href", "#" + data.name);
-      zone.appendChild(el);
-      state.spells.push({ ...data, el, x, y, tx, ty });
+      state.zoneEl.appendChild(el);
+      state.spells.push({ ...data, el, x, y, tx: tx + vx, ty: ty + vy });
     }
-    state.spell = [];
-  } else if (data?.name === "nullify") {
+  }
+
+  if (data) {
+    state.log.latest = state.spell.join("-");
     state.spell = [];
   }
 }
@@ -257,7 +266,6 @@ const SECONDS_PER_MS = 1 / 1000;
 const FACTOR = PX_PER_SECOND * SECONDS_PER_MS;
 const BUFFER = 50;
 const EPSILON = 1;
-const HITBOX = 2;
 function nextState(delta) {
   nextPlayer(delta);
   nextSpells(delta);
@@ -337,8 +345,7 @@ function drawState() {
       const dist = taxicab(spell.x - enemy.x, spell.y - enemy.y);
       if (dist <= EPSILON) {
         enemy.health -= spell.damage;
-        spells.splice(ei, 1);
-        spell.el.remove();
+        spell.purge = true;
       }
     });
     if (enemy.health <= 0) {
