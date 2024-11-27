@@ -183,7 +183,7 @@ NEXT STEPS
 X - fireball
   - large-fireball
   - many-fireballs
-  - gust
+X - gust
   - mana drain
   - spirit summon
   - compass

@@ -3,12 +3,12 @@ const ABC = "qazwsxedcrfvtgbyhnujmikolp";
 const NS = "http://www.w3.org/2000/svg";
 const cmp = (a, b) => ABC.indexOf(a) - ABC.indexOf(b);
 const intcmp = (a, b) => b - a;
-const dist = (dx, dy) => Math.sqrt((dx * dx) + (dy * dy));
+const euclidian = (dx, dy) => Math.sqrt((dx * dx) + (dy * dy));
 const scale = (f, dx, dy) => {
   return [f * dx, f * dy];
 };
 const normalize = (dx, dy, f = 1) => {
-  const d = Math.max(dist(dx, dy), 0.001);
+  const d = Math.max(euclidian(dx, dy), 0.001);
   return scale(f / d, dx, dy);
 };
 const taxicab = (dx, dy) => Math.abs(dx) + Math.abs(dy);
@@ -43,6 +43,7 @@ const SPELLS = {
     x: undefined,
     y: undefined,
     r: 1,
+    maxR: 10,
     drPerMs: 6 / 1000,
   },
   "serup": {
@@ -208,7 +209,7 @@ function cast(lastSpell) {
     return null;
   }
 
-  const { name } = data
+  const { name } = data;
 
   if (name === "fireball") {
     const enemy = nearestEnemy();
@@ -227,18 +228,18 @@ function cast(lastSpell) {
       state.spells.push({ ...data, el, x, y, tx: tx + vx, ty: ty + vy });
     }
   } else if (name === "wind") {
-    const href = '#' + name
+    const href = "#" + name;
     const x = state.player.x;
     const y = state.player.y;
     const wind = document.querySelector(href);
     const el = wind.cloneNode(true);
-    el.setAttribute('r', wind.r);
+    el.setAttribute("r", wind.r);
     el.setAttribute("cx", x);
     el.setAttribute("cy", y);
     el.setAttribute("class", name);
     el.setAttribute("href", href);
     state.zoneEl.appendChild(el);
-    state.spells.push({ ...data, el });
+    state.spells.push({ ...data, el, x, y });
   }
 
   if (data) {
@@ -251,7 +252,7 @@ function nearestEnemy() {
   const { x, y } = state.player;
   return state.enemies.map((enemy) => ({
     ...enemy,
-    distance: dist(enemy.x - x, enemy.y - y),
+    distance: euclidian(enemy.x - x, enemy.y - y),
   })).sort((a, b) => b.distance - a.distance).at(0);
 }
 
@@ -326,7 +327,7 @@ function nextSpells(delta) {
     if (spell.name === "fireball") {
       const dx = spell.tx - spell.x;
       const dy = spell.ty - spell.y;
-      const distance = dist(dx, dy);
+      const distance = euclidian(dx, dy);
       const t = (FACTOR * delta) / distance;
       if (Math.abs(dx) > EPSILON) {
         spell.x += dx * t;
@@ -339,6 +340,9 @@ function nextSpells(delta) {
       }
     } else if (spell.name === "wind") {
       spell.r = spell.r + delta * spell.drPerMs;
+      if (spell.r > spell.maxR) {
+        spell.purge = true;
+      }
     }
   });
 }
@@ -348,7 +352,7 @@ function nextEnemies(delta) {
   state.enemies.forEach((enemy) => {
     const dx = state.player.x - enemy.x;
     const dy = state.player.y - enemy.y;
-    const t2 = (0.75 * t) / dist(dx, dy);
+    const t2 = (0.75 * t) / euclidian(dx, dy);
     // TODO have the enemies chase oscillating ghost targets so they don't clump
     if (Math.abs(dx) > EPSILON) {
       enemy.x += dx * t2;
@@ -366,10 +370,21 @@ function drawState() {
     enemy.el.setAttribute("x", enemy.x);
     enemy.el.setAttribute("y", enemy.y);
     state.spells.forEach((spell, si, spells) => {
-      const dist = taxicab(spell.x - enemy.x, spell.y - enemy.y);
-      if (dist <= EPSILON) {
-        enemy.health -= spell.damage;
-        spell.purge = true;
+      const dx = enemy.x - spell.x;
+      const dy = enemy.y - spell.y;
+      if (spell.name === "fireball") {
+        const dist = euclidian(dx, dy);
+        if (dist <= EPSILON) {
+          enemy.health -= spell.damage;
+          spell.purge = true;
+        }
+      } else if (spell.name === "wind") {
+        const dist = euclidian(dx, dy);
+        if (dist < spell.r) {
+          const [vx, vy] = normalize(dx, dy, spell.r);
+          enemy.x = spell.x + vx;
+          enemy.y = spell.y + vy;
+        }
       }
     });
     if (enemy.health <= 0) {

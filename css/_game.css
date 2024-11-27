@@ -1,6 +1,6 @@
 /* https://css-tricks.com/css-sprites/ */
 .player {
-  fill: deepblue;
+  fill: midnightblue;
 }
 
 .bat {
@@ -24,7 +24,9 @@
 }
 
 .wind {
-  fill: rgba(0, 0, 0, 0.1);
+  fill: transparent;
+  stroke-width: 0.5px;
+  stroke: rgba(0, 0, 0, 0.05);
 }
 
 #spell-progress, #latest-spell {
