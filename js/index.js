@@ -114,12 +114,16 @@ function loadMap([x, y], [px, py], forest) {
   state.player.x = px;
   state.player.y = py;
 
-  for (let w = 0; w < WIDTH; w++) {
-    for (let h = 0; h < HEIGHT; h++) {
+  for (let h = 0; h < HEIGHT; h++) {
+    for (let w = 0; w < WIDTH; w++) {
       const tile = forest[dy + h][dx + w];
       const el = tileToEl(tile, 2 * w, 2 * h);
       if (el != null) {
-        prependChild(state.zoneEl, el);
+        if (["|", "@", "~"].includes(tile)) {
+          prependChild(state.zoneEl, el);
+        } else {
+          state.zoneEl.appendChild(el);
+        }
       }
     }
   }

@@ -184,6 +184,7 @@ X - fireball
   - large-fireball
   - many-fireballs
 X - gust
+> - lightning
   - mana drain
   - spirit summon
   - compass
