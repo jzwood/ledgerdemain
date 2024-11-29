@@ -18,43 +18,50 @@ const RIGHT = ["d", "l"];
 const UP = ["w", "i"];
 const DOWN = ["s", "k"];
 const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
+const FIREBALL = "fireball";
+const WIND = "wind";
+const LIGHTNING = "lightning";
 
 const MAX_MANA = 4;
 const MAP_HYPOT = 40;
 
 const SPELLS = {
   "sgni": {
-    name: "fireball",
+    name: FIREBALL,
     mnemonic: "ignis",
     damage: 1,
+    mana: 2,
     x: undefined,
     y: undefined,
     tx: undefined,
     ty: undefined,
-    purge: false,
   },
-  "bil": {
-    mnemonic: "bibl",
-    name: "book",
-  },
-  "wdni": {
-    mnemonic: "wind",
-    name: "wind",
+  "sevtnu": {
+    mnemonic: "ventus",
+    name: WIND,
+    mana: 1,
     x: undefined,
     y: undefined,
     r: 1,
     maxR: 10,
     drPerMs: 6 / 1000,
   },
-  "serup": {
-    name: "super",
-    mnemonic: "super",
+  "sfnui-xul": {
+    mnemonic: "funis-lux",
+    name: LIGHTNING,
+    damage: 2,
+    mana: 2,
+    msVisible: 750,
+    x: undefined,
+    y: undefined,
+    tx: undefined,
+    ty: undefined,
+    maxR: 10
   },
-  "sup": {
-    name: "septapus",
-    mnemonic: "pus",
-    prefix: "setp-",
-  },
+  "bil": {
+    mnemonic: "lib",
+    name: "book",
+  }
 };
 
 const state = {
@@ -214,8 +221,9 @@ function cast(lastSpell) {
   }
 
   const { name } = data;
+  const fullSpell = state.spell.join("-");
 
-  if (name === "fireball") {
+  if (name === FIREBALL) {
     const enemy = nearestEnemy();
     if (enemy) {
       const tx = enemy.x;
@@ -231,7 +239,7 @@ function cast(lastSpell) {
       state.zoneEl.appendChild(el);
       state.spells.push({ ...data, el, x, y, tx: tx + vx, ty: ty + vy });
     }
-  } else if (name === "wind") {
+  } else if (name === WIND) {
     const href = "#" + name;
     const x = state.player.x;
     const y = state.player.y;
@@ -244,10 +252,27 @@ function cast(lastSpell) {
     el.setAttribute("href", href);
     state.zoneEl.appendChild(el);
     state.spells.push({ ...data, el, x, y });
+  } else if (name === LIGHTNING && fullSpell.endsWith(data.full)) {
+    const enemy = nearestEnemy();
+    const href = "#" + name;
+    const x = state.player.x;
+    const y = state.player.y;
+    const tx = enemy.x;
+    const ty = enemy.y;
+    const lightning = document.querySelector(href);
+    const el = lightning.cloneNode(true);
+    el.setAttribute("x1", x);
+    el.setAttribute("y1", y);
+    el.setAttribute("x2", tx);
+    el.setAttribute("y2", ty);
+    el.setAttribute("class", name);
+    el.setAttribute("href", href);
+    state.zoneEl.appendChild(el);
+    state.spells.push({ ...data, el, x, y, tx, ty });
   }
 
   if (data) {
-    state.log.latest = state.spell.join("-");
+    state.log.latest = fullSpell;
     state.spell = [];
   }
 }
@@ -328,7 +353,7 @@ function nextPlayer(delta) {
 
 function nextSpells(delta) {
   state.spells.forEach((spell) => {
-    if (spell.name === "fireball") {
+    if (spell.name === FIREBALL) {
       const dx = spell.tx - spell.x;
       const dy = spell.ty - spell.y;
       const distance = euclidian(dx, dy);
@@ -342,11 +367,14 @@ function nextSpells(delta) {
       if (distance < EPSILON + EPSILON) {
         spell.purge = true;
       }
-    } else if (spell.name === "wind") {
+    } else if (spell.name === WIND) {
       spell.r = spell.r + delta * spell.drPerMs;
       if (spell.r > spell.maxR) {
         spell.purge = true;
       }
+    } else if (spell.name === LIGHTNING) {
+      spell.msVisible -= delta;
+      if (spell.msVisible) { /* TODO */ }
     }
   });
 }
@@ -376,13 +404,13 @@ function drawState() {
     state.spells.forEach((spell, si, spells) => {
       const dx = enemy.x - spell.x;
       const dy = enemy.y - spell.y;
-      if (spell.name === "fireball") {
+      if (spell.name === FIREBALL) {
         const dist = euclidian(dx, dy);
         if (dist <= EPSILON) {
           enemy.health -= spell.damage;
           spell.purge = true;
         }
-      } else if (spell.name === "wind") {
+      } else if (spell.name === WIND) {
         const dist = euclidian(dx, dy);
         if (dist < spell.r) {
           const [vx, vy] = normalize(dx, dy, spell.r);
@@ -400,10 +428,10 @@ function drawState() {
     if (spell.purge) {
       spells.splice(index, 1);
       spell.el.remove();
-    } else if (spell.name === "fireball") {
+    } else if (spell.name === FIREBALL) {
       spell.el.setAttribute("x", spell.x);
       spell.el.setAttribute("y", spell.y);
-    } else if (spell.name === "wind") {
+    } else if (spell.name === WIND) {
       spell.el.setAttribute("r", spell.r);
     }
   });
