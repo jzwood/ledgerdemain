@@ -25,8 +25,9 @@ const LIGHTNING = "lightning";
 const MAX_MANA = 4;
 const MAP_HYPOT = 40;
 
-const SPELLS = {
-  "sgni": {
+const SPELLS = [
+  {
+    spell: "sgni",
     name: FIREBALL,
     mnemonic: "ignis",
     damage: 1,
@@ -35,8 +36,10 @@ const SPELLS = {
     y: undefined,
     tx: undefined,
     ty: undefined,
+    purge: false,
   },
-  "sevtnu": {
+  {
+    spell: "sevtnu",
     mnemonic: "ventus",
     name: WIND,
     mana: 1,
@@ -45,28 +48,34 @@ const SPELLS = {
     r: 1,
     maxR: 10,
     drPerMs: 6 / 1000,
+    purge: false,
   },
-  "sfnui-xul": {
+  {
+    spell: "sfnui-xul",
     mnemonic: "funis-lux",
     name: LIGHTNING,
     damage: 2,
     mana: 2,
-    msVisible: 750,
+    msVisible: 1000,
+    msDuration: 0,
     x: undefined,
     y: undefined,
     tx: undefined,
     ty: undefined,
-    maxR: 10
+    maxR: 10,
+    purge: false,
   },
-  "bil": {
+  {
+    spell: "bil",
     mnemonic: "lib",
     name: "book",
-  }
-};
+    purge: false,
+  },
+];
 
 const state = {
   player: {
-    el: null,
+    el: undefined,
     x: 0,
     y: 0,
     dx: 0,
@@ -83,11 +92,12 @@ const state = {
   keysPressed: new Set(),
   spell: [],
   log: {
-    progressEl: null,
-    latestEl: null,
+    progressEl: undefined,
+    latestEl: undefined,
     latest: "",
   },
   spells: [],
+  zoneEl: undefined,
 };
 
 function main() {
@@ -125,7 +135,7 @@ function loadMap([x, y], [px, py], forest) {
     for (let w = 0; w < WIDTH; w++) {
       const tile = forest[dy + h][dx + w];
       const el = tileToEl(tile, 2 * w, 2 * h);
-      if (el != null) {
+      if (el instanceof SVGElement) {
         if (["|", "@", "~"].includes(tile)) {
           prependChild(state.zoneEl, el);
         } else {
@@ -153,7 +163,7 @@ function tileToEl(tile, x, y) {
     "B": "bat",
   })[tile];
 
-  if (type == null) return undefined;
+  if (typeof type === "undefined") return undefined;
 
   const el = document.createElementNS(NS, "use");
   el.setAttribute("x", x);
@@ -207,21 +217,23 @@ function onSpell() {
   if (!keys.every((key) => MOVE.includes(key))) {
     const spell = keys.sort(cmp).join("");
     state.spell.push(spell);
-    cast(spell);
+    const fullSpell = state.spell.join("-");
+    cast(fullSpell);
   }
 
   state.keysPressed.clear();
 }
 
-function cast(lastSpell) {
-  const data = SPELLS[lastSpell];
+function cast(spell) {
+  const data = SPELLS.find((data) => spell.endsWith(data.spell));
 
   if (!data) {
     return null;
   }
 
   const { name } = data;
-  const fullSpell = state.spell.join("-");
+  state.log.latest = spell;
+  state.spell = [];
 
   if (name === FIREBALL) {
     const enemy = nearestEnemy();
@@ -252,7 +264,7 @@ function cast(lastSpell) {
     el.setAttribute("href", href);
     state.zoneEl.appendChild(el);
     state.spells.push({ ...data, el, x, y });
-  } else if (name === LIGHTNING && fullSpell.endsWith(data.full)) {
+  } else if (name === LIGHTNING) {
     const enemy = nearestEnemy();
     const href = "#" + name;
     const x = state.player.x;
@@ -269,11 +281,6 @@ function cast(lastSpell) {
     el.setAttribute("href", href);
     state.zoneEl.appendChild(el);
     state.spells.push({ ...data, el, x, y, tx, ty });
-  }
-
-  if (data) {
-    state.log.latest = fullSpell;
-    state.spell = [];
   }
 }
 
@@ -373,8 +380,10 @@ function nextSpells(delta) {
         spell.purge = true;
       }
     } else if (spell.name === LIGHTNING) {
-      spell.msVisible -= delta;
-      if (spell.msVisible) { /* TODO */ }
+      spell.msDuration += delta;
+      if (spell.msDuration > spell.msVisible) {
+        spell.purge = true;
+      }
     }
   });
 }
@@ -433,12 +442,15 @@ function drawState() {
       spell.el.setAttribute("y", spell.y);
     } else if (spell.name === WIND) {
       spell.el.setAttribute("r", spell.r);
+    } else if (spell.name === LIGHTNING) {
+      const faded = Math.min(1, spell.msDuration / spell.msVisible);
+      spell.el.style.opacity = 1 - faded;
     }
   });
-  if (state.log.progressEl) {
+  if (state.log.progressEl instanceof HTMLElement) {
     state.log.progressEl.textContent = state.spell.join("-");
   }
-  if (state.log.latestEl) {
+  if (state.log.latestEl instanceof HTMLElement) {
     state.log.latestEl.textContent = state.log.latest;
   }
 }

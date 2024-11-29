@@ -31,7 +31,8 @@
 
 .lightning {
   stroke: gold;
-  stroke-width: 0.25px;
+  stroke-width: 0.1px;
+  stroke-linecap: round;
 }
 
 #spell-progress, #latest-spell {
