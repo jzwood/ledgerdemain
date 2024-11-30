@@ -75,7 +75,7 @@ const SPELLS = [
     el: undefined,
     purge: false,
   },
-];
+].map(Object.freeze);
 
 const state = {
   player: {
@@ -429,10 +429,10 @@ function drawState() {
     enemy.el.setAttribute("x", enemy.x);
     enemy.el.setAttribute("y", enemy.y);
     state.spells.forEach((spell, si, spells) => {
-      const dx = enemy.x - spell.x;
-      const dy = enemy.y - spell.y;
       switch (spell.name) {
         case FIREBALL: {
+          const dx = enemy.x - spell.x;
+          const dy = enemy.y - spell.y;
           const dist = euclidian(dx, dy);
           if (dist <= EPSILON) {
             enemy.health -= spell.damage;
@@ -441,11 +441,23 @@ function drawState() {
           break;
         }
         case WIND: {
+          const dx = enemy.x - spell.x;
+          const dy = enemy.y - spell.y;
           const dist = euclidian(dx, dy);
           if (dist < spell.r) {
             const [vx, vy] = normalize(dx, dy, spell.r);
             enemy.x = spell.x + vx;
             enemy.y = spell.y + vy;
+          }
+          break;
+        }
+        case LIGHTNING: {
+          const dx = enemy.x - spell.tx;
+          const dy = enemy.y - spell.ty;
+          const dist = euclidian(dx, dy);
+          if (dist < EPSILON) {
+            enemy.health -= spell.damage;
+            spell.damage = 0;
           }
           break;
         }
