@@ -11,6 +11,8 @@ const normalize = (dx, dy, f = 1) => {
   const d = Math.max(euclidian(dx, dy), 0.001);
   return scale(f / d, dx, dy);
 };
+const count = (arr, fxn) =>
+  arr.reduce((acc, val) => fxn(val) ? acc + 1 : acc, 0);
 const taxicab = (dx, dy) => Math.abs(dx) + Math.abs(dy);
 
 const LEFT = ["a", "j"];
@@ -40,7 +42,7 @@ const SPELLS = [
     purge: false,
   },
   {
-    spell: "sevtnu",
+    spell: "evtn-su",
     mnemonic: "ventus",
     name: WIND,
     mana: 1,
@@ -118,6 +120,7 @@ function main() {
   requestAnimationFrame(loop.bind(null, performance.now()));
   document.body.addEventListener("keydown", onKeyDown);
   document.body.addEventListener("keyup", onKeyUp);
+  document.body.addEventListener("dblclick", document.body.requestFullscreen);
 }
 
 function loadMap([x, y], [px, py], forest) {
@@ -191,8 +194,13 @@ function isAlphaNum(char) {
 }
 
 function onKeyDown(event) {
-  const { key, keyCode, repeat } = event;
+  const { key, code, repeat } = event;
   if (repeat) return null;
+
+  if (code === "Space") {
+    state.spell.pop();
+    return null;
+  }
 
   if (isAlphaNum(key)) {
     handleMovementStart(key);
@@ -221,7 +229,7 @@ function onSpell() {
   if (!keys.every((key) => MOVE.includes(key))) {
     const spell = keys.sort(cmp).join("");
     state.spell.push(spell);
-    const fullSpell = state.spell.join("-");
+    const fullSpell = state.spell.join("-").toLowerCase();
     cast(fullSpell);
   }
 
@@ -236,8 +244,8 @@ function cast(spell) {
   }
 
   const { name } = data;
-  state.log.latest = spell;
-  state.spell = [];
+  state.log.latest = data.mnemonic;
+  state.spell = state.spell.slice(0, -data.spell.split("-").length);
 
   switch (name) {
     case FIREBALL: {

@@ -179,6 +179,7 @@ TASKS
 
 
 NEXT STEPS
+- https://personal.math.ubc.ca/~cass/frivs/latin/latin-dict-full.html
 - implement all spells, i.e. come up with inputs, names, and animate effects
 X - fireball
   - large-fireball
