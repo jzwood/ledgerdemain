@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>svg-gauge</title>
+        <style>
+            :root {
+                --gauge-col: #0c9;
+                --gauge-bg: #fff;
+            }
+            svg.gauge rect {
+                fill: var(--gauge-col);
+            }
+            svg.gauge rect.bg {
+                fill: var(--gauge-bg);
+            }
+        </style>
+    </head>
+    <body>
+        <svg class="gauge" width="18rem" height="1rem">
+            <defs>
+                <!-- define dither patterns based on UTF chars: ░▒▓█ -->
+                <!-- use `%` sizes to enable SVG scaling via browser text zoom -->
+                <pattern id="p1" viewBox="0 0 4 4" width="33.3%" height="25%">
+                    <rect x="2" y="1" width="1" height="1" />
+                    <rect y="3" width="1" height="1" />
+                </pattern>
+                <pattern id="p2" viewBox="0 0 2 2" width="16.6%" height="12.5%">
+                    <rect width="1" height="1" />
+                    <rect x="1" y="1" width="1" height="1" />
+                </pattern>
+                <pattern id="p3" viewBox="0 0 4 4" width="33.3%" height="25%">
+                    <rect width="4" height="4" />
+                    <rect x="2" y="1" width="1" height="1" class="bg" />
+                    <rect y="3" width="1" height="1" class="bg" />
+                </pattern>
+                <pattern id="p4" viewBox="0 0 4 4" width="33.3%" height="25%">
+                    <rect width="4" height="4" />
+                </pattern>
+                <!-- define virtual "character" symbols -->
+                <!-- character size based on 12x16 (should be multiples of 4), translated to rem's -->
+                <symbol id="s1">
+                    <rect fill="url(#p1)" width="0.75rem" height="1rem" />
+                </symbol>
+                <symbol id="s2">
+                    <rect fill="url(#p2)" width="0.75rem" height="1rem" />
+                </symbol>
+                <symbol id="s3">
+                    <rect fill="url(#p3)" width="0.75rem" height="1rem" />
+                </symbol>
+                <symbol id="s4">
+                    <rect fill="url(#p4)" width="0.75rem" height="1rem" />
+                </symbol>
+            </defs>
+            <!-- example visualization using above symbols -->
+            <g>
+                <use href="#s1" x="0" />
+                <use href="#s1" x="0.75rem" />
+                <use href="#s2" x="1.5rem" />
+                <use href="#s1" x="2.25rem" />
+                <use href="#s2" x="3rem" />
+                <use href="#s3" x="3.75rem" />
+                <use href="#s4" x="4.5rem" />
+                <use href="#s2" x="5.25rem" />
+                <use href="#s3" x="6rem" />
+                <use href="#s3" x="6.75rem" />
+                <use href="#s2" x="7.5rem" />
+                <use href="#s3" x="8.25rem" />
+                <use href="#s4" x="9rem" />
+                <use href="#s4" x="9.75rem" />
+                <use href="#s4" x="10.5rem" />
+                <use href="#s4" x="11.25rem" />
+                <use href="#s2" x="12rem" />
+                <use href="#s1" x="12.75rem" />
+                <use href="#s1" x="13.5rem" />
+                <use href="#s2" x="14.25rem" />
+                <use href="#s2" x="15rem" />
+                <use href="#s3" x="15.75rem" />
+                <use href="#s4" x="16.5rem" />
+                <use href="#s2" x="17.25rem" />
+            </g>
+        </svg>
+    </body>
+</html>

@@ -13,6 +13,10 @@ const normalize = (dx, dy, f = 1) => {
 };
 const count = (arr, fxn) =>
   arr.reduce((acc, val) => fxn(val) ? acc + 1 : acc, 0);
+const toDictOn = (key) => (acc, val) => {
+  acc[val[key]] = val
+  return acc
+}
 const taxicab = (dx, dy) => Math.abs(dx) + Math.abs(dy);
 
 const LEFT = ["a", "j"];
@@ -78,6 +82,17 @@ const SPELLS = [
     purge: false,
   },
 ].map(Object.freeze);
+
+const ENEMIES = [
+  {
+    name: "bat",
+    health: 2
+  },
+  {
+    name: "ghost",
+    health: 3,
+  }
+].reduce(toDictOn('name'), {})
 
 const state = {
   player: {
@@ -162,23 +177,26 @@ function prependChild(parent, child) {
 }
 
 function tileToEl(tile, x, y) {
-  const type = ({
+  const name = ({
     "|": "tree",
     "@": "rock",
     "~": "water",
     "W": "player",
     "B": "bat",
+    "G": "ghost",
   })[tile];
 
-  if (typeof type === "undefined") return undefined;
+  if (typeof name === "undefined") return undefined;
 
   const el = document.createElementNS(NS, "use");
   el.setAttribute("x", x);
   el.setAttribute("y", y);
-  el.setAttribute("class", type);
-  el.setAttribute("href", "#" + type);
-  if (type === "bat") {
-    state.enemies.push({ name: type, el, x, y, health: 2 });
+  el.setAttribute("class", name);
+  el.setAttribute("href", "#" + name);
+
+  const enemy = ENEMIES[name]
+  if (enemy) {
+    state.enemies.push({ ...enemy, el, x, y });
   }
   return el;
 }

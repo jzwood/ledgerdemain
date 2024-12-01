@@ -182,11 +182,11 @@ NEXT STEPS
 - https://personal.math.ubc.ca/~cass/frivs/latin/latin-dict-full.html
 - implement all spells, i.e. come up with inputs, names, and animate effects
 X - fireball
-  - large-fireball
-  - many-fireballs
+/ - large-fireball
+/ - many-fireballs
 X - gust
-> - lightning
-  - mana drain
+X - lightning
+/ - mana drain
   - spirit summon
   - compass
   - light
@@ -205,3 +205,12 @@ X - gust
     - hands raised while casting for witch
     - fire animation
     - bat wings
+
+notes:
+  - maybe mana and managing mana is too complicated. maybe spells have a cooldown required before you can use again to prevent spamming.
+  - think deeply about how to communicate that UI to player
+      - spell in top left is green when you can invoke it but otherwise red? hmm that's not colorblind safe
+      - maybe checkmark or x next to spell you have the mana to cast? or the number of seconds until that spell is cooled down enough to cast??
+      - maybe instead of seconds count down it's converted to % ready that way it feels like spell is charging up with might feel good
+      - hmm spells go into effect instantly so queueing up spells that go into effect staggered is a little weird.
+      - unless the spell won't be invoked until it's cooled down that way you can change your mind

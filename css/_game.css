@@ -7,6 +7,10 @@
   fill: black;
 }
 
+.ghost {
+  fill: white;
+}
+
 .fireball {
   fill: #ff0000;
 }
