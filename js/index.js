@@ -1,5 +1,5 @@
 // fix impossible fingering: https://c1.staticflickr.com/9/8095/8485721150_5763b36301_b.jpg
-import * as util from './utils.js'
+import * as util from "./utils.js";
 
 const NS = "http://www.w3.org/2000/svg";
 
@@ -30,7 +30,7 @@ const SPELLS = [
     purge: false,
   },
   {
-    spell: "evtn-su",
+    spell: "evn-stu",
     mnemonic: "ventus",
     name: WIND,
     mana: 1,
