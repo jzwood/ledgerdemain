@@ -1,23 +1,7 @@
 // fix impossible fingering: https://c1.staticflickr.com/9/8095/8485721150_5763b36301_b.jpg
-const ABC = "qazwsxedcrfvtgbyhnujmikolp";
+import * as util from './utils.js'
+
 const NS = "http://www.w3.org/2000/svg";
-const cmp = (a, b) => ABC.indexOf(a) - ABC.indexOf(b);
-const intcmp = (a, b) => b - a;
-const euclidian = (dx, dy) => Math.sqrt((dx * dx) + (dy * dy));
-const scale = (f, dx, dy) => {
-  return [f * dx, f * dy];
-};
-const normalize = (dx, dy, f = 1) => {
-  const d = Math.max(euclidian(dx, dy), 0.001);
-  return scale(f / d, dx, dy);
-};
-const count = (arr, fxn) =>
-  arr.reduce((acc, val) => fxn(val) ? acc + 1 : acc, 0);
-const toDictOn = (key) => (acc, val) => {
-  acc[val[key]] = val
-  return acc
-}
-const taxicab = (dx, dy) => Math.abs(dx) + Math.abs(dy);
 
 const LEFT = ["a", "j"];
 const RIGHT = ["d", "l"];
@@ -86,13 +70,13 @@ const SPELLS = [
 const ENEMIES = [
   {
     name: "bat",
-    health: 2
+    health: 2,
   },
   {
     name: "ghost",
     health: 3,
-  }
-].reduce(toDictOn('name'), {})
+  },
+].reduce(util.toDictOn("name"), {});
 
 const state = {
   player: {
@@ -194,7 +178,7 @@ function tileToEl(tile, x, y) {
   el.setAttribute("class", name);
   el.setAttribute("href", "#" + name);
 
-  const enemy = ENEMIES[name]
+  const enemy = ENEMIES[name];
   if (enemy) {
     state.enemies.push({ ...enemy, el, x, y });
   }
@@ -245,7 +229,7 @@ function onKeyUp(event) {
 function onSpell() {
   const keys = Array.from(state.keysPressed);
   if (!keys.every((key) => MOVE.includes(key))) {
-    const spell = keys.sort(cmp).join("");
+    const spell = keys.sort(util.cmp).join("");
     state.spell.push(spell);
     const fullSpell = state.spell.join("-").toLowerCase();
     cast(fullSpell);
@@ -273,7 +257,7 @@ function cast(spell) {
         const ty = enemy.y;
         const x = state.player.x;
         const y = state.player.y;
-        const [vx, vy] = normalize(tx - x, ty - y, MAP_HYPOT);
+        const [vx, vy] = util.normalize(tx - x, ty - y, MAP_HYPOT);
         const el = document.createElementNS(NS, "use");
         el.setAttribute("x", x);
         el.setAttribute("y", y);
@@ -325,7 +309,7 @@ function nearestEnemy() {
   const { x, y } = state.player;
   return state.enemies.map((enemy) => ({
     ...enemy,
-    distance: euclidian(enemy.x - x, enemy.y - y),
+    distance: util.euclidian(enemy.x - x, enemy.y - y),
   })).sort((a, b) => b.distance - a.distance).at(0);
 }
 
@@ -401,7 +385,7 @@ function nextSpells(delta) {
       case FIREBALL: {
         const dx = spell.tx - spell.x;
         const dy = spell.ty - spell.y;
-        const distance = euclidian(dx, dy);
+        const distance = util.euclidian(dx, dy);
         const t = (FACTOR * delta) / distance;
         if (Math.abs(dx) > EPSILON) {
           spell.x += dx * t;
@@ -437,7 +421,7 @@ function nextEnemies(delta) {
   state.enemies.forEach((enemy) => {
     const dx = state.player.x - enemy.x;
     const dy = state.player.y - enemy.y;
-    const t2 = (0.75 * t) / euclidian(dx, dy);
+    const t2 = (0.75 * t) / util.euclidian(dx, dy);
     // TODO have the enemies chase oscillating ghost targets so they don't clump
     if (Math.abs(dx) > EPSILON) {
       enemy.x += dx * t2;
@@ -459,7 +443,7 @@ function drawState() {
         case FIREBALL: {
           const dx = enemy.x - spell.x;
           const dy = enemy.y - spell.y;
-          const dist = euclidian(dx, dy);
+          const dist = util.euclidian(dx, dy);
           if (dist <= EPSILON) {
             enemy.health -= spell.damage;
             spell.purge = true;
@@ -469,9 +453,9 @@ function drawState() {
         case WIND: {
           const dx = enemy.x - spell.x;
           const dy = enemy.y - spell.y;
-          const dist = euclidian(dx, dy);
+          const dist = util.euclidian(dx, dy);
           if (dist < spell.r) {
-            const [vx, vy] = normalize(dx, dy, spell.r);
+            const [vx, vy] = util.normalize(dx, dy, spell.r);
             enemy.x = spell.x + vx;
             enemy.y = spell.y + vy;
           }
@@ -480,7 +464,7 @@ function drawState() {
         case LIGHTNING: {
           const dx = enemy.x - spell.tx;
           const dy = enemy.y - spell.ty;
-          const dist = euclidian(dx, dy);
+          const dist = util.euclidian(dx, dy);
           if (dist < EPSILON) {
             enemy.health -= spell.damage;
             spell.damage = 0;
