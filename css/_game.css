@@ -57,3 +57,16 @@
 #latest-spell {
   right: 0;
 }
+
+#spell-compendium {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: ivory;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: pre-wrap;
+  font-size: 2rem;
+}

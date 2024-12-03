@@ -11,7 +11,7 @@ const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
 const FIREBALL = "fireball";
 const WIND = "wind";
 const LIGHTNING = "lightning";
-const REMEMBER = "remember"
+const REMEMBER = "remember";
 
 const MAP_HYPOT = 40;
 
@@ -19,7 +19,7 @@ const SPELLS = [
   {
     spell: "srbio-sgni",
     name: FIREBALL,
-    mnemonic: "orbis-ignis",
+    mnemonic: "orbis ignis",
     damage: 1,
     x: undefined,
     y: undefined,
@@ -42,7 +42,7 @@ const SPELLS = [
   },
   {
     spell: "sfnui-xul",
-    mnemonic: "funis-lux",
+    mnemonic: "funis lux",
     name: LIGHTNING,
     damage: 2,
     msVisible: 1000,
@@ -113,6 +113,10 @@ function main() {
     });
   state.log.progressEl = document.getElementById("spell-progress");
   state.log.latestEl = document.getElementById("latest-spell");
+  const spellCompendium = document.getElementById("spell-compendium");
+  spellCompendium.textContent = SPELLS.map((data) =>
+    `${data.spell.padEnd(12)}\t\t${data.mnemonic}/${data.name}`
+  ).join("\n");
   requestAnimationFrame(loop.bind(null, performance.now()));
   document.body.addEventListener("keydown", onKeyDown);
   document.body.addEventListener("keyup", onKeyUp);
@@ -249,9 +253,9 @@ function cast() {
   state.spell = state.spell.slice(0, -data.spell.split("-").length);
 
   if (name === REMEMBER) {
-    state.remembering = !state.remembering
-    drawState()
-    return null
+    state.remembering = !state.remembering;
+    drawState();
+    return null;
   }
 
   switch (name) {
@@ -512,7 +516,6 @@ function drawState() {
       }
     }
   });
-
   state.log.progressEl.textContent = state.spell.join("-");
   state.log.latestEl.textContent = state.log.latest;
 }
