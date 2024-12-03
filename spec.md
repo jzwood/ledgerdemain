@@ -178,6 +178,12 @@ TASKS
   - dialogue system for cutscenes
 
 
+LATIN:
+- madide : drunkenly.
+- aranea : spider's web.
+- canto : to sing.
+- vis : (sing.) violence / a large number, quantity, a force / nature
+
 NEXT STEPS
 - https://personal.math.ubc.ca/~cass/frivs/latin/latin-dict-full.html
 - implement all spells, i.e. come up with inputs, names, and animate effects
@@ -196,17 +202,17 @@ X - lightning
   - mu flowers (grow mana that you can collect later)
   - amplify (briefly increase mu efficiency; i.e. decreases mu requirement for spells)
 - come up with 4 new enemies
-    - bat
+X   - bat
     - archer
-    - ghost
+X   - ghost
     - human mob member
-    - evil wizard
+    - evil (red) wizard (shoots fireballs, moves very slowly)
 - animation frames
     - hands raised while casting for witch
     - fire animation
     - bat wings
 
-notes:
+errata:
   - maybe mana and managing mana is too complicated. maybe spells have a cooldown required before you can use again to prevent spamming.
   - think deeply about how to communicate that UI to player
       - spell in top left is green when you can invoke it but otherwise red? hmm that's not colorblind safe
@@ -214,3 +220,4 @@ notes:
       - maybe instead of seconds count down it's converted to % ready that way it feels like spell is charging up with might feel good
       - hmm spells go into effect instantly so queueing up spells that go into effect staggered is a little weird.
       - unless the spell won't be invoked until it's cooled down that way you can change your mind
+  - OK cooldowns felt bad so I'm going to both remove mana and cooldowns. I've just ramped up the floor spell difficulty so that spamming is a valid strategy if you are quick enough to pull it off.

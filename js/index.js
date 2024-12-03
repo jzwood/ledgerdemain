@@ -12,6 +12,7 @@ const FIREBALL = "fireball";
 const WIND = "wind";
 const LIGHTNING = "lightning";
 const REMEMBER = "remember";
+const REVIVE = "revive";
 
 const MAP_HYPOT = 40;
 
@@ -59,8 +60,11 @@ const SPELLS = [
     spell: "em-ni",
     mnemonic: "memini",
     name: REMEMBER,
-    el: undefined,
-    purge: false,
+  },
+  {
+    spell: "ecro",
+    mnemonic: "recro",
+    name: REVIVE,
   },
 ].map(Object.freeze);
 
@@ -115,7 +119,7 @@ function main() {
   state.log.latestEl = document.getElementById("latest-spell");
   const spellCompendium = document.getElementById("spell-compendium");
   spellCompendium.textContent = SPELLS.map((data) =>
-    `${data.spell.padEnd(12)}\t\t${data.mnemonic}/${data.name}`
+    `${data.spell.padEnd(14)} ${data.mnemonic}/${data.name}`
   ).join("\n");
   requestAnimationFrame(loop.bind(null, performance.now()));
   document.body.addEventListener("keydown", onKeyDown);
@@ -232,7 +236,7 @@ function onKeyUp(event) {
 function onSpell() {
   const keys = Array.from(state.keysPressed);
   if (!keys.every((key) => MOVE.includes(key))) {
-    const spell = keys.sort(util.cmp).join("");
+    const spell = keys.sort(util.abccmp).join("");
     state.spell.push(spell);
     cast();
   }

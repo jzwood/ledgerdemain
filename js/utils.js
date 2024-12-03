@@ -1,5 +1,9 @@
 const ABC = "qazwsxedcrfvtgbyhnujmikolp";
-export const cmp = (a, b) => ABC.indexOf(a) - ABC.indexOf(b);
+const ABC_INDEX = Array.from(ABC).reduce((acc, char) => {
+  acc[char] = ABC.indexOf(char);
+  return acc;
+}, {});
+export const abccmp = (a, b) => ABC_INDEX[a] - ABC_INDEX[b];
 export const intcmp = (a, b) => b - a;
 export const euclidian = (dx, dy) => Math.sqrt((dx * dx) + (dy * dy));
 export const scale = (f, dx, dy) => {
