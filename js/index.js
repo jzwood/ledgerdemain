@@ -11,17 +11,16 @@ const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
 const FIREBALL = "fireball";
 const WIND = "wind";
 const LIGHTNING = "lightning";
+const REMEMBER = "remember"
 
-const MAX_MANA = 4;
 const MAP_HYPOT = 40;
 
 const SPELLS = [
   {
-    spell: "sgni",
+    spell: "srbio-sgni",
     name: FIREBALL,
-    mnemonic: "ignis",
+    mnemonic: "orbis-ignis",
     damage: 1,
-    mana: 2,
     x: undefined,
     y: undefined,
     tx: undefined,
@@ -33,7 +32,6 @@ const SPELLS = [
     spell: "evn-stu",
     mnemonic: "ventus",
     name: WIND,
-    mana: 1,
     x: undefined,
     y: undefined,
     r: 1,
@@ -47,7 +45,6 @@ const SPELLS = [
     mnemonic: "funis-lux",
     name: LIGHTNING,
     damage: 2,
-    mana: 2,
     msVisible: 1000,
     msDuration: 0,
     x: undefined,
@@ -59,9 +56,9 @@ const SPELLS = [
     purge: false,
   },
   {
-    spell: "bil",
-    mnemonic: "lib",
-    name: "book",
+    spell: "em-ni",
+    mnemonic: "memini",
+    name: REMEMBER,
     el: undefined,
     purge: false,
   },
@@ -85,8 +82,8 @@ const state = {
     y: 0,
     dx: 0,
     dy: 0,
-    mana: 2,
   },
+  remembering: false,
   forest: {
     dx: 0,
     dy: 0,
@@ -186,8 +183,10 @@ function tileToEl(tile, x, y) {
 }
 
 function loop(t1, t2) {
-  nextState(t2 - t1);
-  drawState();
+  if (!state.remembering) {
+    nextState(t2 - t1);
+    drawState();
+  }
   requestAnimationFrame(loop.bind(null, t2));
 }
 
@@ -231,14 +230,14 @@ function onSpell() {
   if (!keys.every((key) => MOVE.includes(key))) {
     const spell = keys.sort(util.cmp).join("");
     state.spell.push(spell);
-    const fullSpell = state.spell.join("-").toLowerCase();
-    cast(fullSpell);
+    cast();
   }
 
   state.keysPressed.clear();
 }
 
-function cast(spell) {
+function cast() {
+  const spell = state.spell.join("-").toLowerCase();
   const data = SPELLS.find((data) => spell.endsWith(data.spell));
 
   if (!data) {
@@ -248,6 +247,12 @@ function cast(spell) {
   const { name } = data;
   state.log.latest = data.mnemonic;
   state.spell = state.spell.slice(0, -data.spell.split("-").length);
+
+  if (name === REMEMBER) {
+    state.remembering = !state.remembering
+    drawState()
+    return null
+  }
 
   switch (name) {
     case FIREBALL: {
@@ -358,13 +363,19 @@ function posToTile(x, y) {
 
 const EMPTY = "_";
 function isWalkable(x, y) {
-  const fy = state.forest.dy + Math.round(y * 0.5);
-  const row = state.forest.data[fy];
+  const { forest } = state;
+  const fyt = forest.dy + Math.round((y - 0.5) * 0.5);
+  const fyb = forest.dy + Math.round(y * 0.5);
 
-  const fxl = state.forest.dx + Math.round(x * 0.5);
-  const fxr = state.forest.dx + Math.round((x - 1) * 0.5);
+  const rowt = forest.data[fyt];
+  const rowb = forest.data[fyb];
 
-  return /\w/.test(row?.[fxl] ?? "") && /\w/.test(row?.[fxr] ?? "");
+  const fxl = forest.dx + Math.round(x * 0.5);
+  const fxr = forest.dx + Math.round((x - 1) * 0.5);
+
+  return [rowt?.[fxl], rowt?.[fxr], rowb?.[fxl], rowb?.[fxr]].every((tile) =>
+    tile && /\w/.test(tile)
+  );
 }
 
 function nextPlayer(delta) {
