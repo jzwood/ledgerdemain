@@ -11,8 +11,7 @@ const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
 const FIREBALL = "fireball";
 const WIND = "wind";
 const LIGHTNING = "lightning";
-const REMEMBER = "remember";
-const REVIVE = "revive";
+const HELP = "help";
 
 const MAP_HYPOT = 40;
 
@@ -57,14 +56,9 @@ const SPELLS = [
     purge: false,
   },
   {
-    spell: "em-ni",
-    mnemonic: "memini",
-    name: REMEMBER,
-  },
-  {
-    spell: "ecro",
-    mnemonic: "recro",
-    name: REVIVE,
+    spell: "stuil",
+    mnemonic: "utilis",
+    name: HELP,
   },
 ].map(Object.freeze);
 
@@ -87,7 +81,7 @@ const state = {
     dx: 0,
     dy: 0,
   },
-  remembering: false,
+  help: false,
   forest: {
     dx: 0,
     dy: 0,
@@ -100,6 +94,7 @@ const state = {
   log: {
     progressEl: undefined,
     latestEl: undefined,
+    compendiumEl: undefined,
     latest: "",
   },
   spells: [],
@@ -108,6 +103,14 @@ const state = {
 
 function main() {
   state.zoneEl = document.getElementById("map");
+  state.log.progressEl = document.getElementById("spell-progress");
+  state.log.latestEl = document.getElementById("latest-spell");
+  const spellCompendium = document.getElementById("spell-compendium");
+  spellCompendium.textContent = SPELLS.map((data) =>
+    `${data.spell.padEnd(14)} ${data.mnemonic}/${data.name}`
+  ).join("\n");
+  state.log.compendiumEl = spellCompendium;
+
   fetch("/data/forest.txt")
     .then((res) => res.text())
     .then((res) => {
@@ -115,13 +118,9 @@ function main() {
       state.forest.data = forest;
       loadMap([0, 6], [7, 7], forest);
     });
-  state.log.progressEl = document.getElementById("spell-progress");
-  state.log.latestEl = document.getElementById("latest-spell");
-  const spellCompendium = document.getElementById("spell-compendium");
-  spellCompendium.textContent = SPELLS.map((data) =>
-    `${data.spell.padEnd(14)} ${data.mnemonic}/${data.name}`
-  ).join("\n");
+
   requestAnimationFrame(loop.bind(null, performance.now()));
+
   document.body.addEventListener("keydown", onKeyDown);
   document.body.addEventListener("keyup", onKeyUp);
   document.body.addEventListener("dblclick", document.body.requestFullscreen);
@@ -191,7 +190,7 @@ function tileToEl(tile, x, y) {
 }
 
 function loop(t1, t2) {
-  if (!state.remembering) {
+  if (!state.help) {
     nextState(t2 - t1);
     drawState();
   }
@@ -256,8 +255,8 @@ function cast() {
   state.log.latest = data.mnemonic;
   state.spell = state.spell.slice(0, -data.spell.split("-").length);
 
-  if (name === REMEMBER) {
-    state.remembering = !state.remembering;
+  if (name === HELP) {
+    state.help = !state.help;
     drawState();
     return null;
   }
@@ -520,6 +519,7 @@ function drawState() {
       }
     }
   });
+  state.log.compendiumEl.style.display = state.help ? "" : "none";
   state.log.progressEl.textContent = state.spell.join("-");
   state.log.latestEl.textContent = state.log.latest;
 }

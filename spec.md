@@ -173,8 +173,8 @@ X       - enemy walking
       - progressively find spells?
 
 TASKS
-  - full screen support
-  - fix display spell dom reflow
+X - full screen support
+X - fix display spell dom reflow
   - dialogue system for cutscenes
 
 
@@ -183,6 +183,9 @@ LATIN:
 - aranea : spider's web.
 - canto : to sing.
 - vis : (sing.) violence / a large number, quantity, a force / nature
+- xiphias : sword-fish.
+- infenso : to attack, avenge.
+- utilis : useful, advantageous, helpful.
 
 NEXT STEPS
 - https://personal.math.ubc.ca/~cass/frivs/latin/latin-dict-full.html
