@@ -155,7 +155,12 @@
       - figure is spirit of your late husband, a sorcerer, but player won't find that out till later
     - grunts > minibosses > boss
     - in the end you find grandchildren safely in the woodcutter's cabin (their uncle)
-- STORY BOARD 4
+- STORY BOARD 4A
+  - venture into the dark wood to find your grandchilden
+  - find compass spell which leads you to a secret path to your nephew's cabin (the woodcutter) where the children are safe
+  - escort mission home
+  - grandchildren are assets that fight in rooms now (?)
+- STORY BOARD 5
     - The Master’s Tools Will Never Dismantle the Master’s House. Unless that tool is a fireball.
 
 - WHAT CRITICS ARE SAYING
@@ -211,3 +216,7 @@ TODO
 - another pass on art style
     - I like having a gradient halo around player so it gets darker in a circle around them
     - if we're feeling very cool then maybe fireballs illuminate the ground as they travel
+- discover spells?
+    - move menu into draw loop
+    - only show discovered rows (spells will need a :discovered flag)
+- cutscenes?
