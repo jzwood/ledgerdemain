@@ -3,7 +3,6 @@
     - ledgerdemain
     - Iniquitous
 
-
 - WORLD
     - top down
     - tiled world in the style of Merlin's Revenge 2
@@ -34,6 +33,15 @@
             - 3 entity = 6 mu
             - 4 entity = 10 mu
             - all entity = 15 mu
+        - errata:
+          - maybe mana and managing mana is too complicated. maybe spells have a cooldown required before you can use again to prevent spamming.
+          - think deeply about how to communicate that UI to player
+              - spell in top left is green when you can invoke it but otherwise red? hmm that's not colorblind safe
+              - maybe checkmark or x next to spell you have the mana to cast? or the number of seconds until that spell is cooled down enough to cast??
+              - maybe instead of seconds count down it's converted to % ready that way it feels like spell is charging up with might feel good
+              - hmm spells go into effect instantly so queueing up spells that go into effect staggered is a little weird.
+              - unless the spell won't be invoked until it's cooled down that way you can change your mind
+          - OK cooldowns felt bad so I'm going to both remove mana and cooldowns. I've just ramped up the floor spell difficulty so that spamming is a valid strategy if you are quick enough to pull it off.
     - TYPES:
       - ACTIONS
         - ATTACK
@@ -155,15 +163,13 @@
   - unique art style
 
 - TODO
-  - game map
-    - init map (incl seeding "rooms")
   - event loop
 X     - protagonist walking
 !     - spell casting
           - spell effects
             - enemy
             - environment
-?         - corrupted effects
+/         - corrupted effects
 X     - enemy animations/AI
 X       - enemy walking
         - enemy attacking
@@ -173,8 +179,6 @@ X       - enemy walking
       - progressively find spells?
 
 TASKS
-X - full screen support
-X - fix display spell dom reflow
   - dialogue system for cutscenes
 
 
@@ -187,40 +191,23 @@ LATIN:
 - infenso : to attack, avenge.
 - utilis : useful, advantageous, helpful.
 
-NEXT STEPS
+TODO
 - https://personal.math.ubc.ca/~cass/frivs/latin/latin-dict-full.html
-- implement all spells, i.e. come up with inputs, names, and animate effects
-X - fireball
-/ - large-fireball
-/ - many-fireballs
-X - gust
-X - lightning
-/ - mana drain
-  - spirit summon
+- spells
   - compass
-  - light
-  - shield
-  - stop time (aka pause to consult spellbook)
-  - save flowers (create savepoint)
-  - mu flowers (grow mana that you can collect later)
-  - amplify (briefly increase mu efficiency; i.e. decreases mu requirement for spells)
-- come up with 4 new enemies
-X   - bat
-    - archer
-X   - ghost
-    - human mob member
+  - light (?)
+- enemies
     - evil (red) wizard (shoots fireballs, moves very slowly)
 - animation frames
     - hands raised while casting for witch
     - fire animation
     - bat wings
-
-errata:
-  - maybe mana and managing mana is too complicated. maybe spells have a cooldown required before you can use again to prevent spamming.
-  - think deeply about how to communicate that UI to player
-      - spell in top left is green when you can invoke it but otherwise red? hmm that's not colorblind safe
-      - maybe checkmark or x next to spell you have the mana to cast? or the number of seconds until that spell is cooled down enough to cast??
-      - maybe instead of seconds count down it's converted to % ready that way it feels like spell is charging up with might feel good
-      - hmm spells go into effect instantly so queueing up spells that go into effect staggered is a little weird.
-      - unless the spell won't be invoked until it's cooled down that way you can change your mind
-  - OK cooldowns felt bad so I'm going to both remove mana and cooldowns. I've just ramped up the floor spell difficulty so that spamming is a valid strategy if you are quick enough to pull it off.
+- create graves for fallen enemy
+- create in-game tutorial
+- figure out loading between rooms
+- better enemy pathfinding
+- enemy environment collisions
+- figure out how to save game
+- another pass on art style
+    - I like having a gradient halo around player so it gets darker in a circle around them
+    - if we're feeling very cool then maybe fireballs illuminate the ground as they travel
