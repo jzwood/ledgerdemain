@@ -17,10 +17,16 @@ const MAP_HYPOT = 40;
 
 const SPELLS = [
   {
+    spell: "stuil",
+    mnemonic: "utilis",
+    name: HELP,
+  },
+  {
     spell: "srbio-sgni",
     name: FIREBALL,
     mnemonic: "orbis ignis",
     damage: 1,
+    pxPerMs: 6 / 1000,
     x: undefined,
     y: undefined,
     tx: undefined,
@@ -36,7 +42,7 @@ const SPELLS = [
     y: undefined,
     r: 1,
     maxR: 10,
-    drPerMs: 6 / 1000,
+    pxPerMs: 6 / 1000,
     el: undefined,
     purge: false,
   },
@@ -55,21 +61,18 @@ const SPELLS = [
     el: undefined,
     purge: false,
   },
-  {
-    spell: "stuil",
-    mnemonic: "utilis",
-    name: HELP,
-  },
 ].map(Object.freeze);
 
 const ENEMIES = [
   {
     name: "bat",
     health: 2,
+    pxPerMs: 2 / 1000,
   },
   {
     name: "ghost",
     health: 3,
+    pxPerMs: 1 / 1000,
   },
 ].reduce(util.toDictOn("name"), {});
 
@@ -80,6 +83,7 @@ const state = {
     y: 0,
     dx: 0,
     dy: 0,
+    pxPerMs: 3 / 1000,
   },
   help: false,
   forest: {
@@ -106,9 +110,17 @@ function main() {
   state.log.progressEl = document.getElementById("spell-progress");
   state.log.latestEl = document.getElementById("latest-spell");
   const spellCompendium = document.getElementById("spell-compendium");
-  spellCompendium.textContent = SPELLS.map((data) =>
-    `${data.spell.padEnd(14)} ${data.mnemonic}/${data.name}`
-  ).join("\n");
+  SPELLS.forEach((data) => {
+    const el = document.createElement("div");
+    el.classList.add("compendium-row");
+    const left = document.createElement("div");
+    left.textContent = data.spell;
+    const right = document.createElement("div");
+    right.textContent = `${data.mnemonic}/${data.name}`;
+    el.appendChild(left);
+    el.appendChild(right);
+    spellCompendium.appendChild(el);
+  });
   state.log.compendiumEl = spellCompendium;
 
   fetch("/data/forest.txt")
@@ -351,10 +363,6 @@ function handleMovementStop(key) {
   state.movementKeys.delete(key);
 }
 
-const PX_PER_SECOND = 3;
-const SECONDS_PER_MS = 1 / 1000;
-const FACTOR = PX_PER_SECOND * SECONDS_PER_MS;
-const BUFFER = 50;
 const EPSILON = 1;
 function nextState(delta) {
   nextPlayer(delta);
@@ -386,8 +394,8 @@ function isWalkable(x, y) {
 }
 
 function nextPlayer(delta) {
-  const t = FACTOR * delta;
-  const { dx, dy } = state.player;
+  const { dx, dy, pxPerMs } = state.player;
+  const t = pxPerMs * delta;
   const x = state.player.x + dx * t;
   const y = state.player.y + dy * t;
 
@@ -404,7 +412,7 @@ function nextSpells(delta) {
         const dx = spell.tx - spell.x;
         const dy = spell.ty - spell.y;
         const distance = util.euclidian(dx, dy);
-        const t = (FACTOR * delta) / distance;
+        const t = (spell.pxPerMs * delta) / distance;
         if (Math.abs(dx) > EPSILON) {
           spell.x += dx * t;
         }
@@ -417,7 +425,7 @@ function nextSpells(delta) {
         break;
       }
       case WIND: {
-        spell.r = spell.r + delta * spell.drPerMs;
+        spell.r = spell.r + delta * spell.pxPerMs;
         if (spell.r > spell.maxR) {
           spell.purge = true;
         }
@@ -435,17 +443,16 @@ function nextSpells(delta) {
 }
 
 function nextEnemies(delta) {
-  const t = FACTOR * delta;
   state.enemies.forEach((enemy) => {
     const dx = state.player.x - enemy.x;
     const dy = state.player.y - enemy.y;
-    const t2 = (0.75 * t) / util.euclidian(dx, dy);
+    const t = (enemy.pxPerMs * delta) / util.euclidian(dx, dy);
     // TODO have the enemies chase oscillating ghost targets so they don't clump
     if (Math.abs(dx) > EPSILON) {
-      enemy.x += dx * t2;
+      enemy.x += dx * t;
     }
     if (Math.abs(dy) > EPSILON) {
-      enemy.y += dy * t2;
+      enemy.y += dy * t;
     }
   });
 }
@@ -519,7 +526,7 @@ function drawState() {
       }
     }
   });
-  state.log.compendiumEl.style.display = state.help ? "" : "none";
+  state.log.compendiumEl.classList.toggle("hidden", !state.help);
   state.log.progressEl.textContent = state.spell.join("-");
   state.log.latestEl.textContent = state.log.latest;
 }

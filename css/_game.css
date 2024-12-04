@@ -58,15 +58,26 @@
   right: 0;
 }
 
-#spell-compendium {
+#compendium-overlay {
   background-color: rgba(0, 0, 0, 0.6);
   color: ivory;
   position: absolute;
   width: 100vw;
   height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  white-space: pre-wrap;
+  align-items: center;
   font-size: 2rem;
+}
+
+#compendium-overlay:has(.hidden) {
+  display: none;
+}
+
+#spell-compendium {}
+
+.compendium-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
 }
