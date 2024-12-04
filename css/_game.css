@@ -68,16 +68,29 @@
   justify-content: center;
   align-items: center;
   font-size: 2rem;
+
+  &:has(.hidden) {
+    display: none;
+  }
 }
 
-#compendium-overlay:has(.hidden) {
-  display: none;
+#spell-compendium {
+  margin: 0 1rem;
+  max-width: 550px;
 }
-
-#spell-compendium {}
 
 .compendium-row {
   display: flex;
   justify-content: space-between;
-  gap: 2rem;
+  gap: 3rem;
+
+  &:first-child {
+    border-bottom: 2px solid white;
+    font-size: 1.5rem;
+    align-items: end;
+  }
+
+  & > span:last-child {
+    text-align: right;
+  }
 }

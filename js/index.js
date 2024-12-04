@@ -20,6 +20,7 @@ const SPELLS = [
     spell: "stuil",
     mnemonic: "utilis",
     name: HELP,
+    desc: "toggle help",
   },
   {
     spell: "srbio-sgni",
@@ -116,7 +117,7 @@ function main() {
     const left = document.createElement("div");
     left.textContent = data.spell;
     const right = document.createElement("div");
-    right.textContent = `${data.mnemonic}/${data.name}`;
+    right.textContent = `${data.mnemonic}/${data.desc ?? data.name}`;
     el.appendChild(left);
     el.appendChild(right);
     spellCompendium.appendChild(el);
