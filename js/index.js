@@ -5,8 +5,8 @@ const NS = "http://www.w3.org/2000/svg";
 
 const SCENE = {
   WIDTH: 36,
-  HEIGHT: 18
-}
+  HEIGHT: 18,
+};
 const LEFT = ["a", "j"];
 const RIGHT = ["d", "l"];
 const UP = ["w", "i"];
@@ -84,8 +84,8 @@ const ENEMIES = [
 const state = {
   player: {
     el: undefined,
-    x: 0,
-    y: 0,
+    x: 2,
+    y: 2,
     dx: 0,
     dy: 0,
     pxPerMs: 3 / 1000,
@@ -110,8 +110,8 @@ const state = {
   zone: {
     el: undefined,
     x: 0,
-    y: 0
-  }
+    y: 0,
+  },
 };
 
 function main() {
@@ -138,9 +138,8 @@ function main() {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
       state.forest.data = forest;
       loadMap([0, 5], [7, 7]);
+      requestAnimationFrame(loop.bind(null, performance.now()));
     });
-
-  requestAnimationFrame(loop.bind(null, performance.now()));
 
   document.body.addEventListener("keydown", onKeyDown);
   document.body.addEventListener("keyup", onKeyUp);
@@ -148,8 +147,9 @@ function main() {
 }
 
 function loadMap([x, y], [px, py]) {
-  state.zone.x = x
-  state.zone.y = y
+  console.log(x, y, px, py);
+  state.zone.x = x;
+  state.zone.y = y;
   const WIDTH = 18;
   const HEIGHT = 9;
   const dx = x * WIDTH;
@@ -409,23 +409,17 @@ function nextPlayer(delta) {
   const t = pxPerMs * delta;
   const x = state.player.x + dx * t;
   const y = state.player.y + dy * t;
+  const BORDER = 0.5;
 
-  if (x < 0.5) {
-    // LOAD LEFT
-  }
-  if (x > SCENE.WIDTH - 0.5) {
-    loadMap([state.zone.x + 1, state.zone.y], [0.5, y])
-    // LOAD RIGHT
-  }
-  if (y < SCENE.HEIGHT) {
-    // LOAD DOWN
-  }
-
-  if (y > SCENE.HEIGHT) {
-    // LOAD ABOVE
-  }
-
-  if (isWalkable(x, y)) {
+  if (x < BORDER) {
+    loadMap([state.zone.x - 1, state.zone.y], [SCENE.WIDTH - BORDER, y]);
+  } else if (x > SCENE.WIDTH - BORDER) {
+    loadMap([state.zone.x + 1, state.zone.y], [BORDER, y]);
+  } else if (y < -BORDER) {
+    loadMap([state.zone.x, state.zone.y - 1], [x, SCENE.HEIGHT - BORDER]);
+  } else if (y > SCENE.HEIGHT - BORDER) {
+    loadMap([state.zone.x, state.zone.y + 1], [x, BORDER]);
+  } else if (isWalkable(x, y)) {
     state.player.x = x;
     state.player.y = y;
   }
