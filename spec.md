@@ -200,6 +200,8 @@ TODO
 - https://personal.math.ubc.ca/~cass/frivs/latin/latin-dict-full.html
 - spells
   - compass
+  - fireball
+      - needs buff. maybe it does not disappear on impact but just goes off the screen. will need to play with that to make sure it doesn't infinite hit enemies it's passing over.
   - light (?)
 - enemies
     - evil (red) wizard (shoots fireballs, moves very slowly)
@@ -219,4 +221,6 @@ TODO
 - discover spells?
     - move menu into draw loop
     - only show discovered rows (spells will need a :discovered flag)
+- bookkeeping
+    - store which enemies have been defeated on each room. or maybe, you cannot leave a room that has not been cleared? that way we only need to track which rooms have been cleared instead of which enemies are remaining with what health, etc.
 - cutscenes?
