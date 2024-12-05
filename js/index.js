@@ -147,9 +147,6 @@ function main() {
 }
 
 function loadMap([x, y], [px, py]) {
-  console.log(x, y, px, py);
-  state.zone.x = x;
-  state.zone.y = y;
   const WIDTH = 18;
   const HEIGHT = 9;
   const dx = x * WIDTH;
@@ -159,10 +156,13 @@ function loadMap([x, y], [px, py]) {
   state.zone.el.replaceChildren();
 
   const player = tileToEl("W", 2 * px, 2 * py);
+  state.zone.x = x;
+  state.zone.y = y;
   state.zone.el.appendChild(player);
   state.player.el = player;
   state.player.x = px;
   state.player.y = py;
+  state.enemies.length = 0 // clear enemies
 
   for (let h = 0; h < HEIGHT; h++) {
     for (let w = 0; w < WIDTH; w++) {
