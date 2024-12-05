@@ -3,6 +3,10 @@ import * as util from "./utils.js";
 
 const NS = "http://www.w3.org/2000/svg";
 
+const SCENE = {
+  WIDTH: 36,
+  HEIGHT: 18
+}
 const LEFT = ["a", "j"];
 const RIGHT = ["d", "l"];
 const UP = ["w", "i"];
@@ -103,11 +107,15 @@ const state = {
     latest: "",
   },
   spells: [],
-  zoneEl: undefined,
+  zone: {
+    el: undefined,
+    x: 0,
+    y: 0
+  }
 };
 
 function main() {
-  state.zoneEl = document.getElementById("map");
+  state.zone.el = document.getElementById("map");
   state.log.progressEl = document.getElementById("spell-progress");
   state.log.latestEl = document.getElementById("latest-spell");
   const spellCompendium = document.getElementById("spell-compendium");
@@ -129,7 +137,7 @@ function main() {
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
       state.forest.data = forest;
-      loadMap([0, 6], [7, 7], forest);
+      loadMap([0, 5], [7, 7]);
     });
 
   requestAnimationFrame(loop.bind(null, performance.now()));
@@ -139,30 +147,32 @@ function main() {
   document.body.addEventListener("dblclick", document.body.requestFullscreen);
 }
 
-function loadMap([x, y], [px, py], forest) {
+function loadMap([x, y], [px, py]) {
+  state.zone.x = x
+  state.zone.y = y
   const WIDTH = 18;
   const HEIGHT = 9;
   const dx = x * WIDTH;
   const dy = y * HEIGHT;
   state.forest.dx = dx;
   state.forest.dy = dy;
-  state.zoneEl.replaceChildren();
+  state.zone.el.replaceChildren();
 
   const player = tileToEl("W", 2 * px, 2 * py);
-  state.zoneEl.appendChild(player);
+  state.zone.el.appendChild(player);
   state.player.el = player;
   state.player.x = px;
   state.player.y = py;
 
   for (let h = 0; h < HEIGHT; h++) {
     for (let w = 0; w < WIDTH; w++) {
-      const tile = forest[dy + h][dx + w];
+      const tile = state.forest.data[dy + h][dx + w];
       const el = tileToEl(tile, 2 * w, 2 * h);
       if (el instanceof SVGElement) {
         if (["|", "@", "~"].includes(tile)) {
-          prependChild(state.zoneEl, el);
+          prependChild(state.zone.el, el);
         } else {
-          state.zoneEl.appendChild(el);
+          state.zone.el.appendChild(el);
         }
       }
     }
@@ -288,7 +298,7 @@ function cast() {
         el.setAttribute("y", y);
         el.setAttribute("class", name);
         el.setAttribute("href", "#" + name);
-        state.zoneEl.appendChild(el);
+        state.zone.el.appendChild(el);
         state.spells.push({ ...data, el, x, y, tx: tx + vx, ty: ty + vy });
       }
       break;
@@ -304,7 +314,7 @@ function cast() {
       el.setAttribute("cy", y);
       el.setAttribute("class", name);
       el.setAttribute("href", href);
-      state.zoneEl.appendChild(el);
+      state.zone.el.appendChild(el);
       state.spells.push({ ...data, el, x, y });
       break;
     }
@@ -323,7 +333,7 @@ function cast() {
       el.setAttribute("y2", ty);
       el.setAttribute("class", name);
       el.setAttribute("href", href);
-      state.zoneEl.appendChild(el);
+      state.zone.el.appendChild(el);
       state.spells.push({ ...data, el, x, y, tx, ty });
       break;
     }
@@ -399,6 +409,21 @@ function nextPlayer(delta) {
   const t = pxPerMs * delta;
   const x = state.player.x + dx * t;
   const y = state.player.y + dy * t;
+
+  if (x < 0.5) {
+    // LOAD LEFT
+  }
+  if (x > SCENE.WIDTH - 0.5) {
+    loadMap([state.zone.x + 1, state.zone.y], [0.5, y])
+    // LOAD RIGHT
+  }
+  if (y < SCENE.HEIGHT) {
+    // LOAD DOWN
+  }
+
+  if (y > SCENE.HEIGHT) {
+    // LOAD ABOVE
+  }
 
   if (isWalkable(x, y)) {
     state.player.x = x;
