@@ -7,7 +7,7 @@ const SCENE = {
   WIDTH: 36,
   HEIGHT: 18,
 };
-const PLAYER_SPEED = 3 / 1000
+const PLAYER_SPEED = 3 / 1000;
 const LEFT = ["a", "j"];
 const RIGHT = ["d", "l"];
 const UP = ["w", "i"];
@@ -173,14 +173,14 @@ function loadMap([x, y], [px, py]) {
   state.player.el = player;
   state.player.x = px;
   state.player.y = py;
-  state.enemies.length = 0 // clear enemies
+  state.enemies.length = 0; // clear enemies
 
   for (let h = 0; h < HEIGHT; h++) {
     for (let w = 0; w < WIDTH; w++) {
       const tile = state.forest.data[dy + h][dx + w];
       const el = tileToEl(tile, 2 * w, 2 * h);
       if (el instanceof SVGElement) {
-        if (["|", "@", "~", "W"].includes(tile)) {
+        if (["|", "@", "~", "W", "T"].includes(tile)) {
           prependChild(state.zone.el, el);
         } else {
           state.zone.el.appendChild(el);
@@ -203,10 +203,12 @@ function tileToEl(tile, x, y) {
     "|": "tree",
     "@": "rock",
     "~": "water",
+    "F": "scroll",
     "W": "wood",
     "X": "player",
     "B": "bat",
     "G": "ghost",
+    "T": "tree",
   })[tile];
 
   if (typeof name === "undefined") return undefined;
@@ -289,8 +291,8 @@ function cast() {
   const { name } = data;
   state.log.latest = data.mnemonic;
   state.spell = state.spell.slice(0, -data.spell.split("-").length);
-  state.player.dx = 0
-  state.player.dy = 0
+  state.player.dx = 0;
+  state.player.dy = 0;
 
   if (name === HELP) {
     state.help = !state.help;
@@ -352,7 +354,7 @@ function cast() {
       break;
     }
     case SPEED: {
-      state.spells.push({...data});
+      state.spells.push({ ...data });
     }
   }
 }
@@ -477,9 +479,9 @@ function nextSpells(delta) {
       }
       case SPEED: {
         spell.msDuration += delta;
-        state.player.pxPerMs = Math.max(state.player.pxPerMs, spell.pxPerMs)
+        state.player.pxPerMs = Math.max(state.player.pxPerMs, spell.pxPerMs);
         if (spell.msDuration > spell.msInEffect) {
-          state.player.pxPerMs = PLAYER_SPEED
+          state.player.pxPerMs = PLAYER_SPEED;
           spell.purge = true;
         }
         break;

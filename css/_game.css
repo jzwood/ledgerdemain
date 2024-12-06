@@ -2,6 +2,9 @@
 .player {
   fill: midnightblue;
 }
+.scroll {
+  fill: gold;
+}
 
 .bat {
   fill: black;
@@ -28,7 +31,7 @@
 }
 
 .wood {
-  fill: #584F40;
+  fill: #584f40;
 }
 
 .wind {
