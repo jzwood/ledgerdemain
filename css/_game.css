@@ -27,6 +27,10 @@
   fill: #005377;
 }
 
+.wood {
+  fill: #584F40;
+}
+
 .wind {
   fill: transparent;
   stroke-width: 0.5px;

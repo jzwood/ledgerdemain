@@ -7,6 +7,7 @@ const SCENE = {
   WIDTH: 36,
   HEIGHT: 18,
 };
+const PLAYER_SPEED = 3 / 1000
 const LEFT = ["a", "j"];
 const RIGHT = ["d", "l"];
 const UP = ["w", "i"];
@@ -15,6 +16,7 @@ const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
 const FIREBALL = "fireball";
 const WIND = "wind";
 const LIGHTNING = "lightning";
+const SPEED = "speed";
 const HELP = "help";
 
 const MAP_HYPOT = 40;
@@ -66,6 +68,15 @@ const SPELLS = [
     el: undefined,
     purge: false,
   },
+  {
+    spell: "rop-erop",
+    mnemonic: "propero",
+    name: SPEED,
+    pxPerMs: 5 / 1000,
+    msInEffect: 10_000,
+    msDuration: 0,
+    purge: false,
+  },
 ].map(Object.freeze);
 
 const ENEMIES = [
@@ -88,7 +99,7 @@ const state = {
     y: 2,
     dx: 0,
     dy: 0,
-    pxPerMs: 3 / 1000,
+    pxPerMs: PLAYER_SPEED,
   },
   help: false,
   forest: {
@@ -155,7 +166,7 @@ function loadMap([x, y], [px, py]) {
   state.forest.dy = dy;
   state.zone.el.replaceChildren();
 
-  const player = tileToEl("W", 2 * px, 2 * py);
+  const player = tileToEl("X", 2 * px, 2 * py);
   state.zone.x = x;
   state.zone.y = y;
   state.zone.el.appendChild(player);
@@ -169,7 +180,7 @@ function loadMap([x, y], [px, py]) {
       const tile = state.forest.data[dy + h][dx + w];
       const el = tileToEl(tile, 2 * w, 2 * h);
       if (el instanceof SVGElement) {
-        if (["|", "@", "~"].includes(tile)) {
+        if (["|", "@", "~", "W"].includes(tile)) {
           prependChild(state.zone.el, el);
         } else {
           state.zone.el.appendChild(el);
@@ -192,7 +203,8 @@ function tileToEl(tile, x, y) {
     "|": "tree",
     "@": "rock",
     "~": "water",
-    "W": "player",
+    "W": "wood",
+    "X": "player",
     "B": "bat",
     "G": "ghost",
   })[tile];
@@ -277,6 +289,8 @@ function cast() {
   const { name } = data;
   state.log.latest = data.mnemonic;
   state.spell = state.spell.slice(0, -data.spell.split("-").length);
+  state.player.dx = 0
+  state.player.dy = 0
 
   if (name === HELP) {
     state.help = !state.help;
@@ -336,6 +350,9 @@ function cast() {
       state.zone.el.appendChild(el);
       state.spells.push({ ...data, el, x, y, tx, ty });
       break;
+    }
+    case SPEED: {
+      state.spells.push({...data});
     }
   }
 }
@@ -458,6 +475,15 @@ function nextSpells(delta) {
         }
         break;
       }
+      case SPEED: {
+        spell.msDuration += delta;
+        state.player.pxPerMs = Math.max(state.player.pxPerMs, spell.pxPerMs)
+        if (spell.msDuration > spell.msInEffect) {
+          state.player.pxPerMs = PLAYER_SPEED
+          spell.purge = true;
+        }
+        break;
+      }
     }
   });
 }
@@ -526,7 +552,7 @@ function drawState() {
   state.spells.forEach((spell, index, spells) => {
     if (spell.purge) {
       spells.splice(index, 1);
-      spell.el.remove();
+      spell?.el?.remove();
     } else {
       switch (spell.name) {
         case FIREBALL: {

@@ -187,6 +187,7 @@ TASKS
   - dialogue system for cutscenes
 
 
+- https://personal.math.ubc.ca/~cass/frivs/latin/latin-dict-full.html
 LATIN:
 - madide : drunkenly.
 - aranea : spider's web.
@@ -195,9 +196,10 @@ LATIN:
 - xiphias : sword-fish.
 - infenso : to attack, avenge.
 - utilis : useful, advantageous, helpful.
+- celer : quick, swift, rapid, speedy, fast.
+- propero : to hasten, speed, move rapidly, come quickly.
 
 TODO
-- https://personal.math.ubc.ca/~cass/frivs/latin/latin-dict-full.html
 - spells
   - compass
   - fireball
@@ -211,7 +213,6 @@ TODO
     - bat wings
 - create graves for fallen enemy
 - create in-game tutorial
-- figure out loading between rooms
 - better enemy pathfinding
 - enemy environment collisions
 - figure out how to save game
