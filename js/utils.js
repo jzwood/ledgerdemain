@@ -20,3 +20,4 @@ export const toDictOn = (key) => (acc, val) => {
   return acc;
 };
 export const taxicab = (dx, dy) => Math.abs(dx) + Math.abs(dy);
+export const rand = (lo, hi) => lo + Math.random() * (hi - lo);

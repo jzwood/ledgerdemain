@@ -200,6 +200,7 @@ LATIN:
 - propero : to hasten, speed, move rapidly, come quickly.
 - flumen : river.
 - ambulo : to walk.
+- liber libri : book.
 
 TODO
 - spells

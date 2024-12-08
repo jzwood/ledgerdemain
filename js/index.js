@@ -23,10 +23,10 @@ const MAP_HYPOT = 40;
 
 const SPELLS = [
   {
-    spell: "stuil",
-    mnemonic: "utilis",
+    spell: "rbil",
+    mnemonic: "libri",
     name: HELP,
-    desc: "help",
+    desc: "spell book",
   },
   {
     spell: "srbio-sgni",
@@ -105,7 +105,7 @@ const state = {
     dx: 0,
     dy: 0,
     pxPerMs: PLAYER_SPEED,
-    scrolls: [],
+    scrolls: [HELP],
   },
   help: false,
   forest: {
@@ -304,9 +304,14 @@ function cast() {
   switch (name) {
     case FIREBALL: {
       const enemy = nearestEnemy();
-      if (enemy) {
-        const tx = enemy.x;
-        const ty = enemy.y;
+      const target = enemy ??
+        {
+          x: state.player.x + util.rand(-1, 1),
+          y: state.player.y + util.rand(-1, 1),
+        };
+      if (target) {
+        const tx = target.x;
+        const ty = target.y;
         const x = state.player.x;
         const y = state.player.y;
         const [vx, vy] = util.normalize(tx - x, ty - y, MAP_HYPOT);
