@@ -92,10 +92,15 @@ const ENEMIES = [
   },
 ].reduce(util.toDictOn("name"), {});
 
-const SCROLLS = [{ tile: "F", name: FIREBALL }].reduce(
-  util.toDictOn("tile"),
-  {},
-);
+const SCROLLS = [
+  { tile: "F", name: FIREBALL },
+  { tile: "L", name: LIGHTNING },
+  { tile: "S", name: SPEED },
+]
+  .reduce(
+    util.toDictOn("tile"),
+    {},
+  );
 
 const state = {
   player: {
@@ -176,7 +181,7 @@ function loadMap([x, y], [px, py]) {
       const tile = state.forest.data[dy + h][dx + w];
       const el = tileToEl(tile, 2 * w, 2 * h);
       if (el instanceof SVGElement) {
-        if (["|", "@", "~", "W", "T"].includes(tile)) {
+        if (["|", "@", "~", "D", "T"].includes(tile)) {
           prependChild(state.zone.el, el);
         } else {
           state.zone.el.appendChild(el);
@@ -200,7 +205,9 @@ function tileToEl(tile, x, y) {
     "@": "rock",
     "~": "water",
     "F": "scroll",
-    "W": "wood",
+    "S": "scroll",
+    "L": "scroll",
+    "D": "dirt",
     "X": "player",
     "B": "bat",
     "G": "ghost",
