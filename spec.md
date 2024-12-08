@@ -201,6 +201,7 @@ LATIN:
 - flumen : river.
 - ambulo : to walk.
 - liber libri : book.
+- novo : to make anew, refresh, revive, change, alter, invent.
 
 TODO
 - spells
@@ -215,16 +216,13 @@ TODO
     - fire animation
     - bat wings
 - create graves for fallen enemy
-- create in-game tutorial
+- create pre-game tutorial
 - better enemy pathfinding
 - enemy environment collisions
 - figure out how to save game
+- minimap
 - another pass on art style
     - I like having a gradient halo around player so it gets darker in a circle around them
     - if we're feeling very cool then maybe fireballs illuminate the ground as they travel
-- discover spells?
-    - move menu into draw loop
-    - only show discovered rows (spells will need a :discovered flag)
 - bookkeeping
     - store which enemies have been defeated on each room. or maybe, you cannot leave a room that has not been cleared? that way we only need to track which rooms have been cleared instead of which enemies are remaining with what health, etc.
-- cutscenes?
