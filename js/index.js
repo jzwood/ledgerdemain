@@ -26,7 +26,7 @@ const SPELLS = [
     spell: "stuil",
     mnemonic: "utilis",
     name: HELP,
-    desc: "toggle help",
+    desc: "help",
   },
   {
     spell: "srbio-sgni",
@@ -92,6 +92,11 @@ const ENEMIES = [
   },
 ].reduce(util.toDictOn("name"), {});
 
+const SCROLLS = [{ tile: "F", name: FIREBALL }].reduce(
+  util.toDictOn("tile"),
+  {},
+);
+
 const state = {
   player: {
     el: undefined,
@@ -100,6 +105,7 @@ const state = {
     dx: 0,
     dy: 0,
     pxPerMs: PLAYER_SPEED,
+    scrolls: [],
   },
   help: false,
   forest: {
@@ -108,6 +114,7 @@ const state = {
     data: [],
   },
   enemies: [],
+  scrolls: [],
   movementKeys: new Set(),
   keysPressed: new Set(),
   spell: [],
@@ -130,17 +137,6 @@ function main() {
   state.log.progressEl = document.getElementById("spell-progress");
   state.log.latestEl = document.getElementById("latest-spell");
   const spellCompendium = document.getElementById("spell-compendium");
-  SPELLS.forEach((data) => {
-    const el = document.createElement("div");
-    el.classList.add("compendium-row");
-    const left = document.createElement("div");
-    left.textContent = data.spell;
-    const right = document.createElement("div");
-    right.textContent = `${data.mnemonic}/${data.desc ?? data.name}`;
-    el.appendChild(left);
-    el.appendChild(right);
-    spellCompendium.appendChild(el);
-  });
   state.log.compendiumEl = spellCompendium;
 
   fetch("/data/forest.txt")
@@ -222,6 +218,11 @@ function tileToEl(tile, x, y) {
   const enemy = ENEMIES[name];
   if (enemy) {
     state.enemies.push({ ...enemy, el, x, y });
+  }
+
+  const scroll = SCROLLS[tile];
+  if (scroll) {
+    state.scrolls.push({ ...scroll, el, x, y });
   }
   return el;
 }
@@ -430,6 +431,16 @@ function nextPlayer(delta) {
   const y = state.player.y + dy * t;
   const BORDER = 0.5;
 
+  state.scrolls.forEach((scroll) => {
+    const dx = scroll.x - x;
+    const dy = scroll.y - y;
+    const distance = util.euclidian(dx, dy);
+    if (distance < EPSILON) {
+      state.player.scrolls.push(scroll.name);
+      scroll.purge = true;
+    }
+  });
+
   if (x < BORDER) {
     loadMap([state.zone.x - 1, state.zone.y], [SCENE.WIDTH - BORDER, y]);
   } else if (x > SCENE.WIDTH - BORDER) {
@@ -574,6 +585,32 @@ function drawState() {
       }
     }
   });
+
+  state.scrolls.forEach((scroll, index, scrolls) => {
+    if (scroll.purge) {
+      scrolls.splice(index, 1);
+      scroll?.el?.remove();
+    }
+  });
+
+  state.log.compendiumEl.replaceChildren();
+  if (state.help) {
+    [{ spell: "spell", mnemonic: "latin", desc: "name" }].concat(
+      SPELLS.filter(({ name }) => state.player.scrolls.includes(name)),
+    )
+      .forEach((data) => {
+        const el = document.createElement("div");
+        el.classList.add("compendium-row");
+        const left = document.createElement("div");
+        left.textContent = data.spell;
+        const right = document.createElement("div");
+        right.textContent = `${data.mnemonic}/${data.desc ?? data.name}`;
+        el.appendChild(left);
+        el.appendChild(right);
+        state.log.compendiumEl.appendChild(el);
+      });
+  }
+
   state.log.compendiumEl.classList.toggle("hidden", !state.help);
   state.log.progressEl.textContent = state.spell.join("-");
   state.log.latestEl.textContent = state.log.latest;

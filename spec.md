@@ -198,6 +198,8 @@ LATIN:
 - utilis : useful, advantageous, helpful.
 - celer : quick, swift, rapid, speedy, fast.
 - propero : to hasten, speed, move rapidly, come quickly.
+- flumen : river.
+- ambulo : to walk.
 
 TODO
 - spells
