@@ -17,6 +17,7 @@ const FIREBALL = "fireball";
 const WIND = "wind";
 const LIGHTNING = "lightning";
 const SPEED = "speed";
+const COMPASS = "navigate";
 const HELP = "help";
 
 const MAP_HYPOT = 40;
@@ -77,6 +78,13 @@ const SPELLS = [
     msDuration: 0,
     purge: false,
   },
+  {
+    spell: "avgnio",
+    mnemonic: "navigo",
+    msInEffect: 2_000,
+    msDuration: 0,
+    purge: false,
+  },
 ].map(Object.freeze);
 
 const ENEMIES = [
@@ -97,6 +105,7 @@ const SCROLLS = [
   { tile: "L", name: LIGHTNING },
   { tile: "W", name: WIND },
   { tile: "S", name: SPEED },
+  { tile: "C", name: COMPASS },
 ]
   .reduce(
     util.toDictOn("tile"),
@@ -208,6 +217,7 @@ function tileToEl(tile, x, y) {
     "F": "scroll",
     "S": "scroll",
     "L": "scroll",
+    "C": "scroll",
     "D": "dirt",
     "X": "witch",
     "B": "bat",
@@ -379,7 +389,7 @@ function nearestEnemy() {
   return state.enemies.map((enemy) => ({
     ...enemy,
     distance: util.euclidian(enemy.x - x, enemy.y - y),
-  })).sort((a, b) => b.distance - a.distance).at(0);
+  })).sort((a, b) => a.distance - b.distance).at(0);
 }
 
 function handleMovementStart(key) {

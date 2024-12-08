@@ -202,6 +202,8 @@ LATIN:
 - ambulo : to walk.
 - liber libri : book.
 - novo : to make anew, refresh, revive, change, alter, invent.
+- navigo : to sail, navigate.
+- tendo : to direct one's course, tend, make or head for.
 
 TODO
 - spells
