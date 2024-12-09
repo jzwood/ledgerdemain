@@ -205,11 +205,22 @@ LATIN:
 - navigo : to sail, navigate.
 - tendo : to direct one's course, tend, make or head for.
 
+ENEMY TRIANGE:
+- hp
+- fast
+X damage
+
 TODO
 - spells
   - compass
   - fireball
       - needs buff. maybe it does not disappear on impact but just goes off the screen. will need to play with that to make sure it doesn't infinite hit enemies it's passing over.
+      - I like it going off the screen. maybe enemies have a damage cooldown so that they can't take damage for 1 second after getting hit (or something).
+      - that also limits fireball spamming but there needs to be some kind of UI element to communicate the invulnerability window.
+      - hmm, I don't like that. too much work for one. maybe fireball itself has a cooldown? It'll be tricky to tune it.
+      - hmm I was avoiding this but there's nothing to stop me from having a fireball (all spells really) inited with a uuid.
+      - The enemy can log that UUID on hit and then won't take damage from that UUID again. counterintuitively that might be the easiest to implement without gotchas.
+      - I could also just add more attack spells and then the exact balance of FIREBALL becomes moot.
   - light (?)
 - enemies
     - evil (red) wizard (shoots fireballs, moves very slowly)

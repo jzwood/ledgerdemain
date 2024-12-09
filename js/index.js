@@ -90,13 +90,18 @@ const SPELLS = [
 const ENEMIES = [
   {
     name: "bat",
-    health: 2,
+    health: 1,
     pxPerMs: 2 / 1000,
   },
   {
     name: "ghost",
-    health: 3,
+    health: 2,
     pxPerMs: 1 / 1000,
+  },
+  {
+    name: "wizard",
+    health: 3,
+    pxPerMs: 0.5 / 1000,
   },
 ].reduce(util.toDictOn("name"), {});
 
