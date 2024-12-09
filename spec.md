@@ -204,6 +204,9 @@ LATIN:
 - novo : to make anew, refresh, revive, change, alter, invent.
 - navigo : to sail, navigate.
 - tendo : to direct one's course, tend, make or head for.
+- duo : two
+- ter : three times, thrice.
+- saepe sepe : hedge, fence, enclosure, haye.
 
 ENEMY TRIANGE:
 - hp
@@ -213,6 +216,7 @@ X damage
 TODO
 - spells
   - compass
+      - reveals an arrow towards grandchildren for 2 seconds
   - fireball
       - needs buff. maybe it does not disappear on impact but just goes off the screen. will need to play with that to make sure it doesn't infinite hit enemies it's passing over.
       - I like it going off the screen. maybe enemies have a damage cooldown so that they can't take damage for 1 second after getting hit (or something).
@@ -221,7 +225,10 @@ TODO
       - hmm I was avoiding this but there's nothing to stop me from having a fireball (all spells really) inited with a uuid.
       - The enemy can log that UUID on hit and then won't take damage from that UUID again. counterintuitively that might be the easiest to implement without gotchas.
       - I could also just add more attack spells and then the exact balance of FIREBALL becomes moot.
-  - light (?)
+      - actually, scrap all that. having fireballs be alterable, ie make-bigger make-two etc fully compensate already and add interesting depth
+  - hedgerow: (saepe sepe : hedge, fence, enclosure, haye.)
+    - creates a 2 tile (topiary?) hedge that enemies must go around
+        - duration is 2 seconds?
 - enemies
     - evil (red) wizard (shoots fireballs, moves very slowly)
 - animation frames
