@@ -481,8 +481,10 @@ function isWalkable(x, y) {
 function nextPlayer(delta) {
   const { dx, dy, pxPerMs } = state.player;
   const t = pxPerMs * delta;
-  const x = state.player.x + dx * t;
-  const y = state.player.y + dy * t;
+  const { x: x0, y: y0} = state.player
+  const x = x0 + dx * t;
+  const y = y0 + dy * t;
+  const moving = dx !== 0 || dy !== 0
   const BORDER = 0.5;
 
   state.scrolls.forEach((scroll) => {
@@ -503,9 +505,13 @@ function nextPlayer(delta) {
     loadMap([state.zone.x, state.zone.y - 1], [x, SCENE.HEIGHT - BORDER]);
   } else if (y > SCENE.HEIGHT - BORDER) {
     loadMap([state.zone.x, state.zone.y + 1], [x, BORDER]);
-  } else if (isWalkable(x, y)) {
+  } else if (moving && isWalkable(x, y)) {
     state.player.x = x;
     state.player.y = y;
+  } else if (moving && isWalkable(x0, y)) {
+    state.player.y = y;
+  } else if (moving && isWalkable(x, y0)) {
+    state.player.x = x;
   }
 }
 
