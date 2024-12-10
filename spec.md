@@ -230,8 +230,6 @@ TODO
     - creates a 2 tile (topiary?) hedge that enemies must go around
         - duration is 2 seconds?
   - create spiderweb tile that is just env trap for you or enemies
-- enemies
-    - evil (red) wizard (shoots fireballs, moves very slowly)
 - animation frames
     - hands raised while casting for witch
     - fire animation

@@ -19,6 +19,7 @@ const LIGHTNING = "lightning";
 const SPEED = "speed";
 const COMPASS = "navigate";
 const HELP = "help";
+const TOMBSTONE = "tombstone";
 const SORCERER = "sorcerer";
 
 const MAP_HYPOT = 40;
@@ -328,6 +329,15 @@ function createFireball(src, target, data) {
   state.spells.push({ ...data, el, x, y, tx: tx + vx, ty: ty + vy });
 }
 
+function createTombstone({ x, y }) {
+  const el = document.createElementNS(NS, "use");
+  el.setAttribute("x", x);
+  el.setAttribute("y", y);
+  el.setAttribute("class", TOMBSTONE);
+  el.setAttribute("href", "#" + TOMBSTONE);
+  state.zone.el.appendChild(el);
+}
+
 function cast() {
   const spell = state.spell.join("-").toLowerCase();
   const data = SPELLS.find((data) => spell.endsWith(data.spell));
@@ -560,11 +570,11 @@ function nextEnemies(delta) {
       enemy.msDuration += delta;
       if (enemy.msDuration > enemy.msCooldown) {
         enemy.msDuration = 0;
-        const data = SPELLS.find(({ name }) => name === FIREBALL)
+        const data = SPELLS.find(({ name }) => name === FIREBALL);
         createFireball(
           enemy,
           state.player,
-          {...data, evil: true}
+          { ...data, evil: true },
         );
       }
     }
@@ -615,8 +625,14 @@ function drawState() {
       }
     });
     if (enemy.health <= 0) {
+      console.log("HERE");
       enemies.splice(ei, 1);
-      enemy.el.remove();
+      createTombstone(enemy);
+      enemy.el.style.transformOrigin = `${enemy.x}px ${enemy.y + 1}px`;
+      enemy.el.style.transform =
+        "rotateX(180deg) skew(40deg) scale(0.8) translateX(0.2px)";
+      enemy.el.style.opacity = 0.4;
+      //enemy.el.remove();
     }
   });
   state.spells.forEach((spell, index, spells) => {

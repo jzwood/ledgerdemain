@@ -49,6 +49,10 @@
   stroke-linecap: round;
 }
 
+.tombstone {
+  fill: darkgray;
+}
+
 #spell-progress, #latest-spell {
   background-color: rgba(0, 0, 0, 0.4);
   padding: 0.2rem 1rem;
