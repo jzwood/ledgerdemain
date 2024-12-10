@@ -229,6 +229,7 @@ TODO
   - hedgerow: (saepe sepe : hedge, fence, enclosure, haye.)
     - creates a 2 tile (topiary?) hedge that enemies must go around
         - duration is 2 seconds?
+  - create spiderweb tile that is just env trap for you or enemies
 - enemies
     - evil (red) wizard (shoots fireballs, moves very slowly)
 - animation frames
@@ -241,8 +242,5 @@ TODO
 - enemy environment collisions
 - figure out how to save game
 - minimap
-- another pass on art style
-    - I like having a gradient halo around player so it gets darker in a circle around them
-    - if we're feeling very cool then maybe fireballs illuminate the ground as they travel
 - bookkeeping
     - store which enemies have been defeated on each room. or maybe, you cannot leave a room that has not been cleared? that way we only need to track which rooms have been cleared instead of which enemies are remaining with what health, etc.

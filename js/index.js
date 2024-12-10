@@ -19,6 +19,7 @@ const LIGHTNING = "lightning";
 const SPEED = "speed";
 const COMPASS = "navigate";
 const HELP = "help";
+const SORCERER = "sorcerer";
 
 const MAP_HYPOT = 40;
 
@@ -35,6 +36,7 @@ const SPELLS = [
     mnemonic: "orbis ignis",
     damage: 1,
     pxPerMs: 6 / 1000,
+    evil: false,
     x: undefined,
     y: undefined,
     tx: undefined,
@@ -87,6 +89,8 @@ const SPELLS = [
   },
 ].map(Object.freeze);
 
+const SUBSPELLS = new Set(SPELLS.flatMap(({ spell }) => spell.split("-")));
+
 const ENEMIES = [
   {
     name: "bat",
@@ -99,9 +103,11 @@ const ENEMIES = [
     pxPerMs: 1 / 1000,
   },
   {
-    name: "wizard",
+    name: SORCERER,
     health: 3,
-    pxPerMs: 0.5 / 1000,
+    pxPerMs: 0.25 / 1000,
+    msCooldown: 3000,
+    msDuration: 0,
   },
 ].reduce(util.toDictOn("name"), {});
 
@@ -219,8 +225,8 @@ function tileToEl(tile, x, y) {
     "|": "tree",
     "@": "rock",
     "~": "water",
+    "S": "sorcerer",
     "F": "scroll",
-    "S": "scroll",
     "L": "scroll",
     "C": "scroll",
     "D": "dirt",
@@ -298,11 +304,28 @@ function onSpell() {
   const keys = Array.from(state.keysPressed);
   if (!keys.every((key) => MOVE.includes(key))) {
     const spell = keys.sort(util.abccmp).join("");
-    state.spell.push(spell);
-    cast();
+    if (SUBSPELLS.has(spell)) {
+      state.spell.push(spell);
+      cast();
+    }
   }
 
   state.keysPressed.clear();
+}
+
+function createFireball(src, target, data) {
+  const tx = target.x;
+  const ty = target.y;
+  const x = src.x;
+  const y = src.y;
+  const [vx, vy] = util.normalize(tx - x, ty - y, MAP_HYPOT);
+  const el = document.createElementNS(NS, "use");
+  el.setAttribute("x", x);
+  el.setAttribute("y", y);
+  el.setAttribute("class", FIREBALL);
+  el.setAttribute("href", "#" + FIREBALL);
+  state.zone.el.appendChild(el);
+  state.spells.push({ ...data, el, x, y, tx: tx + vx, ty: ty + vy });
 }
 
 function cast() {
@@ -325,6 +348,8 @@ function cast() {
     return null;
   }
 
+  if (state.help) return null;
+
   switch (name) {
     case FIREBALL: {
       const enemy = nearestEnemy();
@@ -334,18 +359,7 @@ function cast() {
           y: state.player.y + util.rand(-1, 1),
         };
       if (target) {
-        const tx = target.x;
-        const ty = target.y;
-        const x = state.player.x;
-        const y = state.player.y;
-        const [vx, vy] = util.normalize(tx - x, ty - y, MAP_HYPOT);
-        const el = document.createElementNS(NS, "use");
-        el.setAttribute("x", x);
-        el.setAttribute("y", y);
-        el.setAttribute("class", name);
-        el.setAttribute("href", "#" + name);
-        state.zone.el.appendChild(el);
-        state.spells.push({ ...data, el, x, y, tx: tx + vx, ty: ty + vy });
+        createFireball(state.player, target, data);
       }
       break;
     }
@@ -542,6 +556,18 @@ function nextEnemies(delta) {
     if (Math.abs(dy) > EPSILON) {
       enemy.y += dy * t;
     }
+    if (enemy.name === SORCERER) {
+      enemy.msDuration += delta;
+      if (enemy.msDuration > enemy.msCooldown) {
+        enemy.msDuration = 0;
+        const data = SPELLS.find(({ name }) => name === FIREBALL)
+        createFireball(
+          enemy,
+          state.player,
+          {...data, evil: true}
+        );
+      }
+    }
   });
 }
 
@@ -554,12 +580,14 @@ function drawState() {
     state.spells.forEach((spell, si, spells) => {
       switch (spell.name) {
         case FIREBALL: {
-          const dx = enemy.x - spell.x;
-          const dy = enemy.y - spell.y;
-          const dist = util.euclidian(dx, dy);
-          if (dist <= EPSILON) {
-            enemy.health -= spell.damage;
-            spell.purge = true;
+          if (!spell.evil) {
+            const dx = enemy.x - spell.x;
+            const dy = enemy.y - spell.y;
+            const dist = util.euclidian(dx, dy);
+            if (dist <= EPSILON) {
+              enemy.health -= spell.damage;
+              spell.purge = true;
+            }
           }
           break;
         }
