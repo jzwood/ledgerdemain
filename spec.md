@@ -234,7 +234,6 @@ TODO
     - hands raised while casting for witch
     - fire animation
     - bat wings
-- create graves for fallen enemy
 - create pre-game tutorial
 - better enemy pathfinding
 - enemy environment collisions

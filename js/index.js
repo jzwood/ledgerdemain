@@ -17,7 +17,7 @@ const FIREBALL = "fireball";
 const WIND = "wind";
 const LIGHTNING = "lightning";
 const SPEED = "speed";
-const COMPASS = "navigate";
+const NAVIGATE = "navigate";
 const HELP = "help";
 const TOMBSTONE = "tombstone";
 const SORCERER = "sorcerer";
@@ -117,7 +117,7 @@ const SCROLLS = [
   { tile: "L", name: LIGHTNING },
   { tile: "W", name: WIND },
   { tile: "S", name: SPEED },
-  { tile: "C", name: COMPASS },
+  { tile: "N", name: NAVIGATE },
 ]
   .reduce(
     util.toDictOn("tile"),
@@ -203,7 +203,7 @@ function loadMap([x, y], [px, py]) {
       const tile = state.forest.data[dy + h][dx + w];
       const el = tileToEl(tile, 2 * w, 2 * h);
       if (el instanceof SVGElement) {
-        if (["|", "@", "~", "D", "T", "A"].includes(tile)) {
+        if (["|", "@", "~", "D", "T", "A", "C"].includes(tile)) {
           prependChild(state.zone.el, el);
         } else {
           state.zone.el.appendChild(el);
@@ -236,6 +236,7 @@ function tileToEl(tile, x, y) {
     "G": "ghost",
     "T": "tree",
     "A": "water",
+    "C": "cobwebs"
   })[tile];
 
   if (typeof name === "undefined") return undefined;

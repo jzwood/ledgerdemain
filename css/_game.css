@@ -49,8 +49,25 @@
   stroke-linecap: round;
 }
 
+.cobwebs {
+  background: {
+    red;
+  }
+  fill: white;
+}
+
 .tombstone {
   fill: darkgray;
+}
+
+
+.minimap {
+  white-space: pre;
+  background-color: black;
+  color: white;
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
 }
 
 #spell-progress, #latest-spell {
