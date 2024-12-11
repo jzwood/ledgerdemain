@@ -52,7 +52,7 @@ const SPELLS = [
     x: undefined,
     y: undefined,
     r: 1,
-    maxR: 10,
+    paxR: 10,
     pxPerMs: 6 / 1000,
     el: undefined,
     purge: false,
@@ -157,6 +157,7 @@ const state = {
     x: 0,
     y: 0,
   },
+  minimap: { discovered: [], cleared: [] },
 };
 
 function main() {
@@ -198,10 +199,12 @@ function loadMap([x, y], [px, py]) {
   state.player.y = py;
   state.enemies.length = 0; // clear enemies
 
+  const clear = state.minimap.cleared.some((map) => map.x == x && map.y === y);
+
   for (let h = 0; h < HEIGHT; h++) {
     for (let w = 0; w < WIDTH; w++) {
       const tile = state.forest.data[dy + h][dx + w];
-      const el = tileToEl(tile, 2 * w, 2 * h);
+      const el = tileToEl(tile, 2 * w, 2 * h, clear);
       if (el instanceof SVGElement) {
         if (["|", "@", "~", "D", "T", "A", "C"].includes(tile)) {
           prependChild(state.zone.el, el);
@@ -211,6 +214,30 @@ function loadMap([x, y], [px, py]) {
       }
     }
   }
+
+  const minimap = document.getElementById("minimap");
+  minimap.replaceChildren();
+  if (!state.minimap.discovered.some((map) => map.x === x && map.y === y)) {
+    state.minimap.discovered.push({ x, y });
+  }
+
+  const drawMiniTile = (color, { x, y }) => {
+    const el = document.createElementNS(NS, "rect");
+    el.setAttribute("x", x / 2);
+    el.setAttribute("y", y / 2);
+    el.setAttribute("width", 0.5);
+    el.setAttribute("height", 0.5);
+    el.setAttribute("fill", color);
+    minimap.appendChild(el);
+  };
+
+  state.minimap.discovered.forEach((pos) => {
+    drawMiniTile("rgb(255, 255, 0)", pos);
+  });
+
+  state.minimap.cleared.forEach((pos) => {
+    drawMiniTile("rgb(0, 255, 0)", pos);
+  });
 }
 
 function prependChild(parent, child) {
@@ -221,7 +248,7 @@ function prependChild(parent, child) {
   }
 }
 
-function tileToEl(tile, x, y) {
+function tileToEl(tile, x, y, clear) {
   const name = ({
     "|": "tree",
     "@": "rock",
@@ -250,6 +277,8 @@ function tileToEl(tile, x, y) {
   el.setAttribute("href", "#" + name);
 
   const enemy = ENEMIES[name];
+  if (enemy && clear) return undefined;
+
   if (enemy) {
     state.enemies.push({ ...enemy, el, x, y });
   }
@@ -588,6 +617,15 @@ function nextEnemies(delta) {
       }
     }
   });
+
+  if (
+    state.enemies.length === 0 &&
+    !state.minimap.cleared.some((map) =>
+      map.x === state.zone.x && map.y === state.zone.y
+    )
+  ) {
+    state.minimap.cleared.push({ x: state.zone.x, y: state.zone.y });
+  }
 }
 
 function drawState() {
@@ -634,14 +672,12 @@ function drawState() {
       }
     });
     if (enemy.health <= 0) {
-      console.log("HERE");
       enemies.splice(ei, 1);
       createTombstone(enemy);
       enemy.el.style.transformOrigin = `${enemy.x}px ${enemy.y + 1}px`;
       enemy.el.style.transform =
         "rotateX(180deg) skew(40deg) scale(0.8) translateX(0.2px)";
       enemy.el.style.opacity = 0.4;
-      //enemy.el.remove();
     }
   });
   state.spells.forEach((spell, index, spells) => {
