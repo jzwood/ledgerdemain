@@ -216,6 +216,7 @@ X damage
 TODO
 - better enemy pathfinding
 - enemy environment collisions
+- player death
 - spells
   - compass
       - reveals an arrow towards grandchildren for 2 seconds
@@ -227,5 +228,4 @@ TODO
   - update spiderweb tile so that is just env trap for you or enemies
 - figure out how to save game
 - minimap
-- bookkeeping
-    - store which enemies have been defeated on each room. or maybe, you cannot leave a room that has not been cleared? that way we only need to track which rooms have been cleared instead of which enemies are remaining with what health, etc.
+    - keep track of if room was visited (yellow), unvisited (black), or fully cleared (green)

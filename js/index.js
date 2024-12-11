@@ -237,6 +237,8 @@ function tileToEl(tile, x, y) {
     "T": "tree",
     "A": "water",
     "C": "cobweb",
+    "1": "child",
+    "2": "child",
   })[tile];
 
   if (typeof name === "undefined") return undefined;
