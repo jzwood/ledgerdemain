@@ -217,7 +217,15 @@ function loadMap([x, y], [px, py]) {
 
   const minimap = document.getElementById("minimap");
   minimap.replaceChildren();
-  if (!state.minimap.discovered.some((map) => map.x === x && map.y === y)) {
+
+  if (
+    !state.minimap.cleared.some((map) => map.x === x && map.y === y) &&
+    state.enemies.length === 0
+  ) {
+    state.minimap.cleared.push({ x, y });
+  } else if (
+    !state.minimap.discovered.some((map) => map.x === x && map.y === y)
+  ) {
     state.minimap.discovered.push({ x, y });
   }
 
