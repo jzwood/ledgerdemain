@@ -52,7 +52,7 @@ const SPELLS = [
     x: undefined,
     y: undefined,
     r: 1,
-    paxR: 10,
+    maxR: 10,
     pxPerMs: 6 / 1000,
     el: undefined,
     purge: false,
