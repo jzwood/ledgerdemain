@@ -236,7 +236,7 @@ function tileToEl(tile, x, y) {
     "G": "ghost",
     "T": "tree",
     "A": "water",
-    "C": "cobwebs"
+    "C": "cobweb",
   })[tile];
 
   if (typeof name === "undefined") return undefined;
@@ -481,10 +481,10 @@ function isWalkable(x, y) {
 function nextPlayer(delta) {
   const { dx, dy, pxPerMs } = state.player;
   const t = pxPerMs * delta;
-  const { x: x0, y: y0} = state.player
+  const { x: x0, y: y0 } = state.player;
   const x = x0 + dx * t;
   const y = y0 + dy * t;
-  const moving = dx !== 0 || dy !== 0
+  const moving = dx !== 0 || dy !== 0;
   const BORDER = 0.5;
 
   state.scrolls.forEach((scroll) => {

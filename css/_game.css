@@ -49,17 +49,15 @@
   stroke-linecap: round;
 }
 
-.cobwebs {
-  background: {
-    red;
-  }
-  fill: white;
+.cobweb {
+  fill: transparent;
+  stroke: white;
+  stroke-width: 0.1px;
 }
 
 .tombstone {
   fill: darkgray;
 }
-
 
 .minimap {
   white-space: pre;
