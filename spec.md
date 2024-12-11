@@ -214,6 +214,8 @@ ENEMY TRIANGE:
 X damage
 
 TODO
+- better enemy pathfinding
+- enemy environment collisions
 - spells
   - compass
       - reveals an arrow towards grandchildren for 2 seconds
@@ -230,13 +232,7 @@ TODO
     - creates a 2 tile (topiary?) hedge that enemies must go around
         - duration is 2 seconds?
   - update spiderweb tile so that is just env trap for you or enemies
-- animation frames
-    - hands raised while casting for witch
-    - fire animation
-    - bat wings
 - create pre-game tutorial
-- better enemy pathfinding
-- enemy environment collisions
 - figure out how to save game
 - minimap
 - bookkeeping
