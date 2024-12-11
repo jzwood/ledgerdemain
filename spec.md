@@ -215,8 +215,15 @@ X damage
 
 TODO
 - better enemy pathfinding
-- enemy environment collisions
+    - we don't want enemies to clump up
+- enemy environment collisions (applies to their movement and being pushed by wind)
+    - wizards cannot go over rocks, water, trees
+    - bats cannot go over rocks, trees
+    - ghosts cannot go over rocks
 - player death
+    - collision with enemy -> death
+    - collision with wizard fireball -> death
+    - death -> tombstone
 - spells
   - compass
       - reveals an arrow towards grandchildren for 2 seconds
@@ -226,6 +233,6 @@ TODO
     - creates a 2 tile (topiary?) hedge that enemies must go around
         - duration is 2 seconds?
   - update spiderweb tile so that is just env trap for you or enemies
-- figure out how to save game
-- minimap
-    - keep track of if room was visited (yellow), unvisited (black), or fully cleared (green)
+- figure out how to save/restore game
+- endgame sequence?
+    - final boss?
