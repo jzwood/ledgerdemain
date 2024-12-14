@@ -8,9 +8,6 @@
 .sorcerer {
   fill: darkred;
 }
-.scroll {
-  fill: gold;
-}
 
 .bat {
   fill: black;
@@ -18,6 +15,14 @@
 
 .ghost {
   fill: white;
+}
+
+.bat, .ghost, .sorcerer, .witch {
+  transform: translate(-0.5px, -0.5px);
+}
+
+.scroll {
+  fill: gold;
 }
 
 .fireball {

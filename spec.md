@@ -225,9 +225,6 @@ TODO
     - collision with wizard fireball -> death
     - death -> tombstone
 - spells
-  - compass
-      - reveals an arrow towards grandchildren for 2 seconds
-      - no A* required. just have an arrow that points towards cell (0,15) in the forest
   - fireball
       - having fireballs be alterable, ie make-bigger make-two etc fully compensate already and add interesting depth
   - hedgerow: (saepe sepe : hedge, fence, enclosure, haye.)
