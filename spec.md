@@ -214,8 +214,6 @@ ENEMY TRIANGE:
 X damage
 
 TODO
-- better enemy pathfinding
-    - we don't want enemies to clump up
 - enemy environment collisions (applies to their movement and being pushed by wind)
     - wizards cannot go over rocks, water, trees
     - bats cannot go over rocks, trees

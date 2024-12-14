@@ -16,7 +16,7 @@ const MOVE = [].concat(LEFT, RIGHT, UP, DOWN).join("");
 const FIREBALL = "fireball";
 const WIND = "wind";
 const LIGHTNING = "lightning";
-const SPEED = "speed";
+const QUICK = "quick";
 const NAVIGATE = "navigate";
 const HELP = "help";
 const TOMBSTONE = "tombstone";
@@ -75,7 +75,7 @@ const SPELLS = [
   {
     spell: "rop-erop",
     mnemonic: "propero",
-    name: SPEED,
+    name: QUICK,
     pxPerMs: 5 / 1000,
     msInEffect: 10_000,
     msDuration: 0,
@@ -117,7 +117,7 @@ const SCROLLS = [
   { tile: "F", name: FIREBALL },
   { tile: "L", name: LIGHTNING },
   { tile: "W", name: WIND },
-  { tile: "S", name: SPEED },
+  { tile: "Q", name: QUICK },
   { tile: "N", name: NAVIGATE },
 ]
   .reduce(
@@ -480,7 +480,7 @@ function cast() {
       state.spells.push({ ...data, el, x, y });
       break;
     }
-    case SPEED: {
+    case QUICK: {
       state.spells.push({ ...data });
       break;
     }
@@ -632,7 +632,7 @@ function nextSpells(delta) {
         }
         break;
       }
-      case SPEED: {
+      case QUICK: {
         spell.msDuration += delta;
         state.player.pxPerMs = Math.max(state.player.pxPerMs, spell.pxPerMs);
         if (spell.msDuration > spell.msInEffect) {
