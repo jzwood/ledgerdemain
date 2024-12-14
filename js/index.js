@@ -82,9 +82,10 @@ const SPELLS = [
     purge: false,
   },
   {
-    spell: "avgnio",
+    spell: "avn-gio",
     mnemonic: "navigo",
-    msInEffect: 2_000,
+    name: NAVIGATE,
+    msVisible: 2_000,
     msDuration: 0,
     purge: false,
   },
@@ -172,7 +173,7 @@ function main() {
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
       state.forest.data = forest;
-      loadMap([0, 5], [7, 7]);
+      loadMap([0, 1], [8, 8]);
       requestAnimationFrame(loop.bind(null, performance.now()));
     });
 
@@ -419,7 +420,7 @@ function cast() {
       const y = state.player.y;
       const wind = document.querySelector(href);
       const el = wind.cloneNode(true);
-      el.setAttribute("r", wind.r);
+      el.setAttribute("r", el.r);
       el.setAttribute("cx", x);
       el.setAttribute("cy", y);
       el.setAttribute("class", name);
@@ -447,8 +448,31 @@ function cast() {
       state.spells.push({ ...data, el, x, y, tx, ty });
       break;
     }
+    case NAVIGATE: {
+      const href = "#" + name;
+      const x = state.player.x;
+      const y = state.player.y;
+      const tx = 3
+      const ty = 29
+
+      const dx = (x + 2 * state.forest.dx) - tx
+      const dy = (y + 2 * state.forest.dy) - ty
+
+      const compass = document.querySelector(href);
+      const el = compass.cloneNode(true);
+      el.setAttribute("x1", x);
+      el.setAttribute("y1", y);
+      el.setAttribute("x2", x - dx);
+      el.setAttribute("y2", y - dy);
+      el.setAttribute("class", name);
+      el.setAttribute("href", href);
+      state.zone.el.appendChild(el);
+      state.spells.push({ ...data, el, x, y });
+      break;
+    }
     case SPEED: {
       state.spells.push({ ...data });
+      break;
     }
   }
 }
@@ -581,6 +605,13 @@ function nextSpells(delta) {
         break;
       }
       case LIGHTNING: {
+        spell.msDuration += delta;
+        if (spell.msDuration > spell.msVisible) {
+          spell.purge = true;
+        }
+        break;
+      }
+      case NAVIGATE: {
         spell.msDuration += delta;
         if (spell.msDuration > spell.msVisible) {
           spell.purge = true;

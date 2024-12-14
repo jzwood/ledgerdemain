@@ -227,6 +227,7 @@ TODO
 - spells
   - compass
       - reveals an arrow towards grandchildren for 2 seconds
+      - no A* required. just have an arrow that points towards cell (0,15) in the forest
   - fireball
       - having fireballs be alterable, ie make-bigger make-two etc fully compensate already and add interesting depth
   - hedgerow: (saepe sepe : hedge, fence, enclosure, haye.)
@@ -235,4 +236,5 @@ TODO
   - update spiderweb tile so that is just env trap for you or enemies
 - figure out how to save/restore game
 - endgame sequence?
-    - final boss?
+  - cottage art
+  - final boss?
