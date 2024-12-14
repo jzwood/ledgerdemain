@@ -173,7 +173,7 @@ function main() {
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
       state.forest.data = forest;
-      loadMap([0, 1], [8, 8]);
+      loadMap([0, 5], [8, 8]);
       requestAnimationFrame(loop.bind(null, performance.now()));
     });
 
@@ -452,18 +452,18 @@ function cast() {
       const href = "#" + name;
       const x = state.player.x;
       const y = state.player.y;
-      const tx = 3
-      const ty = 29
+      const cx = 3;
+      const cy = 29;
 
-      const dx = (x + 2 * state.forest.dx) - tx
-      const dy = (y + 2 * state.forest.dy) - ty
+      const tx = cx - 2 * state.forest.dx;
+      const ty = cy - 2 * state.forest.dy;
 
       const compass = document.querySelector(href);
       const el = compass.cloneNode(true);
       el.setAttribute("x1", x);
       el.setAttribute("y1", y);
-      el.setAttribute("x2", x - dx);
-      el.setAttribute("y2", y - dy);
+      el.setAttribute("x2", tx);
+      el.setAttribute("y2", ty);
       el.setAttribute("class", name);
       el.setAttribute("href", href);
       state.zone.el.appendChild(el);
