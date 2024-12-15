@@ -144,12 +144,6 @@ const state = {
     pxPerMs: PLAYER_SPEED,
     scrolls: [HELP],
     blockers: ["@", "~", "|"],
-    agents: utils.range(8).map((i) => ({
-      theta: Math.PI / 4 * i,
-      phi: 0,
-      radPerMs: 2 * Math.PI / 1000,
-      r: utils.rand(2, 4),
-    })),
   },
   help: false,
   forest: {
@@ -189,7 +183,7 @@ function main() {
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
       state.forest.data = forest;
-      loadMap([3, 5], [7, 7]);
+      loadMap([0, 4], [9, 12]);
       requestAnimationFrame(loop.bind(null, performance.now()));
     });
 
@@ -567,15 +561,11 @@ function isWalkable(x, y, blockers) {
 function nextPlayer(delta) {
   const { dx, dy, pxPerMs, blockers } = state.player;
   const t = pxPerMs * delta;
-  const { x: x1, y: y1, agents } = state.player;
+  const { x: x1, y: y1 } = state.player;
   const x2 = x1 + dx * t;
   const y2 = y1 + dy * t;
   const moving = dx !== 0 || dy !== 0;
   const BORDER = 0.5;
-
-  agents.forEach((agent) => {
-    agent.phi = (agent.phi + agent.radPerMs) % (2 * Math.PI);
-  });
 
   state.scrolls.forEach((scroll) => {
     const dx = scroll.x - x2;
@@ -668,30 +658,38 @@ function nextSpells(delta) {
 }
 
 function nextEnemies(delta) {
-  const agents = state.player.agents;
   state.enemies.forEach((enemy, i) => {
-    const agent = utils.getAt(agents, i);
-    const r = agent.r * Math.sin(agent.phi);
+    let dx = state.player.x - enemy.x;
+    let dy = state.player.y - enemy.y;
+    let c;
 
-    const x = r * Math.cos(agent.theta);
-    const y = r * Math.sin(agent.theta);
+    const dist = utils.euclidian(dx, dy);
+    if (dist >= EPSILON) {
+      [dx, dy, c] = state.enemies.reduce((acc, other, j) => {
+        if (i === j) return acc;
+        let dx = enemy.x - other.x;
+        let dy = enemy.y - other.y;
 
-    const tx = state.player.x + x;
-    const ty = state.player.y + y;
+        const dist = utils.euclidian(dx, dy);
+        if (dist > EPSILON) return acc;
 
-    const dx = tx - enemy.x;
-    const dy = ty - enemy.y;
-    const t = (enemy.pxPerMs * delta) / utils.euclidian(dx, dy);
+        [dx, dy] = utils.normalize(dx, dy, EPSILON - dist);
+        const [pdx, pdy, pc] = acc;
+        return [pdx + dx, pdy + dy, pc + 1];
+      }, [dx, dy, 1]);
 
-    const [nx, ny] = nextXY(
-      enemy.x,
-      enemy.y,
-      enemy.x + dx * t,
-      enemy.y + dy * t,
-      enemy.blockers,
-    );
-    enemy.x = nx;
-    enemy.y = ny;
+      const t = (enemy.pxPerMs * delta) / dist;
+
+      const [nx, ny] = nextXY(
+        enemy.x,
+        enemy.y,
+        enemy.x + dx * t,
+        enemy.y + dy * t,
+        enemy.blockers,
+      );
+      enemy.x = nx;
+      enemy.y = ny;
+    }
 
     if (enemy.name === SORCERER) {
       enemy.msDuration += delta;
