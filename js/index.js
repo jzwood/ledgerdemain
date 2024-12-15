@@ -21,6 +21,7 @@ const NAVIGATE = "navigate";
 const HELP = "help";
 const TOMBSTONE = "tombstone";
 const SORCERER = "sorcerer";
+const CHILD = "child";
 
 const MAP_HYPOT = 40;
 
@@ -37,7 +38,7 @@ const SPELLS = [
     mnemonic: "orbis ignis",
     damage: 1,
     pxPerMs: 6 / 1000,
-    evil: false,
+    friendly: true,
     x: undefined,
     y: undefined,
     tx: undefined,
@@ -115,7 +116,7 @@ const ENEMIES = [
     msDuration: 0,
   },
   {
-    name: "child",
+    name: CHILD,
     blockers: ["@", "~", "|", "C"],
     health: 1000,
     pxPerMs: 1 / 1000,
@@ -281,7 +282,7 @@ function tileToEl(tile, x, y, clear) {
     "|": "tree",
     "@": "rock",
     "~": "water",
-    "S": "sorcerer",
+    "S": SORCERER,
     "F": "scroll",
     "L": "scroll",
     "N": "scroll",
@@ -292,8 +293,8 @@ function tileToEl(tile, x, y, clear) {
     "T": "tree",
     "A": "water",
     "C": "cobweb",
-    "1": "child",
-    "2": "child",
+    "1": CHILD,
+    "2": CHILD,
   })[tile];
 
   if (typeof name === "undefined") return undefined;
@@ -603,6 +604,11 @@ function nextPlayer(delta) {
     state.player.x = x;
     state.player.y = y;
   }
+
+  if (state.player.dead) {
+    state.player.dx = 0;
+    state.player.dy = 0;
+  }
 }
 
 function nextXY(x1, y1, x2, y2, blockers) {
@@ -703,10 +709,8 @@ function nextEnemies(delta) {
       );
       enemy.x = nx;
       enemy.y = ny;
-    } else {
+    } else if (enemy.name !== CHILD) {
       state.player.dead = true;
-      state.player.dx = 0;
-      state.player.dy = 0;
     }
 
     if (enemy.name === SORCERER) {
@@ -718,7 +722,7 @@ function nextEnemies(delta) {
         createFireball(
           enemy,
           state.player,
-          { ...data, evil: true },
+          { ...data, friendly: false },
         );
       }
     }
@@ -752,12 +756,20 @@ function drawState() {
     state.spells.forEach((spell, si, spells) => {
       switch (spell.name) {
         case FIREBALL: {
-          if (!spell.evil) {
+          if (spell.friendly) {
             const dx = enemy.x - spell.x;
             const dy = enemy.y - spell.y;
             const dist = utils.euclidian(dx, dy);
             if (dist <= EPSILON) {
               enemy.health -= spell.damage;
+              spell.purge = true;
+            }
+          } else {
+            const dx = state.player.x - spell.x;
+            const dy = state.player.y - spell.y;
+            const dist = utils.euclidian(dx, dy);
+            if (dist <= EPSILON) {
+              state.player.dead = true;
               spell.purge = true;
             }
           }
