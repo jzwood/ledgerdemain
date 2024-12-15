@@ -111,6 +111,11 @@ const ENEMIES = [
     msCooldown: 3000,
     msDuration: 0,
   },
+  {
+    name: "child",
+    health: 1000,
+    pxPerMs: 1 / 1000,
+  },
 ].reduce(utils.toDictOn("name"), {});
 
 const SCROLLS = [
@@ -134,16 +139,12 @@ const state = {
     dy: 0,
     pxPerMs: PLAYER_SPEED,
     scrolls: [HELP],
-    agents: utils.range(8).map((i) => {
-      const theta = Math.PI / 4 * i;
-      return {
-        cos_theta: Math.cos(theta),
-        sin_theta: Math.sin(theta),
-        phi: 0,
-        radPerMs: 2 * Math.PI / 1000,
-        r: utils.rand(2, 4),
-      };
-    }),
+    agents: utils.range(8).map((i) => ({
+      theta: Math.PI / 4 * i,
+      phi: 0,
+      radPerMs: 2 * Math.PI / 1000,
+      r: utils.rand(2, 4),
+    })),
   },
   help: false,
   forest: {
@@ -183,13 +184,20 @@ function main() {
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
       state.forest.data = forest;
-      loadMap([5, 0], [8, 8]);
+      loadMap([0, 0], [6, 9]);
       requestAnimationFrame(loop.bind(null, performance.now()));
     });
 
   document.body.addEventListener("keydown", onKeyDown);
   document.body.addEventListener("keyup", onKeyUp);
   document.body.addEventListener("dblclick", document.body.requestFullscreen);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      state.help = true;
+      drawState();
+    }
+  });
 }
 
 function loadMap([x, y], [px, py]) {
@@ -651,8 +659,8 @@ function nextEnemies(delta) {
     const agent = utils.getAt(agents, i);
     const r = agent.r * Math.sin(agent.phi);
 
-    const x = r * agent.cos_theta;
-    const y = r * agent.sin_theta;
+    const x = r * Math.cos(agent.theta);
+    const y = r * Math.sin(agent.theta);
 
     const tx = state.player.x + x;
     const ty = state.player.y + y;
