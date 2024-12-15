@@ -214,18 +214,14 @@ ENEMY TRIANGE:
 X damage
 
 TODO
-- player death
-    - collision with enemy -> death
-    - collision with wizard fireball -> death
-    - death -> tombstone
+- revise / audit entire forest
+- figure out how to save/restore game
+- invisble spiders
+- basic playtest
+
+STRETCH GOALS
 - spells
-  - fireball
-      - having fireballs be alterable, ie make-bigger make-two etc fully compensate already and add interesting depth
   - hedgerow: (saepe sepe : hedge, fence, enclosure, haye.)
     - creates a 2 tile (topiary?) hedge that enemies must go around
         - duration is 2 seconds?
   - update spiderweb tile so that is just env trap for you or enemies
-- figure out how to save/restore game
-- endgame sequence?
-  - cottage art
-  - final boss?
