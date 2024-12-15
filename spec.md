@@ -1,6 +1,6 @@
 # Legerdemain
 - TITLES?
-    - ledgerdemain
+    - legerdemain
     - Iniquitous
 
 - WORLD
