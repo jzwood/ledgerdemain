@@ -183,7 +183,7 @@ function main() {
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
       state.forest.data = forest;
-      loadMap([0, 4], [9, 12]);
+      loadMap([0, 0], [9, 12]);
       requestAnimationFrame(loop.bind(null, performance.now()));
     });
 
@@ -658,6 +658,7 @@ function nextSpells(delta) {
 }
 
 function nextEnemies(delta) {
+  const FORCE_FIELD = 2 * EPSILON
   state.enemies.forEach((enemy, i) => {
     let dx = state.player.x - enemy.x;
     let dy = state.player.y - enemy.y;
@@ -671,9 +672,9 @@ function nextEnemies(delta) {
         let dy = enemy.y - other.y;
 
         const dist = utils.euclidian(dx, dy);
-        if (dist > EPSILON) return acc;
+        if (dist > FORCE_FIELD) return acc;
 
-        [dx, dy] = utils.normalize(dx, dy, EPSILON - dist);
+        [dx, dy] = utils.normalize(dx, dy, FORCE_FIELD - dist);
         const [pdx, pdy, pc] = acc;
         return [pdx + dx, pdy + dy, pc + 1];
       }, [dx, dy, 1]);

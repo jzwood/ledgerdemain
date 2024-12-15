@@ -1,10 +1,10 @@
-|||||||||||||||||| |||||||||||||||||| |||||||~~~|||||||| @@@@@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@
-||||||_______||||| |||||||_________|| |||_____~~~_______ DDDDCDDDDDDDDDDDDD DDDDCCDDDDDDDDDDDD DDDDDDDDDDDDDD@@@@
-||||___________||| |||||____________| |_________DD______ DDDDDDDDDDDDDDDDDD DDDDCCDDD@DDDDDDDD D@DDDDDDDDDDDD@@@@
-|||___~~~~~______| ||||______________ ___________~~_____ DDDDDDDDDDDDDDDDDD DDDDD@DDDDDDDDDDDD DDDDDDDS_SDDDDDDD@
-||__1_~~@~~2_____| |||_______________ ___________~~_____ DDDCDDDDDDDDDDDDDD DDDDDDDDDDD@DDDDDD DD@DDDD_N_DDDDDDD@
+||||||||~|||||@@@@ |||||||||||||||||| |||||||~~~|||||||| @@@@@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@
+||@|||_~~____|||@@ |||||||_________|| |||_____~~~_______ DDDDCDDDDDDDDDDDDD DDDDCCDDDDDDDDDDDD DDDDDDDDDDDDDD@@@@
+|@@@___~_______||| |||||____________| |_________DD______ DDDDDDDDDDDDDDDDDD DDDDCCDDD@DDDDDDDD D@DDDDDDDDDDDD@@@@
+||@___~~~~~______| ||||______________ ___________~~_____ DDDDDDDDDDDDDDDDDD DDDDD@DDDDDDDDDDDD DDDDDDDS_SDDDDDDD@
+||__1_~~@~~______| |||_______________ ___________~~_____ DDDCDDDDDDDDDDDDDD DDDDDDDDDDD@DDDDDD DD@DDDD_N_DDDDDDD@
 |_____~~~~~____||| ||_______________| |__________~~_____ DDDDDDCDDDDDDDDDDD DDDDDDDDCCCCDDDDDD DDDDDDDS_SDDD@DDD@
-||___________||||| ||_______________| |_________~~______ DDDDDDDDDDDDCDDDDD DD@DDDDDCCCCDD@DDD DDDDDDDDDDD@DDDDD@
+||__________1||||| ||_______________| |_________~~______ DDDDDDDDDDDDCDDDDD DD@DDDDDCCCCDD@DDD DDDDDDDDDDD@DDDDD@
 ||_________||||||| ||_______________| |||_______DD______ DDDDDDDDCDDDDDDDDD DDDDDD@DDCCCDDDDDD DDD@DDDDDDDDDDDDD@
 ||||_||||||||||||| |||________||||||| |||||____~~||||||| DDDDDDDDDDDDDDDDDD DDDDDDDDDDDDDDDDDD DDDDDDDDDDDDDDDDD@
 
