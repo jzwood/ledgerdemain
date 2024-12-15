@@ -135,6 +135,7 @@ const SCROLLS = [
   );
 
 const state = {
+  gameover: false,
   player: {
     el: undefined,
     x: 2,
@@ -183,7 +184,7 @@ function main() {
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
       state.forest.data = forest;
-      loadMap([0, 0], [9, 12]);
+      loadMap([0, 5], [9, 12]);
       requestAnimationFrame(loop.bind(null, performance.now()));
     });
 
@@ -215,6 +216,7 @@ function loadMap([x, y], [px, py]) {
   state.player.el = player;
   state.player.x = px;
   state.player.y = py;
+  state.spell = [];
   state.enemies.length = 0; // clear enemies
 
   const clear = state.minimap.cleared.some((map) => map.x == x && map.y === y);
@@ -330,7 +332,7 @@ function isAlphaNum(char) {
 
 function onKeyDown(event) {
   const { key, code, repeat } = event;
-  if (repeat) return null;
+  if (repeat || state.player.dead) return null;
 
   if (code === "Space") {
     state.spell.pop();
@@ -365,6 +367,9 @@ function onSpell() {
     const spell = keys.sort(utils.abccmp).join("");
     if (SUBSPELLS.has(spell)) {
       state.spell.push(spell);
+      if (state.spell.length > 8) {
+        state.spell.shift();
+      }
       cast();
     }
   }
@@ -387,13 +392,19 @@ function createFireball(src, target, data) {
   state.spells.push({ ...data, el, x, y, tx: tx + vx, ty: ty + vy });
 }
 
-function createTombstone({ x, y }) {
+function createTombstone(entity) {
+  const { x, y } = entity;
   const el = document.createElementNS(NS, "use");
   el.setAttribute("x", x);
   el.setAttribute("y", y);
   el.setAttribute("class", TOMBSTONE);
   el.setAttribute("href", "#" + TOMBSTONE);
   state.zone.el.appendChild(el);
+
+  entity.el.style.transformOrigin = `${entity.x}px ${entity.y + 1}px`;
+  entity.el.style.transform =
+    "rotateX(180deg) skew(40deg) scale(0.8) translateX(0.2px)";
+  entity.el.style.opacity = 0.4;
 }
 
 function cast() {
@@ -448,21 +459,23 @@ function cast() {
     }
     case LIGHTNING: {
       const enemy = nearestEnemy();
-      const href = "#" + name;
-      const x = state.player.x;
-      const y = state.player.y;
-      const tx = enemy.x;
-      const ty = enemy.y;
-      const lightning = document.querySelector(href);
-      const el = lightning.cloneNode(true);
-      el.setAttribute("x1", x);
-      el.setAttribute("y1", y);
-      el.setAttribute("x2", tx);
-      el.setAttribute("y2", ty);
-      el.setAttribute("class", name);
-      el.setAttribute("href", href);
-      state.zone.el.appendChild(el);
-      state.spells.push({ ...data, el, x, y, tx, ty });
+      if (enemy) {
+        const href = "#" + name;
+        const x = state.player.x;
+        const y = state.player.y;
+        const tx = enemy.x;
+        const ty = enemy.y;
+        const lightning = document.querySelector(href);
+        const el = lightning.cloneNode(true);
+        el.setAttribute("x1", x);
+        el.setAttribute("y1", y);
+        el.setAttribute("x2", tx);
+        el.setAttribute("y2", ty);
+        el.setAttribute("class", name);
+        el.setAttribute("href", href);
+        state.zone.el.appendChild(el);
+        state.spells.push({ ...data, el, x, y, tx, ty });
+      }
       break;
     }
     case NAVIGATE: {
@@ -658,7 +671,7 @@ function nextSpells(delta) {
 }
 
 function nextEnemies(delta) {
-  const FORCE_FIELD = 2 * EPSILON
+  const FORCE_FIELD = 2 * EPSILON;
   state.enemies.forEach((enemy, i) => {
     let dx = state.player.x - enemy.x;
     let dy = state.player.y - enemy.y;
@@ -690,6 +703,10 @@ function nextEnemies(delta) {
       );
       enemy.x = nx;
       enemy.y = ny;
+    } else {
+      state.player.dead = true;
+      state.player.dx = 0;
+      state.player.dy = 0;
     }
 
     if (enemy.name === SORCERER) {
@@ -718,8 +735,17 @@ function nextEnemies(delta) {
 }
 
 function drawState() {
-  state.player.el?.setAttribute("x", state.player.x);
-  state.player.el?.setAttribute("y", state.player.y);
+  if (state.player.el) {
+    state.player.el.setAttribute("x", state.player.x);
+    state.player.el.setAttribute("y", state.player.y);
+  }
+
+  if (state.player.dead && !state.gameover) {
+    state.gameover = true;
+
+    createTombstone(state.player);
+  }
+
   state.enemies.forEach((enemy, ei, enemies) => {
     enemy.el.setAttribute("x", enemy.x);
     enemy.el.setAttribute("y", enemy.y);
@@ -763,10 +789,6 @@ function drawState() {
     if (enemy.health <= 0) {
       enemies.splice(ei, 1);
       createTombstone(enemy);
-      enemy.el.style.transformOrigin = `${enemy.x}px ${enemy.y + 1}px`;
-      enemy.el.style.transform =
-        "rotateX(180deg) skew(40deg) scale(0.8) translateX(0.2px)";
-      enemy.el.style.opacity = 0.4;
     }
   });
   state.spells.forEach((spell, index, spells) => {
