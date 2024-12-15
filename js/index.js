@@ -97,15 +97,18 @@ const ENEMIES = [
   {
     name: "bat",
     health: 1,
+    blockers: ["@", "|"],
     pxPerMs: 2 / 1000,
   },
   {
     name: "ghost",
+    blockers: ["@"],
     health: 2,
     pxPerMs: 1 / 1000,
   },
   {
     name: SORCERER,
+    blockers: ["@", "~", "|", "C"],
     health: 3,
     pxPerMs: 0.25 / 1000,
     msCooldown: 3000,
@@ -113,6 +116,7 @@ const ENEMIES = [
   },
   {
     name: "child",
+    blockers: ["@", "~", "|", "C"],
     health: 1000,
     pxPerMs: 1 / 1000,
   },
@@ -139,7 +143,7 @@ const state = {
     dy: 0,
     pxPerMs: PLAYER_SPEED,
     scrolls: [HELP],
-    blockers: ['@', '~', '|'],
+    blockers: ["@", "~", "|"],
     agents: utils.range(8).map((i) => ({
       theta: Math.PI / 4 * i,
       phi: 0,
@@ -185,7 +189,7 @@ function main() {
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
       state.forest.data = forest;
-      loadMap([0, 0], [6, 9]);
+      loadMap([3, 5], [7, 7]);
       requestAnimationFrame(loop.bind(null, performance.now()));
     });
 
@@ -563,9 +567,9 @@ function isWalkable(x, y, blockers) {
 function nextPlayer(delta) {
   const { dx, dy, pxPerMs, blockers } = state.player;
   const t = pxPerMs * delta;
-  const { x: x0, y: y0, agents } = state.player;
-  const x = x0 + dx * t;
-  const y = y0 + dy * t;
+  const { x: x1, y: y1, agents } = state.player;
+  const x2 = x1 + dx * t;
+  const y2 = y1 + dy * t;
   const moving = dx !== 0 || dy !== 0;
   const BORDER = 0.5;
 
@@ -574,8 +578,8 @@ function nextPlayer(delta) {
   });
 
   state.scrolls.forEach((scroll) => {
-    const dx = scroll.x - x;
-    const dy = scroll.y - y;
+    const dx = scroll.x - x2;
+    const dy = scroll.y - y2;
     const distance = utils.euclidian(dx, dy);
     if (distance < EPSILON) {
       state.player.scrolls.push(scroll.name);
@@ -583,21 +587,30 @@ function nextPlayer(delta) {
     }
   });
 
-  if (x < BORDER) {
-    loadMap([state.zone.x - 1, state.zone.y], [SCENE.WIDTH - BORDER, y]);
-  } else if (x > SCENE.WIDTH - BORDER) {
-    loadMap([state.zone.x + 1, state.zone.y], [BORDER, y]);
-  } else if (y < -BORDER) {
-    loadMap([state.zone.x, state.zone.y - 1], [x, SCENE.HEIGHT - BORDER]);
-  } else if (y > SCENE.HEIGHT - BORDER) {
-    loadMap([state.zone.x, state.zone.y + 1], [x, BORDER]);
-  } else if (moving && isWalkable(x, y, blockers)) {
+  if (x2 < BORDER) {
+    loadMap([state.zone.x - 1, state.zone.y], [SCENE.WIDTH - BORDER, y2]);
+  } else if (x2 > SCENE.WIDTH - BORDER) {
+    loadMap([state.zone.x + 1, state.zone.y], [BORDER, y2]);
+  } else if (y2 < -BORDER) {
+    loadMap([state.zone.x, state.zone.y - 1], [x2, SCENE.HEIGHT - BORDER]);
+  } else if (y2 > SCENE.HEIGHT - BORDER) {
+    loadMap([state.zone.x, state.zone.y + 1], [x2, BORDER]);
+  } else if (moving) {
+    const [x, y] = nextXY(x1, y1, x2, y2, blockers);
     state.player.x = x;
     state.player.y = y;
-  } else if (moving && isWalkable(x0, y, blockers)) {
-    state.player.y = y;
-  } else if (moving && isWalkable(x, y0, blockers)) {
-    state.player.x = x;
+  }
+}
+
+function nextXY(x1, y1, x2, y2, blockers) {
+  if (isWalkable(x2, y2, blockers)) {
+    return [x2, y2];
+  } else if (isWalkable(x1, y2, blockers)) {
+    return [x1, y2];
+  } else if (isWalkable(x2, y1, blockers)) {
+    return [x2, y1];
+  } else {
+    return [x1, y1];
   }
 }
 
@@ -670,8 +683,15 @@ function nextEnemies(delta) {
     const dy = ty - enemy.y;
     const t = (enemy.pxPerMs * delta) / utils.euclidian(dx, dy);
 
-    enemy.x += dx * t;
-    enemy.y += dy * t;
+    const [nx, ny] = nextXY(
+      enemy.x,
+      enemy.y,
+      enemy.x + dx * t,
+      enemy.y + dy * t,
+      enemy.blockers,
+    );
+    enemy.x = nx;
+    enemy.y = ny;
 
     if (enemy.name === SORCERER) {
       enemy.msDuration += delta;

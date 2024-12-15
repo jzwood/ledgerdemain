@@ -214,10 +214,6 @@ ENEMY TRIANGE:
 X damage
 
 TODO
-- enemy environment collisions (applies to their movement and being pushed by wind)
-    - wizards cannot go over rocks, water, trees
-    - bats cannot go over rocks, trees
-    - ghosts cannot go over rocks
 - player death
     - collision with enemy -> death
     - collision with wizard fireball -> death
