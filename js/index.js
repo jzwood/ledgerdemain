@@ -139,6 +139,7 @@ const state = {
     dy: 0,
     pxPerMs: PLAYER_SPEED,
     scrolls: [HELP],
+    blockers: ['@', '~', '|'],
     agents: utils.range(8).map((i) => ({
       theta: Math.PI / 4 * i,
       phi: 0,
@@ -543,7 +544,7 @@ function posToTile(x, y) {
 }
 
 const EMPTY = "_";
-function isWalkable(x, y) {
+function isWalkable(x, y, blockers) {
   const { forest } = state;
   const fyt = forest.dy + Math.round((y - 0.5) * 0.5);
   const fyb = forest.dy + Math.round(y * 0.5);
@@ -555,12 +556,12 @@ function isWalkable(x, y) {
   const fxr = forest.dx + Math.round((x - 1) * 0.5);
 
   return [rowt?.[fxl], rowt?.[fxr], rowb?.[fxl], rowb?.[fxr]].every((tile) =>
-    tile && /\w/.test(tile)
+    tile && !blockers.includes(tile)
   );
 }
 
 function nextPlayer(delta) {
-  const { dx, dy, pxPerMs } = state.player;
+  const { dx, dy, pxPerMs, blockers } = state.player;
   const t = pxPerMs * delta;
   const { x: x0, y: y0, agents } = state.player;
   const x = x0 + dx * t;
@@ -590,12 +591,12 @@ function nextPlayer(delta) {
     loadMap([state.zone.x, state.zone.y - 1], [x, SCENE.HEIGHT - BORDER]);
   } else if (y > SCENE.HEIGHT - BORDER) {
     loadMap([state.zone.x, state.zone.y + 1], [x, BORDER]);
-  } else if (moving && isWalkable(x, y)) {
+  } else if (moving && isWalkable(x, y, blockers)) {
     state.player.x = x;
     state.player.y = y;
-  } else if (moving && isWalkable(x0, y)) {
+  } else if (moving && isWalkable(x0, y, blockers)) {
     state.player.y = y;
-  } else if (moving && isWalkable(x, y0)) {
+  } else if (moving && isWalkable(x, y0, blockers)) {
     state.player.x = x;
   }
 }
