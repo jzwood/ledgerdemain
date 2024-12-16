@@ -180,7 +180,7 @@ function main() {
   const spellCompendium = document.getElementById("spell-compendium");
   state.log.compendiumEl = spellCompendium;
 
-  fetch("/data/forest.txt")
+  fetch("data/forest.txt")
     .then((res) => res.text())
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
@@ -439,9 +439,7 @@ function cast() {
           x: state.player.x + utils.rand(-1, 1),
           y: state.player.y + utils.rand(-1, 1),
         };
-      if (target) {
-        createFireball(state.player, target, data);
-      }
+      createFireball(state.player, target, data);
       break;
     }
     case WIND: {
@@ -461,23 +459,27 @@ function cast() {
     }
     case LIGHTNING: {
       const enemy = nearestEnemy();
-      if (enemy) {
-        const href = "#" + name;
-        const x = state.player.x;
-        const y = state.player.y;
-        const tx = enemy.x;
-        const ty = enemy.y;
-        const lightning = document.querySelector(href);
-        const el = lightning.cloneNode(true);
-        el.setAttribute("x1", x);
-        el.setAttribute("y1", y);
-        el.setAttribute("x2", tx);
-        el.setAttribute("y2", ty);
-        el.setAttribute("class", name);
-        el.setAttribute("href", href);
-        state.zone.el.appendChild(el);
-        state.spells.push({ ...data, el, x, y, tx, ty });
-      }
+      const target = enemy ??
+        {
+          x: utils.rand(0, SCENE.WIDTH),
+          y: utils.rand(0, SCENE.HEIGHT),
+        };
+
+      const href = "#" + name;
+      const x = state.player.x;
+      const y = state.player.y;
+      const tx = target.x;
+      const ty = target.y;
+      const lightning = document.querySelector(href);
+      const el = lightning.cloneNode(true);
+      el.setAttribute("x1", x);
+      el.setAttribute("y1", y);
+      el.setAttribute("x2", tx);
+      el.setAttribute("y2", ty);
+      el.setAttribute("class", name);
+      el.setAttribute("href", href);
+      state.zone.el.appendChild(el);
+      state.spells.push({ ...data, el, x, y, tx, ty });
       break;
     }
     case NAVIGATE: {
