@@ -288,6 +288,7 @@ function tileToEl(tile, x, y, clear) {
     "L": "scroll",
     "N": "scroll",
     "Q": "scroll",
+    "W": "scroll",
     "X": "witch",
     "B": "bat",
     "G": "ghost",
