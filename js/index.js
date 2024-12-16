@@ -279,24 +279,24 @@ function prependChild(parent, child) {
 
 function tileToEl(tile, x, y, clear) {
   const name = ({
-    "|": "tree",
-    "@": "rock",
-    "~": "water",
     "-": "dirt",
-    "S": SORCERER,
+    "1": CHILD,
+    "2": CHILD,
+    "@": "rock",
+    "A": "water",
+    "B": "bat",
+    "C": "cobweb",
     "F": "scroll",
+    "G": "ghost",
     "L": "scroll",
     "N": "scroll",
     "Q": "scroll",
+    "S": SORCERER,
+    "T": "tree",
     "W": "scroll",
     "X": "witch",
-    "B": "bat",
-    "G": "ghost",
-    "T": "tree",
-    "A": "water",
-    "C": "cobweb",
-    "1": CHILD,
-    "2": CHILD,
+    "|": "tree",
+    "~": "water",
   })[tile];
 
   if (typeof name === "undefined") return undefined;

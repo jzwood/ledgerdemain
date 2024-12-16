@@ -225,3 +225,16 @@ STRETCH GOALS
     - creates a 2 tile (topiary?) hedge that enemies must go around
         - duration is 2 seconds?
   - update spiderweb tile so that is just env trap for you or enemies
+- spells for summoning children
+- have children shoot fireballs and or lightning
+
+FEEDBACK:
+  - spider web slowdown
+  - show current room in minimap
+  - enemies too close to entrance can cause unfair deaths
+  - spell box in top left looks unintentional when empty
+  - game over next steps are ambiguous
+
+BUGS:
+  - lightning can sometimes be gained too soon
+  - can be perma-stuck by grinding at entrance/exit seam
