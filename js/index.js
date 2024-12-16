@@ -227,7 +227,7 @@ function loadMap([x, y], [px, py]) {
       const tile = state.forest.data[dy + h][dx + w];
       const el = tileToEl(tile, 2 * w, 2 * h, clear);
       if (el instanceof SVGElement) {
-        if (["|", "@", "~", "D", "T", "A", "C"].includes(tile)) {
+        if (["|", "@", "~", "-", "T", "A", "C"].includes(tile)) {
           prependChild(state.zone.el, el);
         } else {
           state.zone.el.appendChild(el);
@@ -282,12 +282,12 @@ function tileToEl(tile, x, y, clear) {
     "|": "tree",
     "@": "rock",
     "~": "water",
+    "-": "dirt",
     "S": SORCERER,
     "F": "scroll",
     "L": "scroll",
     "N": "scroll",
     "Q": "scroll",
-    "D": "dirt",
     "X": "witch",
     "B": "bat",
     "G": "ghost",
