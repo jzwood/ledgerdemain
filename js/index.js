@@ -30,7 +30,7 @@ const SPELLS = [
     spell: "rbil",
     mnemonic: "libri",
     name: HELP,
-    desc: "spell book",
+    desc: "show & hide spells",
   },
   {
     spell: "srbio-sgni",
@@ -330,9 +330,12 @@ function tileToEl(tile, x, y, clear) {
   }
 
   const scroll = SCROLLS[tile];
+  if (scroll && state.player.scrolls.includes(scroll.name)) return undefined;
+
   if (scroll) {
     state.scrolls.push({ ...scroll, el, x, y });
   }
+
   return el;
 }
 
@@ -873,7 +876,7 @@ function drawState() {
 
   state.log.compendiumEl.replaceChildren();
   if (state.help) {
-    [{ spell: "spell", mnemonic: "latin", desc: "name" }].concat(
+    [{ spell: "spell", mnemonic: "latin", desc: "description" }].concat(
       SPELLS.filter(({ name }) => state.player.scrolls.includes(name)),
     )
       .forEach((data) => {

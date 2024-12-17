@@ -233,7 +233,9 @@ FEEDBACK:
   - enemies too close to entrance can cause unfair deaths
   - spell box in top left looks unintentional when empty
   - game over next steps are ambiguous
+  - It's hard to tell what exactly the spell scroll on the 1st screen is, and all that seems to happen when you touch it is that it disappears. Maybe add some visual indicator of what's happening, e.g. show some text like "You learned <spell name>"?
 
 BUGS:
   - lightning can sometimes be gained too soon
   - can be perma-stuck by grinding at entrance/exit seam
+  - Spell scrolls reappear if you leave an area and come back (but I assume they don't do anything if you pick them up again?)
