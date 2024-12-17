@@ -265,6 +265,9 @@ function loadMap([x, y], [px, py]) {
     el.setAttribute("width", 0.5);
     el.setAttribute("height", 0.5);
     el.setAttribute("fill", color);
+    if (state.zone.x === x && state.zone.y === y) {
+      el.setAttribute("fill", "red");
+    }
     minimap.appendChild(el);
   };
 
@@ -575,14 +578,14 @@ function posToTile(x, y) {
 const EMPTY = "_";
 function isWalkable(x, y, blockers) {
   const { forest } = state;
-  const fyt = forest.dy + Math.round((y - 0.5) * 0.5);
-  const fyb = forest.dy + Math.round(y * 0.5);
+  const fyt = forest.dy + Math.round(0.5 * (y - 0.5));
+  const fyb = forest.dy + Math.round(0.5 * y);
 
   const rowt = forest.data[fyt];
   const rowb = forest.data[fyb];
 
-  const fxl = forest.dx + Math.round(x * 0.5);
-  const fxr = forest.dx + Math.round((x - 1) * 0.5);
+  const fxl = forest.dx + Math.round(0.5 * x);
+  const fxr = forest.dx + Math.round(0.5 * (x - 1));
 
   return [rowt?.[fxl], rowt?.[fxr], rowb?.[fxl], rowb?.[fxr]].every((tile) =>
     tile && !blockers.includes(tile)
