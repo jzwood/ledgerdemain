@@ -115,6 +115,9 @@ const ENEMIES = [
     msCooldown: 3000,
     msDuration: 0,
   },
+].reduce(utils.toDictOn("name"), {});
+
+const FRIENDS = [
   {
     name: CHILD,
     blockers: ["@", "~", "|", "C"],
@@ -154,6 +157,7 @@ const state = {
     data: [],
   },
   enemies: [],
+  friends: [],
   scrolls: [],
   movementKeys: new Set(),
   keysPressed: new Set(),
@@ -185,7 +189,10 @@ function main() {
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
       state.forest.data = forest;
-      loadMap([0, 5], [9, 12]);
+      var params = new URLSearchParams(location.search);
+      const x = +(params.get("x") ?? 0);
+      const y = +(params.get("y") ?? 5);
+      loadMap([x, y], [9, 12]);
       requestAnimationFrame(loop.bind(null, performance.now()));
     });
 
@@ -219,6 +226,7 @@ function loadMap([x, y], [px, py]) {
   state.player.y = py;
   state.spell = [];
   state.enemies.length = 0; // clear enemies
+  state.friends.length = 0;
 
   const clear = state.minimap.cleared.some((map) => map.x == x && map.y === y);
 
@@ -309,9 +317,13 @@ function tileToEl(tile, x, y, clear) {
 
   const enemy = ENEMIES[name];
   if (enemy && clear) return undefined;
-
   if (enemy) {
     state.enemies.push({ ...enemy, el, x, y });
+  }
+
+  const friend = FRIENDS[name];
+  if (friend) {
+    state.friends.push({ ...friend, el, x, y });
   }
 
   const scroll = SCROLLS[tile];
@@ -551,6 +563,7 @@ function nextState(delta) {
   nextPlayer(delta);
   nextSpells(delta);
   nextEnemies(delta);
+  nextFriends(delta);
 }
 
 function posToTile(x, y) {
@@ -680,19 +693,19 @@ function nextSpells(delta) {
   });
 }
 
-function nextEnemies(delta) {
+function nextMove(entities, delta, action = undefined) {
   const FORCE_FIELD = 2 * EPSILON;
-  state.enemies.forEach((enemy, i) => {
-    let dx = state.player.x - enemy.x;
-    let dy = state.player.y - enemy.y;
+  entities.forEach((entity, i) => {
+    let dx = state.player.x - entity.x;
+    let dy = state.player.y - entity.y;
     let c;
 
     const dist = utils.euclidian(dx, dy);
     if (dist >= EPSILON) {
-      [dx, dy, c] = state.enemies.reduce((acc, other, j) => {
+      [dx, dy, c] = entities.reduce((acc, other, j) => {
         if (i === j) return acc;
-        let dx = enemy.x - other.x;
-        let dy = enemy.y - other.y;
+        let dx = entity.x - other.x;
+        let dy = entity.y - other.y;
 
         const dist = utils.euclidian(dx, dy);
         if (dist > FORCE_FIELD) return acc;
@@ -702,18 +715,26 @@ function nextEnemies(delta) {
         return [pdx + dx, pdy + dy, pc + 1];
       }, [dx, dy, 1]);
 
-      const t = (enemy.pxPerMs * delta) / dist;
+      const t = (entity.pxPerMs * delta) / dist;
 
       const [nx, ny] = nextXY(
-        enemy.x,
-        enemy.y,
-        enemy.x + dx * t,
-        enemy.y + dy * t,
-        enemy.blockers,
+        entity.x,
+        entity.y,
+        entity.x + dx * t,
+        entity.y + dy * t,
+        entity.blockers,
       );
-      enemy.x = nx;
-      enemy.y = ny;
-    } else if (enemy.name !== CHILD) {
+      entity.x = nx;
+      entity.y = ny;
+    }
+
+    action && action(entity, dist);
+  });
+}
+
+function nextEnemies(delta) {
+  nextMove(state.enemies, delta, (enemy, dist) => {
+    if (dist < EPSILON) {
       state.player.dead = true;
     }
 
@@ -740,6 +761,10 @@ function nextEnemies(delta) {
   ) {
     state.minimap.cleared.push({ x: state.zone.x, y: state.zone.y });
   }
+}
+
+function nextFriends(delta) {
+  nextMove(state.friends, delta);
 }
 
 function drawState() {
@@ -806,6 +831,11 @@ function drawState() {
       enemies.splice(ei, 1);
       createTombstone(enemy);
     }
+  });
+
+  state.friends.forEach((friend, ei) => {
+    friend.el.setAttribute("x", friend.x);
+    friend.el.setAttribute("y", friend.y);
   });
   state.spells.forEach((spell, index, spells) => {
     if (spell.purge) {

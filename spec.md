@@ -215,7 +215,6 @@ X damage
 
 TODO
 - revise / audit entire forest
-- figure out how to save/restore game
 - invisble spiders
 - basic playtest
 
