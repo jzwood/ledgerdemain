@@ -1,5 +1,6 @@
 # Legerdemain
 
-### 2D top-down game
+Löta and Svlöti have not returned from playing in the forest. Find
+them — baby witches should not be left unattended for long.
 
 <img src="./promo/demo.png" />
