@@ -816,8 +816,15 @@ function drawState() {
           const dist = utils.euclidian(dx, dy);
           if (dist < spell.r) {
             const [vx, vy] = utils.normalize(dx, dy, spell.r);
-            enemy.x = spell.x + vx;
-            enemy.y = spell.y + vy;
+            const [nx, ny] = nextXY(
+              enemy.x,
+              enemy.y,
+              spell.x + vx,
+              spell.y + vy,
+              enemy.blockers,
+            );
+            enemy.x = nx;
+            enemy.y = ny;
           }
           break;
         }
