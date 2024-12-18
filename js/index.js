@@ -353,6 +353,11 @@ function isAlphaNum(char) {
 
 function onKeyDown(event) {
   const { key, code, repeat } = event;
+
+  if (code == "Escape") {
+    state.help = false;
+  }
+
   if (repeat || state.player.dead) return null;
 
   if (code === "Space") {
@@ -615,6 +620,7 @@ function nextPlayer(delta) {
     const distance = utils.euclidian(dx, dy);
     if (distance < EPSILON) {
       state.player.scrolls.push(scroll.name);
+      state.help = true
       scroll.purge = true;
     }
   });
