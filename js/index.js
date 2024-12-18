@@ -69,7 +69,7 @@ const SPELLS = [
     y: undefined,
     tx: undefined,
     ty: undefined,
-    maxR: 10,
+    maxR: 8,
     el: undefined,
     purge: false,
   },
@@ -487,8 +487,13 @@ function cast() {
       const href = "#" + name;
       const x = state.player.x;
       const y = state.player.y;
-      const tx = target.x;
-      const ty = target.y;
+      const dx = target.x - state.player.x;
+      const dy = target.y - state.player.y;
+      const distance = utils.euclidian(dx, dy);
+      const [vx, vy] = utils.normalize(dx, dy, Math.min(data.maxR, distance));
+      const tx = x + vx;
+      const ty = y + vy;
+
       const lightning = document.querySelector(href);
       const el = lightning.cloneNode(true);
       el.setAttribute("x1", x);
@@ -673,6 +678,9 @@ function nextSpells(delta) {
         break;
       }
       case LIGHTNING: {
+        if (spell.msDuration > 0) {
+          spell.damage = 0;
+        }
         spell.msDuration += delta;
         if (spell.msDuration > spell.msVisible) {
           spell.purge = true;
