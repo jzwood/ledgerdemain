@@ -4,14 +4,18 @@ section {
   padding: 1rem;
   border: 1px solid white;
   border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
 }
 
 main {
   display: grid;
-  margin: 1rem;
+  padding: 1rem;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   font-size: 1.25rem;
+  background-image: url("/img/demo.png");
+  background-size: cover;
 }
 
 #start {
