@@ -211,12 +211,7 @@ LATIN:
 ENEMY TRIANGE:
 - hp
 - fast
-X damage
-
-TODO
-- revise / audit entire forest
-- invisble spiders
-- basic playtest
+- damage
 
 STRETCH GOALS
 - spells
@@ -236,4 +231,3 @@ FEEDBACK:
 BUGS:
   - lightning can sometimes be gained too soon
   - can be perma-stuck by grinding at entrance/exit seam
-  - prevent wind from blowing enemies through walls and getting them stuck
