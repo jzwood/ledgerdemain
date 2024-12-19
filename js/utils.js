@@ -23,3 +23,4 @@ export const taxicab = (dx, dy) => Math.abs(dx) + Math.abs(dy);
 export const rand = (lo, hi) => lo + Math.random() * (hi - lo);
 export const range = (n) => Array(n).fill(0).map((_, i) => i);
 export const getAt = (arr, i) => arr[i % arr.length];
+export const round = (n) => Math.round(n * 2) * 0.5;

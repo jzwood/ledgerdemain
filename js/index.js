@@ -192,7 +192,7 @@ function main() {
       var params = new URLSearchParams(location.search);
       const x = +(params.get("x") ?? 0);
       const y = +(params.get("y") ?? 5);
-      loadMap([x, y], [9, 12]);
+      loadMap([x, y], [10, 5]);
       requestAnimationFrame(loop.bind(null, performance.now()));
     });
 
@@ -588,7 +588,6 @@ function posToTile(x, y) {
   return state.forest.data[fy]?.[fx];
 }
 
-const EMPTY = "_";
 function isWalkable(x, y, blockers) {
   const { forest } = state;
   const fyt = forest.dy + Math.round(0.5 * (y - 0.5));
@@ -612,7 +611,8 @@ function nextPlayer(delta) {
   const x2 = x1 + dx * t;
   const y2 = y1 + dy * t;
   const moving = dx !== 0 || dy !== 0;
-  const BORDER = 0.5;
+  const HALF_PLAYER_WIDTH = 0.5;
+  const PLAYER_HEIGHT = 1;
 
   state.scrolls.forEach((scroll) => {
     const dx = scroll.x - x2;
@@ -620,19 +620,28 @@ function nextPlayer(delta) {
     const distance = utils.euclidian(dx, dy);
     if (distance < EPSILON) {
       state.player.scrolls.push(scroll.name);
-      state.help = true
+      state.help = true;
       scroll.purge = true;
     }
   });
 
-  if (x2 < BORDER) {
-    loadMap([state.zone.x - 1, state.zone.y], [SCENE.WIDTH - BORDER, y2]);
-  } else if (x2 > SCENE.WIDTH - BORDER) {
-    loadMap([state.zone.x + 1, state.zone.y], [BORDER, y2]);
-  } else if (y2 < -BORDER) {
-    loadMap([state.zone.x, state.zone.y - 1], [x2, SCENE.HEIGHT - BORDER]);
-  } else if (y2 > SCENE.HEIGHT - BORDER) {
-    loadMap([state.zone.x, state.zone.y + 1], [x2, BORDER]);
+  if (x2 < -0.5) {
+    loadMap([state.zone.x - 1, state.zone.y], [
+      SCENE.WIDTH - 0.5,
+      utils.round(y2),
+    ]);
+  } else if (x2 > SCENE.WIDTH - 0.5) {
+    loadMap([state.zone.x + 1, state.zone.y], [
+      -HALF_PLAYER_WIDTH,
+      utils.round(y2),
+    ]);
+  } else if (y2 < -0.5) {
+    loadMap([state.zone.x, state.zone.y - 1], [
+      utils.round(x2),
+      SCENE.HEIGHT - 1,
+    ]);
+  } else if (y2 > SCENE.HEIGHT - 1) {
+    loadMap([state.zone.x, state.zone.y + 1], [utils.round(x2), -0.5]);
   } else if (moving) {
     const [x, y] = nextXY(x1, y1, x2, y2, blockers);
     state.player.x = x;
