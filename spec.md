@@ -224,10 +224,5 @@ STRETCH GOALS
 
 FEEDBACK:
   - spider web slowdown
-  - enemies too close to entrance can cause unfair deaths
   - spell box in top left looks unintentional when empty
   - game over next steps are ambiguous
-
-BUGS:
-  - lightning can sometimes be gained too soon
-  - can be perma-stuck by grinding at entrance/exit seam

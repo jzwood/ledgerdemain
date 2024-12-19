@@ -224,9 +224,10 @@ function loadMap([x, y], [px, py]) {
   state.player.el = player;
   state.player.x = px;
   state.player.y = py;
-  state.spell = [];
   state.enemies.length = 0; // clear enemies
+  state.spell.length = 0;
   state.friends.length = 0;
+  state.scrolls.length = 0;
 
   const clear = state.minimap.cleared.some((map) => map.x == x && map.y === y);
 
