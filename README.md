@@ -5,6 +5,6 @@ them — baby witches should not be left unattended for long.
 
 <img src="./img/demo.png" />
 
-<a href="https://jzwood.science/legerdemain/tutorial">
-  <h2>Play</h2>
-</a>
+<h2>
+  <a href="https://jzwood.science/legerdemain/tutorial">Play</a>
+</h2>
