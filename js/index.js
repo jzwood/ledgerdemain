@@ -95,6 +95,7 @@ const SPELLS = [
     spell: "ech-snui",
     mnemonic: "echinus",
     name: HEDGEHOG,
+    desc: "summon hedgehog",
     purge: false,
   },
 ].map(Object.freeze);
@@ -158,7 +159,7 @@ const state = {
     dx: 0,
     dy: 0,
     pxPerMs: PLAYER_SPEED,
-    scrolls: [HELP],
+    scrolls: [HELP, HEDGEHOG],
     blockers: ["@", "~", "|"],
   },
   help: false,
@@ -446,7 +447,7 @@ function createTombstone(entity) {
 }
 
 function createHedgehog(src) {
-  const data = FRIENDS[HEDGEHOG]
+  const data = FRIENDS[HEDGEHOG];
   const x = src.x;
   const y = src.y;
   const el = document.createElementNS(NS, "use");
