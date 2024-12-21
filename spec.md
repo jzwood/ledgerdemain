@@ -183,11 +183,8 @@ X       - enemy walking
   - design game progression / story
       - progressively find spells?
 
-TASKS
-  - dialogue system for cutscenes
+https://personal.math.ubc.ca/~cass/frivs/latin/latin-dict-full.html
 
-
-- https://personal.math.ubc.ca/~cass/frivs/latin/latin-dict-full.html
 LATIN:
 - madide : drunkenly.
 - aranea : spider's web.
@@ -207,6 +204,9 @@ LATIN:
 - duo : two
 - ter : three times, thrice.
 - saepe sepe : hedge, fence, enclosure, haye.
+- stella : star.
+- quercus : oak tree.
+- picea : the spruce tree
 
 ENEMY TRIANGE:
 - hp

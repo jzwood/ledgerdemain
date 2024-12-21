@@ -42,6 +42,13 @@
   fill: #584f40;
 }
 
+.hedgehog {
+  fill: #584f40;
+  stroke: #584f40;
+  stroke-width: 0.1px;
+  stroke-dasharray: 0.1 0.1;
+}
+
 .wind {
   fill: transparent;
   stroke-width: 0.5px;

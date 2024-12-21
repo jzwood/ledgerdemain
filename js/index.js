@@ -18,6 +18,7 @@ const WIND = "wind";
 const LIGHTNING = "lightning";
 const QUICK = "quick";
 const NAVIGATE = "navigate";
+const HEDGEHOG = "hedgehog";
 const HELP = "help";
 const TOMBSTONE = "tombstone";
 const SORCERER = "sorcerer";
@@ -90,6 +91,12 @@ const SPELLS = [
     msDuration: 0,
     purge: false,
   },
+  {
+    spell: "ech-snui",
+    mnemonic: "echinus",
+    name: HEDGEHOG,
+    purge: false,
+  },
 ].map(Object.freeze);
 
 const SUBSPELLS = new Set(SPELLS.flatMap(({ spell }) => spell.split("-")));
@@ -121,8 +128,12 @@ const FRIENDS = [
   {
     name: CHILD,
     blockers: ["@", "~", "|", "C"],
-    health: 1000,
     pxPerMs: 1 / 1000,
+  },
+  {
+    name: HEDGEHOG,
+    blockers: ["@", "~", "|", "C", "-"],
+    pxPerMs: 0.75 / 1000,
   },
 ].reduce(utils.toDictOn("name"), {});
 
@@ -434,6 +445,19 @@ function createTombstone(entity) {
   entity.el.style.opacity = 0.4;
 }
 
+function createHedgehog(src) {
+  const data = FRIENDS[HEDGEHOG]
+  const x = src.x;
+  const y = src.y;
+  const el = document.createElementNS(NS, "use");
+  el.setAttribute("x", x);
+  el.setAttribute("y", y);
+  el.setAttribute("class", HEDGEHOG);
+  el.setAttribute("href", "#" + HEDGEHOG);
+  state.zone.el.appendChild(el);
+  state.friends.push({ ...data, el, x, y });
+}
+
 function cast() {
   const spell = state.spell.join("-").toLowerCase();
   const data = SPELLS.find((data) => spell.endsWith(data.spell));
@@ -532,6 +556,10 @@ function cast() {
       el.setAttribute("href", href);
       state.zone.el.appendChild(el);
       state.spells.push({ ...data, el, x, y });
+      break;
+    }
+    case HEDGEHOG: {
+      createHedgehog(state.player);
       break;
     }
     case QUICK: {
