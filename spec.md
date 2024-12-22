@@ -207,6 +207,9 @@ LATIN:
 - stella : star.
 - quercus : oak tree.
 - picea : the spruce tree
+- echinus : hedgehog
+- agnosco : acknowledge.
+
 
 ENEMY TRIANGE:
 - hp

@@ -48,7 +48,6 @@
   stroke-width: 0.1px;
   stroke-dasharray: 0.1 0.1;
 }
-
 .wind {
   fill: transparent;
   stroke-width: 0.5px;
@@ -114,7 +113,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2rem;
+  font-size: 1.8rem;
 
   &:has(.hidden) {
     display: none;

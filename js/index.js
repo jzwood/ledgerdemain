@@ -23,6 +23,7 @@ const HELP = "help";
 const TOMBSTONE = "tombstone";
 const SORCERER = "sorcerer";
 const CHILD = "child";
+const SHARE = "share";
 
 const MAP_HYPOT = 40;
 
@@ -32,6 +33,13 @@ const SPELLS = [
     mnemonic: "libri",
     name: HELP,
     desc: "show & hide spells",
+  },
+  {
+    spell: "ech-snui",
+    mnemonic: "echinus",
+    name: HEDGEHOG,
+    desc: "summon hedgehog",
+    purge: false,
   },
   {
     spell: "srbio-sgni",
@@ -92,10 +100,10 @@ const SPELLS = [
     purge: false,
   },
   {
-    spell: "ech-snui",
-    mnemonic: "echinus",
-    name: HEDGEHOG,
-    desc: "summon hedgehog",
+    spell: "agno-sco",
+    mnemonic: "agnosco",
+    name: SHARE,
+    desc: "minimap → clipboard",
     purge: false,
   },
 ].map(Object.freeze);
@@ -144,6 +152,7 @@ const SCROLLS = [
   { tile: "W", name: WIND },
   { tile: "Q", name: QUICK },
   { tile: "N", name: NAVIGATE },
+  { tile: "X", name: SHARE },
 ]
   .reduce(
     utils.toDictOn("tile"),
@@ -186,7 +195,11 @@ const state = {
     x: 0,
     y: 0,
   },
-  minimap: { discovered: [], cleared: [] },
+  minimap: {
+    discovered: [],
+    cleared: [],
+    text: utils.range(6).map(() => utils.range(6).fill("⬛")),
+  },
 };
 
 function main() {
@@ -229,7 +242,7 @@ function loadMap([x, y], [px, py]) {
   state.forest.dy = dy;
   state.zone.el.replaceChildren();
 
-  const player = tileToEl("X", 2 * px, 2 * py);
+  const player = tileToEl("^", 2 * px, 2 * py);
   state.zone.x = x;
   state.zone.y = y;
   state.zone.el.appendChild(player);
@@ -257,6 +270,10 @@ function loadMap([x, y], [px, py]) {
     }
   }
 
+  updateMinimap(x, y);
+}
+
+function updateMinimap(x, y) {
   const minimap = document.getElementById("minimap");
   minimap.replaceChildren();
 
@@ -284,13 +301,17 @@ function loadMap([x, y], [px, py]) {
     minimap.appendChild(el);
   };
 
-  state.minimap.discovered.forEach((pos) => {
-    drawMiniTile("rgb(255, 255, 0)", pos);
+  state.minimap.discovered.forEach(({ x, y }) => {
+    drawMiniTile("rgb(255, 255, 0)", { x, y });
+    state.minimap.text[y][x] = "🟨";
   });
 
-  state.minimap.cleared.forEach((pos) => {
-    drawMiniTile("rgb(0, 255, 0)", pos);
+  state.minimap.cleared.forEach(({ x, y }) => {
+    drawMiniTile("rgb(0, 255, 0)", { x, y });
+    state.minimap.text[y][x] = "🟩";
   });
+
+  state.minimap.text[y][x] = "🟥";
 }
 
 function prependChild(parent, child) {
@@ -315,10 +336,11 @@ function tileToEl(tile, x, y, clear) {
     "L": "scroll",
     "N": "scroll",
     "Q": "scroll",
+    "X": "scroll",
     "S": SORCERER,
     "T": "tree",
     "W": "scroll",
-    "X": "witch",
+    "^": "witch",
     "|": "tree",
     "~": "water",
   })[tile];
@@ -567,6 +589,10 @@ function cast() {
       state.spells.push({ ...data });
       break;
     }
+    case SHARE: {
+      clipboardMinimap();
+      break;
+    }
   }
 }
 
@@ -632,6 +658,13 @@ function isWalkable(x, y, blockers) {
   return [rowt?.[fxl], rowt?.[fxr], rowb?.[fxl], rowb?.[fxr]].every((tile) =>
     tile && !blockers.includes(tile)
   );
+}
+
+function clipboardMinimap() {
+  const minimap = state.minimap.text.map((row) => row.join("")).join("\n");
+  navigator.clipboard
+    .writeText(minimap)
+    .catch(() => console.info(minimap));
 }
 
 function nextPlayer(delta) {
@@ -836,6 +869,7 @@ function drawState() {
     state.gameover = true;
 
     createTombstone(state.player);
+    // TODO
   }
 
   state.enemies.forEach((enemy, ei, enemies) => {
@@ -944,6 +978,7 @@ function drawState() {
         el.classList.add("compendium-row");
         const left = document.createElement("div");
         left.textContent = data.spell;
+        left.style.whiteSpace = "nowrap";
         const right = document.createElement("div");
         right.textContent = `${data.mnemonic}/${data.desc ?? data.name}`;
         el.appendChild(left);
