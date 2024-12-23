@@ -636,6 +636,7 @@ function nextState(delta) {
   nextSpells(delta);
   nextEnemies(delta);
   nextFriends(delta);
+  nextScrolls();
 }
 
 function posToTile(x, y) {
@@ -677,17 +678,6 @@ function nextPlayer(delta) {
   const HALF_PLAYER_WIDTH = 0.5;
   const PLAYER_HEIGHT = 1;
 
-  state.scrolls.forEach((scroll) => {
-    const dx = scroll.x - x2;
-    const dy = scroll.y - y2;
-    const distance = utils.euclidian(dx, dy);
-    if (distance < EPSILON) {
-      state.player.scrolls.push(scroll.name);
-      state.help = true;
-      scroll.purge = true;
-    }
-  });
-
   if (x2 < -0.5) {
     loadMap([state.zone.x - 1, state.zone.y], [
       SCENE.WIDTH - 0.5,
@@ -727,6 +717,20 @@ function nextXY(x1, y1, x2, y2, blockers) {
   } else {
     return [x1, y1];
   }
+}
+
+function nextScrolls() {
+  const { x, y } = state.player;
+  state.scrolls.forEach((scroll) => {
+    const dx = scroll.x - x;
+    const dy = scroll.y - y;
+    const distance = utils.euclidian(dx, dy);
+    if (distance < EPSILON) {
+      state.player.scrolls.push(scroll.name);
+      state.help = true;
+      scroll.purge = true;
+    }
+  });
 }
 
 function nextSpells(delta) {
