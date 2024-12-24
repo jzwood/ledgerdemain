@@ -676,11 +676,10 @@ function copyToClipboard() {
 }
 
 function nextPlayer(delta) {
-  const { dx, dy, pxPerMs, blockers } = state.player;
-  const px = pxPerMs * delta;
-  const { x: x1, y: y1 } = state.player;
-  const x2 = x1 + dx * px;
-  const y2 = y1 + dy * px;
+  let { x: x1, y: y1, dx, dy, pxPerMs, blockers } = state.player;
+  [dx, dy] = utils.normalize(dx, dy, pxPerMs * delta);
+  const x2 = x1 + dx;
+  const y2 = y1 + dy;
   const moving = dx !== 0 || dy !== 0;
   const HALF_PLAYER_WIDTH = 0.5;
   const PLAYER_HEIGHT = 1;
@@ -750,8 +749,7 @@ function nextSpells(delta) {
         if (dist < EPSILON + EPSILON) {
           spell.purge = true;
         } else {
-          const px = spell.pxPerMs * delta;
-          [dx, dy] = utils.normalize(dx, dy, px);
+          [dx, dy] = utils.normalize(dx, dy, spell.pxPerMs * delta);
           spell.x += dx;
           spell.y += dy;
         }
@@ -816,13 +814,13 @@ function nextMove(entities, delta, action = undefined) {
         return [pdx + dx, pdy + dy, pc + 1];
       }, [dx, dy, 1]);
 
-      const t = (entity.pxPerMs * delta) / dist;
+      [dx, dy] = utils.normalize(dx, dy, entity.pxPerMs * delta);
 
       const [nx, ny] = nextXY(
         entity.x,
         entity.y,
-        entity.x + dx * t,
-        entity.y + dy * t,
+        entity.x + dx,
+        entity.y + dy,
         entity.blockers,
       );
       entity.x = nx;
