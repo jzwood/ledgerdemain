@@ -104,9 +104,22 @@
   right: 0;
 }
 
+#game-over {
+  text-align: center;
+  pre {
+    line-height: 1;
+  }
+  & button {
+    border: none;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 1.4rem;
+    cursor: pointer;
+  }
+}
+
 .overlay {
   background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(5px);
   color: ivory;
   position: absolute;
   width: 100vw;
@@ -119,6 +132,10 @@
   &:has(.hidden) {
     display: none;
   }
+}
+
+.blur {
+  backdrop-filter: blur(5px);
 }
 
 #spell-compendium {

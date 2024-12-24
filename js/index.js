@@ -206,8 +206,8 @@ function main() {
   state.zone.el = document.getElementById("map");
   state.log.progressEl = document.getElementById("spell-progress");
   state.log.latestEl = document.getElementById("latest-spell");
-  const spellCompendium = document.getElementById("spell-compendium");
-  state.log.compendiumEl = spellCompendium;
+  state.log.compendiumEl = document.getElementById("spell-compendium");
+  state.log.gameOverEl = document.getElementById("game-over");
 
   fetch("data/forest.txt")
     .then((res) => res.text())
@@ -226,11 +226,15 @@ function main() {
   document.body.addEventListener("dblclick", document.body.requestFullscreen);
 
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
+    if (document.hidden && !state.gameover) {
       state.help = true;
       drawState();
     }
   });
+  document.querySelector("#game-over > button").addEventListener(
+    "click",
+    copyToClipboard,
+  );
 }
 
 function loadMap([x, y], [px, py]) {
@@ -275,6 +279,7 @@ function loadMap([x, y], [px, py]) {
 
 function updateMinimap(x, y) {
   const minimap = document.getElementById("minimap");
+  const gameoverMinimap = document.querySelector("#game-over > pre");
   minimap.replaceChildren();
 
   if (
@@ -312,6 +317,8 @@ function updateMinimap(x, y) {
   });
 
   state.minimap.text[y][x] = "🟥";
+  gameoverMinimap.textContent = state.minimap.text.map((row) => row.join(""))
+    .join("\n");
 }
 
 function prependChild(parent, child) {
@@ -520,7 +527,7 @@ function cast() {
       const y = state.player.y;
       const wind = document.querySelector(href);
       const el = wind.cloneNode(true);
-      el.setAttribute("r", el.r);
+      el.setAttribute("r", 0);
       el.setAttribute("cx", x);
       el.setAttribute("cy", y);
       el.setAttribute("class", name);
@@ -590,7 +597,7 @@ function cast() {
       break;
     }
     case SHARE: {
-      clipboardMinimap();
+      copyToClipboard();
       break;
     }
   }
@@ -661,7 +668,7 @@ function isWalkable(x, y, blockers) {
   );
 }
 
-function clipboardMinimap() {
+function copyToClipboard() {
   const minimap = state.minimap.text.map((row) => row.join("")).join("\n");
   navigator.clipboard
     .writeText(minimap)
@@ -670,10 +677,10 @@ function clipboardMinimap() {
 
 function nextPlayer(delta) {
   const { dx, dy, pxPerMs, blockers } = state.player;
-  const t = pxPerMs * delta;
+  const px = pxPerMs * delta;
   const { x: x1, y: y1 } = state.player;
-  const x2 = x1 + dx * t;
-  const y2 = y1 + dy * t;
+  const x2 = x1 + dx * px;
+  const y2 = y1 + dy * px;
   const moving = dx !== 0 || dy !== 0;
   const HALF_PLAYER_WIDTH = 0.5;
   const PLAYER_HEIGHT = 1;
@@ -737,18 +744,16 @@ function nextSpells(delta) {
   state.spells.forEach((spell) => {
     switch (spell.name) {
       case FIREBALL: {
-        const dx = spell.tx - spell.x;
-        const dy = spell.ty - spell.y;
-        const distance = utils.euclidian(dx, dy);
-        const t = (spell.pxPerMs * delta) / distance;
-        if (Math.abs(dx) > EPSILON) {
-          spell.x += dx * t;
-        }
-        if (Math.abs(dy) > EPSILON) {
-          spell.y += dy * t;
-        }
-        if (distance < EPSILON + EPSILON) {
+        let dx = spell.tx - spell.x;
+        let dy = spell.ty - spell.y;
+        const dist = utils.euclidian(dx, dy);
+        if (dist < EPSILON + EPSILON) {
           spell.purge = true;
+        } else {
+          const px = spell.pxPerMs * delta;
+          [dx, dy] = utils.normalize(dx, dy, px);
+          spell.x += dx;
+          spell.y += dy;
         }
         break;
       }
@@ -873,7 +878,6 @@ function drawState() {
     state.gameover = true;
 
     createTombstone(state.player);
-    // TODO
   }
 
   state.enemies.forEach((enemy, ei, enemies) => {
@@ -992,6 +996,7 @@ function drawState() {
   }
 
   state.log.compendiumEl.classList.toggle("hidden", !state.help);
+  state.log.gameOverEl.classList.toggle("hidden", !state.gameover);
   state.log.progressEl.textContent = state.spell.join("-");
   state.log.latestEl.textContent = state.log.latest;
 }
