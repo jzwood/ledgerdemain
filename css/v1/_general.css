@@ -7,7 +7,7 @@ html, body {
 
 @font-face {
   font-family: "Barriecito";
-  src: url("../font/Barriecito-Regular.ttf") format("truetype");
+  src: url("../../font/Barriecito-Regular.ttf") format("truetype");
 }
 
 body {
