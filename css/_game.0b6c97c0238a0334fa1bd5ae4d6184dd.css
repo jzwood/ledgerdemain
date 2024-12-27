@@ -1,11 +1,13 @@
 .witch {
   fill: midnightblue;
 }
+
 .child {
   fill: midnightblue;
   stroke: midnightblue;
   stroke-width: 0.1px;
 }
+
 .sorcerer {
   fill: darkred;
 }
