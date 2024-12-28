@@ -1,0 +1,163 @@
+.witch {
+  fill: midnightblue;
+}
+
+.child {
+  fill: midnightblue;
+  stroke: midnightblue;
+  stroke-width: 0.1px;
+}
+
+.sorcerer {
+  fill: darkred;
+}
+
+.bat {
+  fill: black;
+}
+
+.ghost {
+  fill: white;
+}
+
+.scroll {
+  fill: gold;
+}
+
+.fireball {
+  fill: #ff0000;
+}
+
+.tree {
+  fill: #33654a;
+}
+
+.rock {
+  fill: #ccc;
+}
+
+.water {
+  fill: #005377;
+}
+
+.dirt {
+  fill: #584f40;
+}
+
+.hedgehog {
+  fill: #584f40;
+  stroke: #584f40;
+  stroke-width: 0.1px;
+  stroke-dasharray: 0.1 0.1;
+}
+
+.wind {
+  fill: transparent;
+  stroke-width: 0.5px;
+  stroke: rgba(0, 0, 0, 0.05);
+}
+
+.lightning {
+  stroke: gold;
+  stroke-width: 0.1px;
+  stroke-linecap: round;
+}
+
+.navigate {
+  stroke: red;
+  stroke-width: 0.1px;
+  stroke-dasharray: 0.1 0.25;
+}
+
+.cobweb {
+  fill: transparent;
+  stroke: white;
+  stroke-width: 0.1px;
+}
+
+.tombstone {
+  fill: darkgray;
+}
+
+.minimap {
+  white-space: pre;
+  background-color: black;
+  color: white;
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+}
+
+#spell-progress, #latest-spell {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 0.2rem 1rem;
+  color: ivory;
+  font-size: 2rem;
+  text-align: center;
+  position: absolute;
+  border-radius: 2px;
+  top: 0;
+}
+
+#spell-progress {
+  left: 0;
+}
+
+#latest-spell {
+  right: 0;
+}
+
+#game-over {
+  text-align: center;
+  pre {
+    line-height: 1;
+  }
+  & button {
+    border: none;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 1.4rem;
+    cursor: pointer;
+  }
+}
+
+.overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: ivory;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+
+  &:has(.hidden) {
+    display: none;
+  }
+}
+
+.blur {
+  backdrop-filter: blur(5px);
+}
+
+#spell-compendium {
+  margin: 0 1rem;
+  max-width: 550px;
+}
+
+.compendium-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 3rem;
+
+  &:first-child {
+    border-bottom: 2px solid white;
+    font-size: 1.5rem;
+    align-items: end;
+  }
+
+  & > span:last-child {
+    text-align: right;
+  }
+}

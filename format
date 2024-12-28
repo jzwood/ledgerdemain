@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 
 deno fmt *.html && \
-deno fmt js && \
-deno fmt css
+deno fmt src
