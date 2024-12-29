@@ -25,3 +25,8 @@ video {
   max-height: 100vh;
   &:not(:first-child) {}
 }
+
+footer p {
+  margin: 1rem;
+  text-align: right;
+}

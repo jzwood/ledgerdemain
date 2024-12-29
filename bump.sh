@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-VERSION=1
+VERSION=2
 
-PREV_VERSION=$((VERSION - 1))
-mv "src/v$PREV_VERSION/" "src/v$VERSION/" 2>/dev/null
+PREVIOUS="/v$((VERSION - 1))/"
+TARGET="/v$VERSION/"
 
-sed -i "" "s/v$PREV_VERSION/v$VERSION/g" index.html
-sed -i "" "s/v$PREV_VERSION/v$VERSION/g" tutorial.html
-sed -i "" "s/v$PREV_VERSION/v$VERSION/g" walkthrough.html
+mv "src/$PREVIOUS/" "src/$TARGET/" 2>/dev/null
+find . -type f \( -name "*.js" -o -name "*.html" \) -exec sed -i "" "s#$PREVIOUS#$TARGET#g" {} +

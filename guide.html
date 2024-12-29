@@ -2,8 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="src/v1/css/guide.css" />
-    <link rel="icon" type="image/svg+xml" href="src/v1/media/favicon.svg" />
+    <link rel="stylesheet" href="src/v2/css/guide.css" />
+    <link rel="icon" type="image/svg+xml" href="src/v2/media/favicon.svg" />
     <title>Legerdemain Guide</title>
   </head>
   <body>
@@ -14,15 +14,18 @@
         controls
         preload="none"
         width="100%"
-        poster="src/v1/media/walkthrough-0.jpg"
+        poster="src/v2/media/walkthrough-0.jpg"
       >
-        <source src="src/v1/media/walkthrough-0.mp4" type="video/mp4" />
+        <source src="src/v2/media/walkthrough-0.mp4" type="video/mp4" />
       </video>
     </main>
+    <footer>
+      <p>guide credit: dudepeople</p>
+    </footer>
     <script>
-      Array(10).fill(0).forEach((_, i) => {
+      Array(8).fill(0).forEach((_, i) => {
         const index = i + 1;
-        const path = "src/v1/media/walkthrough-" + index;
+        const path = "src/v2/media/walkthrough-" + index;
         const sibling = document.querySelector("video");
         const video = sibling.cloneNode(true);
         video.setAttribute("poster", path + ".jpg");

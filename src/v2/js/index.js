@@ -209,7 +209,7 @@ function main() {
   state.log.compendiumEl = document.getElementById("spell-compendium");
   state.log.gameOverEl = document.getElementById("game-over");
 
-  fetch("src/v1/data/forest.txt")
+  fetch("src/v2/data/forest.txt")
     .then((res) => res.text())
     .then((res) => {
       const forest = res.replace(/ /g, "").replace(/\n+/g, "\n").split("\n");
