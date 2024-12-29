@@ -18,4 +18,9 @@ body {
 
 code {
   font-size: larger;
+  color: fuchsia;
+}
+
+a {
+  color: coral;
 }
